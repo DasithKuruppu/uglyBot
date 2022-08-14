@@ -1,0 +1,14 @@
+{
+  "name": "uglybot",
+  "version": "1.0.0",
+  "description": "an uglybot to test stuff out",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "dasith kuruppu",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^14.2.0"
+  }
+}

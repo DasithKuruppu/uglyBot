@@ -8,7 +8,7 @@ const envPaths = {
     'DEVELOPMENT': path.resolve(currentPath, './environmentConfigs/develop.env'),
 }
 
-const environmentsInitialize = () => { 
+const environmentsInitialize: () => dotenv.DotenvConfigOutput = () => {
     const envConfiginitialization = dotenv.config({
         path: envPaths[currentEnv],
         override: true

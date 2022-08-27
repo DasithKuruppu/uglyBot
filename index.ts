@@ -1,2 +1,4 @@
-import { InitializeBot } from "./bot";
-InitializeBot();
+import { startBot } from "./bot";
+export const main = () => {
+    startBot();
+}

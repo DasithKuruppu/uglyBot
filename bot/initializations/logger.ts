@@ -1,37 +1,45 @@
 import { createLogger, format, transports } from 'winston';
+import { PRODUCTION } from './environments';
 
-const loggerInitialize = () => {
+export const config = {
+    timeStampFormat: 'YYYY-MM-DD HH:mm:ss',
+    serviceName: 'uglyBot',
+    logLevel: 'info',
+    errorLogFilePath: 'logs/ugly-bot-error.log',
+    combinedLogFilePath: 'logs/ugly-bot-combined.log'
+}
+
+export const loggerInitialize = () => {
     const logger = createLogger({
-        level: 'info',
+        level: config.logLevel,
         format: format.combine(
             format.timestamp({
-                format: 'YYYY-MM-DD HH:mm:ss'
+                format: config.timeStampFormat
             }),
             format.errors({ stack: true }),
             format.splat(),
             format.prettyPrint(),
         ),
-        defaultMeta: { service: 'uglyBot' },
+        defaultMeta: { service: config.serviceName },
         transports: [
             //
             // - Write to all logs with level `info` and below to `quick-start-combined.log`.
             // - Write all logs error (and below) to `quick-start-error.log`.
             //
-            new transports.File({ filename: 'logs/ugly-bot-error.log', level: 'error' }),
-            new transports.File({ filename: 'logs/ugly-bot-combined.log' }),
+            new transports.File({ filename: config.errorLogFilePath, level: 'error' }),
+            new transports.File({ filename: config.combinedLogFilePath }),
         ]
     });
 
     //
     // If we're not in production then **ALSO** log to the `console`
     //
-    if (process.env.NODE_ENV !== 'production') {
+    if (process.env.environment !== PRODUCTION) {
         logger.add(new transports.Console({
             format: format.combine(
                 format.splat(),
                 format.colorize(),
                 format.simple(),
-
             )
         }));
     }
@@ -39,4 +47,3 @@ const loggerInitialize = () => {
     return logger;
 }
 
-export { loggerInitialize };

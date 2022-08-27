@@ -3,3 +3,4 @@
 *.env
 .parcel-cache
 /build/*
+/coverage/*

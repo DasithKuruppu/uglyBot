@@ -1,6 +1,7 @@
-import { logger } from './initializations'
+import { initializeAll } from './initializations'
 
-const InitializeBot = () => {
+export const startBot = () => {
+    const { logger } = initializeAll();
     logger.log({
         level: 'info',
         message: 'Bot started !',
@@ -8,4 +9,3 @@ const InitializeBot = () => {
 }
 
 
-export { InitializeBot };

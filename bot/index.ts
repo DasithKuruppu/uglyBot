@@ -1,4 +1,4 @@
-import { logger } from './initializations/index.js'
+import { logger } from './initializations'
 
 const InitializeBot = () => {
     logger.log({

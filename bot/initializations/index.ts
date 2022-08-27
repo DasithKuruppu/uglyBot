@@ -1,6 +1,6 @@
-import { environmentsInitialize } from './environments.js'
-import { loggerInitialize } from './logger.js';
-import { dataRedactor } from './redactor.js';
+import { environmentsInitialize } from './environments'
+import { loggerInitialize } from './logger';
+import { dataRedactor } from './redactor';
 
 // Initialize the logger
 const logger = loggerInitialize();
@@ -17,8 +17,6 @@ logger.log({
     message: 'Environment variables initialized',
     envConfiginitialization: dataRedactor(envConfiginitialization)
 });
-
-
 
 
 export { logger, dataRedactor };

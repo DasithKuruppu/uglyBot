@@ -2,9 +2,13 @@
   "name": "uglybot",
   "version": "1.0.0",
   "description": "an uglybot to test stuff out",
-  "main": "index.js",
+  "source": "index.ts",
+  "main": "build/dist.js",
+  "module": "build/module.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node build/dist.js",
+    "watch": "parcel watch",
+    "build": "parcel build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "dasith kuruppu",
@@ -15,5 +19,11 @@
     "dotenv": "^16.0.1",
     "fast-redact": "^3.1.2",
     "winston": "^3.8.1"
+  },
+  "engines": {
+    "node": ">= 16"
+  },
+  "devDependencies": {
+    "parcel": "^2.7.0"
   }
 }

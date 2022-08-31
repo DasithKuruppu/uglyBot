@@ -6,10 +6,11 @@
   "main": "build/dist.js",
   "module": "build/module.js",
   "scripts": {
-    "start": "node build/dist.js",
+    "start": "run-func build/dist.js main",
     "watch": "parcel watch",
     "build": "parcel build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest",
+    "coverage": "vitest run --coverage"
   },
   "author": "dasith kuruppu",
   "license": "ISC",
@@ -18,12 +19,15 @@
     "discord.js": "^14.2.0",
     "dotenv": "^16.0.1",
     "fast-redact": "^3.1.2",
+    "run-func": "^3.0.0",
     "winston": "^3.8.1"
   },
   "engines": {
     "node": ">= 16"
   },
   "devDependencies": {
-    "parcel": "^2.7.0"
+    "@vitest/coverage-c8": "^0.22.1",
+    "parcel": "^2.7.0",
+    "vitest": "^0.22.1"
   }
 }

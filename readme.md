@@ -2,7 +2,7 @@
 
 This is a simple discord bot buit to interact with some discord users.
 
-## Buith with
+## Built on
 [![Node][node.js]][node-url]
 [![Typescript][typescript]][typescript-url]
 

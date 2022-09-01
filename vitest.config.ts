@@ -9,7 +9,7 @@ export default defineConfig({
     clearMocks: true,
     environment: 'node',
     coverage: {
-      reporter: ['text', 'json', 'html'],
+      reporter: ['text', 'json', 'html', 'json-summary'],
       provider: 'c8', // or 'istanbul'
       all: true,
     },

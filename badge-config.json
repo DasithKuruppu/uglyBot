@@ -1,0 +1,40 @@
+{
+    "coverage_file_path": "./coverage/coverage-summary.json",
+    "badges": {
+        "statements": {
+          "style": "for-the-badge",
+          "logo": "codereview",
+          "logoColor": "white",
+          "color": "blue",
+          "label": "Statements"
+        },
+        "coverage": {
+          "style": "for-the-badge",
+          "logo": "tsnode",
+          "logoColor": "white",
+          "color": "blue",
+          "label": "Total"
+        },
+        "branches": {
+          "style": "for-the-badge",
+          "logo": "diagramsdotnet",
+          "logoColor": "white",
+          "color": "blue",
+          "label": "Branches"
+        },
+        "functions": {
+          "style": "for-the-badge",
+          "logo": "awslambda",
+          "logoColor": "white",
+          "color": "blue",
+          "label": "Functions"
+        },
+        "lines": {
+          "style": "for-the-badge",
+          "logo": "codefactor",
+          "logoColor": "white",
+          "color": "blue",
+          "label": "Lines"
+        }
+      }
+}

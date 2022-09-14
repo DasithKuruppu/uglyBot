@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "outDir": "bin",
+        // "baseUrl": "../",
+        "target": "es2016",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "sourceMap": true,
+        "experimentalDecorators": true,
+        "pretty": true,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitReturns": true,
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "noImplicitAny": false
+    },
+    "ts-node": {
+        "esm": true,
+        "experimentalSpecifierResolution": "node",
+    },
+    "files": [
+        "index.ts",   
+    ]
+}

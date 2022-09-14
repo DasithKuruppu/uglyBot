@@ -1,5 +1,5 @@
 import { createLogger, format, transports } from 'winston';
-import { PRODUCTION } from './environments';
+import { environmentTypes } from './environments';
 
 export const config = {
     timeStampFormat: 'YYYY-MM-DD HH:mm:ss',
@@ -34,7 +34,7 @@ export const loggerInitialize = () => {
     //
     // If we're not in production then **ALSO** log to the `console`
     //
-    if (process.env.environment !== PRODUCTION) {
+    if (process.env?.environment !== environmentTypes.PRODUCTION) {
         logger.add(new transports.Console({
             format: format.combine(
                 format.splat(),

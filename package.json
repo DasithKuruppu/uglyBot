@@ -2,14 +2,29 @@
   "name": "uglybot",
   "version": "1.0.0",
   "description": "an uglybot to test stuff out",
-  "source": ["index.ts","./utils/replaceReadmeContent.ts"],
+  "types": "build/main/index.d.ts",
   "targets": {
     "default": {
       "sourceMap": {
         "inline": false
       },
+      "source": "./index.ts",
+      "distDir": "./build/main",
       "context": "node",
-      "distDir": "./build",
+      "isLibrary": true,
+      "optimize": false,
+      "outputFormat": "esmodule",
+      "engines": {
+        "node": ">= 16"
+      }
+    },
+    "utils": {
+      "sourceMap": {
+        "inline": false
+      },
+      "source": "./utils/replaceReadmeContent.ts",
+      "context": "node",
+      "distDir": "./build/utils",
       "isLibrary": true,
       "optimize": false,
       "outputFormat": "esmodule",
@@ -19,33 +34,48 @@
     }
   },
   "scripts": {
-    "start": "run-func build/index.js main",
+    "start": "run-func build/main/index.js startBot",
     "watch": "parcel watch",
     "build": "parcel build",
     "test": "vitest",
     "coverage": "vitest run --coverage",
     "coverage:badge": "coverage-badge-creator --config './badge-config.json'",
     "coverage:replace": "run-func build/utils/replaceReadmeContent.js coverageReplace",
-    "updateReadmeCoverage": "npm run coverage:replace && npm run coverage:badge"
+    "updateReadmeCoverage": "npm run coverage:replace && npm run coverage:badge",
+    "pulumi:publish": "pulumi up"
   },
   "author": "dasith kuruppu",
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@aws-sdk/client-sqs": "^3.170.0",
+    "@pulumi/aws": "^5.13.0",
+    "@pulumi/aws-apigateway": "^0.0.11",
+    "@pulumi/pulumi": "^3.38.0",
+    "@types/aws-lambda": "^8.10.102",
+    "@types/fast-redact": "^3.0.2",
     "coverage-badge-creator": "^1.0.13",
+    "discord-interactions": "^3.2.0",
     "discord.js": "^14.2.0",
     "dotenv": "^16.0.1",
     "fast-redact": "^3.1.2",
+    "replace-in-file": "^6.3.5",
     "run-func": "^3.0.0",
-    "winston": "^3.8.1",
-    "replace-in-file": "^6.3.5"
+    "tweetnacl": "^1.0.3",
+    "winston": "^3.8.1"
   },
   "engines": {
     "node": ">= 16"
   },
   "devDependencies": {
+    "@parcel/transformer-typescript-types": "^2.7.0",
     "@vitest/coverage-c8": "^0.22.1",
     "parcel": "^2.7.0",
     "vitest": "^0.22.1"
+  },
+  "overrides": {
+    "@parcel/transformer-typescript-types": {
+      "typescript": "4.7.4"
+    }
   }
 }

@@ -1,4 +1,6 @@
-import { startBot } from "./bot";
-export const main = () => {
-    startBot();
-}
+import { startBot } from "./bot/";
+
+export {
+  startBot,
+};
+

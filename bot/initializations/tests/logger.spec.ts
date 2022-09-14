@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest'
 import { loggerInitialize, config as logConfig } from '../logger';
-import { DEVELOPMENT, PRODUCTION } from '../environments';
+import { environmentTypes } from '../environments';
 import { createLogger, format, transports } from 'winston';
 
 
@@ -38,9 +38,9 @@ describe('Logger Initialization - loggerInitialize() fn', () => {
     })
   
     test('should return a valid logger instance given the environment - DEVELOPMENT', () => {
-        vi.stubGlobal('process', { ...process, env: { ...process.env, environment: DEVELOPMENT } });
+        vi.stubGlobal('process', { ...process, env: { ...process.env, environment: environmentTypes.DEVELOPMENT } });
         const loggerInit = loggerInitialize();
-        expect(process.env.environment).toBe(DEVELOPMENT);
+        expect(process.env.environment).toBe(environmentTypes.DEVELOPMENT);
         expect(loggerInit).toMatchObject({ add: expect.any(Function) });
         
         expect(createLogger).toBeCalledTimes(1);
@@ -63,9 +63,9 @@ describe('Logger Initialization - loggerInitialize() fn', () => {
     });
 
     test('should return a valid logger instance given the environment - PRODUCTION', () => {
-        vi.stubGlobal('process', { ...process, env: { ...process.env, environment: PRODUCTION } });
+        vi.stubGlobal('process', { ...process, env: { ...process.env, environment: environmentTypes.PRODUCTION } });
         const loggerInit = loggerInitialize();
-        expect(process.env.environment).toBe(PRODUCTION);
+        expect(process.env.environment).toBe(environmentTypes.PRODUCTION);
         expect(loggerInit).toMatchObject({ add: expect.any(Function) });
         
         expect(createLogger).toBeCalledTimes(1);

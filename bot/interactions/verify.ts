@@ -47,5 +47,11 @@ export const verifyRequest = (
       body: JSON.stringify({ type: 1 }),
     };
   }
-  return undefined;
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      type: 4,
+      data: { content: "*⏳ Loading...*" },
+    }),
+  };
 };

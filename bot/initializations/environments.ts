@@ -1,5 +1,4 @@
 import * as dotenv from "dotenv";
-import * as path from "path";
 import process from "process";
 
 export const DEVELOP_ENV_CONFIG_PATH = "/environmentConfigs/develop.env";

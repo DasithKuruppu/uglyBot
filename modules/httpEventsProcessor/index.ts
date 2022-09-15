@@ -30,12 +30,11 @@ export const httpEventsHandler = async (
     ? Buffer.from(eventBody, "base64").toString("utf8")
     : eventBody;
   try {
-    const sqsSendResult =
-      isValidDiscordInteraction &&
-      (await sqsClient.sendMessage({
-        QueueUrl: config.DISCORD_EVENTS_SQS,
-        MessageBody: strBody,
-      }));
+    const sqsSendResult = isValidDiscordInteraction ? await sqsClient.sendMessage({
+      QueueUrl: config.DISCORD_EVENTS_SQS,
+      MessageBody: strBody,
+    }) : false;
+  
     logger.log("info", "Event queued", { config, strBody, sqsSendResult });
     return (
       verifyResponse || {

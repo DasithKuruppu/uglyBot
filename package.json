@@ -64,6 +64,7 @@
     "@types/aws-lambda": "^8.10.102",
     "@types/fast-redact": "^3.0.2",
     "coverage-badge-creator": "^1.0.13",
+    "discord-api-types": "^0.37.10",
     "discord-interactions": "^3.2.0",
     "discord.js": "^14.3.0",
     "dotenv": "^16.0.1",

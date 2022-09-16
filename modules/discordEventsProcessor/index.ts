@@ -1,6 +1,10 @@
 import { startBot } from "../../bot/";
 import { REST } from "@discordjs/rest";
-import { Routes, InteractionType, APIApplicationCommandInteraction, APIInteraction } from "discord.js"
+import { Routes, InteractionType } from "discord.js";
+import {
+  APIApplicationCommandInteraction,
+  APIInteraction,
+} from "discord-api-types/v10";
 import { getEnvironmentVariables } from "../../bot/configs";
 import {
   commandActions,
@@ -31,13 +35,19 @@ export const discordEventsProcessingFunction = async (
   ) as APIApplicationCommandInteraction[];
 
   const commandInteractionResponses = commandInteractionsData.map(
-    ({ application_id, token, data }) => {
-      return rest.patch(
+    async ({ application_id, token, data, member }) => {
+      const commandResponse = recognizedCommands.includes(data.name)
+        ? await commandActions[data.name](data, {
+            logger,
+            rest,
+            interactionConfig: { application_id, token, member },
+          })
+        : unrecognizedCommand();
+      const responseResult = await rest.patch(
         (Routes as any).webhookMessage(application_id, token),
-        recognizedCommands.includes(data.name)
-          ? commandActions[data.name]()
-          : unrecognizedCommand()
+        commandResponse
       );
+      return responseResult;
     }
   );
 

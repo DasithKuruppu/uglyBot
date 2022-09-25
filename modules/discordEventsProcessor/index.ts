@@ -1,56 +1,53 @@
 import { startBot } from "../../bot/";
 import { REST } from "@discordjs/rest";
-import { Routes, InteractionType } from "discord.js";
+import { InteractionType } from "discord.js";
 import {
-  APIApplicationCommandInteraction,
   APIInteraction,
 } from "discord-api-types/v10";
 import { getEnvironmentVariables } from "../../bot/configs";
-import {
-  commandActions,
-  recognizedCommands,
-  unrecognizedCommand,
-} from "../../bot/interactions/commands";
+import { applicationCommands } from "./applicationCommand";
+import { messageComponent } from "./messageComponent";
+
+export const discordInteractionEventHandler = {
+  [InteractionType.ApplicationCommand]: applicationCommands,
+  [InteractionType.MessageComponent]: messageComponent,
+};
+
+export const supportedInteractionTypes = Object.keys(discordInteractionEventHandler);
 
 export const discordEventsInteractionFactoryHandler = () => {
   const { getLogger } = startBot();
   const logger = getLogger();
-  return (event) => discordEventsProcessingFunction(event, { logger });
+  const { discordBotToken } = getEnvironmentVariables();
+  const rest = new REST({ version: "10" }).setToken(discordBotToken);
+  return (event) => discordEventsProcessingFunction(event, { logger, rest });
 };
 
 export const discordEventsProcessingFunction = async (
   event: AWSLambda.SQSEvent,
-  { logger }
+  { logger, rest }
 ) => {
-  const { discordBotToken } = getEnvironmentVariables();
-  logger.log("info", "event recieved", event);
-  const rest = new REST({ version: "10" }).setToken(discordBotToken);
+  logger.log("info", "discord event recieved", event);
+
   const { Records = [] } = event;
   const interactionData = Records.map(({ body }) =>
     JSON.parse(body)
   ) as APIInteraction[];
 
-  const commandInteractionsData = interactionData.filter(
-    ({ type }) => type === InteractionType.ApplicationCommand
-  ) as APIApplicationCommandInteraction[];
+  logger.log("info", "discord parsed interaction data", interactionData);
 
-  const commandInteractionResponses = commandInteractionsData.map(
-    async ({ application_id, token, data, member }) => {
-      const commandResponse = recognizedCommands.includes(data.name)
-        ? await commandActions[data.name](data, {
-            logger,
-            rest,
-            interactionConfig: { application_id, token, member },
-          })
-        : unrecognizedCommand();
-      const responseResult = await rest.patch(
-        (Routes as any).webhookMessage(application_id, token),
-        commandResponse
+  const supportedInteractions = ({ type }) =>
+    supportedInteractionTypes.includes(String(type));
+  const interactionResponses = interactionData
+    .filter(supportedInteractions)
+    .map(async ({ application_id, token, data, member, channel_id, type, message }) => {
+      const responseResult = await discordInteractionEventHandler[type](
+        { data, application_id, token, member, channel_id, message },
+        { logger, rest }
       );
       return responseResult;
-    }
-  );
+    });
+  const interactionResult = await Promise.all(interactionResponses);
 
-  const interactionResult = await Promise.all(commandInteractionResponses);
   logger.log("info", "interaction response sent", { interactionResult });
 };

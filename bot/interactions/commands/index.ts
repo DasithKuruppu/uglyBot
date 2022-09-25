@@ -1,11 +1,13 @@
-import { infoCommand } from "./info";
-import { requestCommand } from "./request";
+import { infoCommand, commandName_info } from "./info/info";
+import { requestCommand, commandName_request } from "./request";
+import { createCommand, commandName_create } from "./create";
 import { notRecognized } from "./unrecognized";
 
 export const commandActions = {
-  info: infoCommand,
-  request: requestCommand,
+  [commandName_info]: infoCommand,
+  [commandName_request]: requestCommand,
+  [commandName_create]: createCommand,
 };
 
 export const unrecognizedCommand = notRecognized;
-export const recognizedCommands = ["info", "request"];
+export const recognizedCommands = Object.keys(commandActions);

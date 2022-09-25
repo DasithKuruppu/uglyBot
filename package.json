@@ -64,6 +64,8 @@
     "@types/aws-lambda": "^8.10.102",
     "@types/fast-redact": "^3.0.2",
     "coverage-badge-creator": "^1.0.13",
+    "dayjs": "^1.10.4",
+    "dayjs-parser": "^0.9.3",
     "discord-api-types": "^0.37.10",
     "discord-interactions": "^3.2.0",
     "discord.js": "^14.3.0",

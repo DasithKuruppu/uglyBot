@@ -25,7 +25,7 @@ export const allowedRoles = [
   "Buffer",
   "Tank",
   "Floor Inspector",
-  "DPS"
+  "DPS",
 ];
 export const disallowedRolesMessages = {
   Friend: ({ roleId }) =>
@@ -59,6 +59,9 @@ export const requestRoleCommand = async (
               roleId: currentRole.id,
             })
           : `Sorry I am not allowed to assign the role - <@&${currentRole.id}>`,
+        allowed_mentions: {
+          parse: [],
+        },
       },
     };
   }
@@ -73,6 +76,9 @@ export const requestRoleCommand = async (
   return {
     body: {
       content: `Requested role - <@&${currentRole.id}> assigned`,
+      allowed_mentions: {
+        parse: [],
+      },
     },
   };
 };

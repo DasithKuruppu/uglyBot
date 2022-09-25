@@ -2,10 +2,10 @@ import {
   APIInteractionGuildMember,
   ApplicationCommandType,
   REST,
-  APIChatInputApplicationCommandInteractionData
+  APIChatInputApplicationCommandInteractionData,
 } from "discord.js";
 import { Logger } from "winston";
-import { requestRoleCommand } from "./role";
+import { createRaidCommand } from "./raid";
 import { unrecognizedCommand } from "..";
 interface factoryInitializations {
   logger: Logger;
@@ -14,20 +14,21 @@ interface factoryInitializations {
     application_id: string;
     token: string;
     member: APIInteractionGuildMember;
+    channel_id: string,
   };
 }
 
-export const commandName_request = "request";
+export const commandName_create = "create";
 export const availableSubCommands = {
-  role: requestRoleCommand,
+  raid: createRaidCommand,
 };
 export const recognizedSubCommands = Object.keys(availableSubCommands);
-export const requestCommand = async (
+export const createCommand = async (
   data: APIChatInputApplicationCommandInteractionData & { type: number },
   factoryInits: factoryInitializations
 ) => {
   const { logger, rest, interactionConfig } = factoryInits;
-  logger.log("info", `command - ${commandName_request}`, { data });
+  logger.log("info", `command - ${commandName_create}`, { data });
   const { options, type } = data;
   const [{ name = "" } = {}] = options || [];
   if (type !== ApplicationCommandType.ChatInput) {

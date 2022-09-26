@@ -73,7 +73,7 @@ export const executeEmbedFieldsActions = ({
         };
         return {
           ...accumulated,
-          [current.sectionName]: [...leftHalf, emptyField, ...rightHalf],
+          [current.sectionName]: [...leftHalf, ...rightHalf, emptyField],
         };
       }
       default: {
@@ -124,7 +124,7 @@ export const conditionsToActionsMapper = (
           operation: Operation.INSERT,
           sectionName: requestedSectionInfo.sectionName,
           field: userField,
-          index: userIndex,
+          index: requestedSectionInfo.sectionUserOccupyCount,
         },
       ],
     },
@@ -172,7 +172,7 @@ export const conditionsToActionsMapper = (
           operation: Operation.INSERT,
           sectionName: Category.WAITLIST,
           field: userField,
-          index: userIndex,
+          index: waitListSectioninfo.sectionUserOccupyCount,
         },
       ],
     },

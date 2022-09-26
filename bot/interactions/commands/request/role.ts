@@ -26,7 +26,8 @@ export const allowedRoles = [
   "Tank",
   "Floor Inspector",
   "DPS",
-  "Tester"
+  "Tester",
+  "Barely Completed TOMM"
 ];
 export const disallowedRolesMessages = {
   Friend: ({ roleId }) =>

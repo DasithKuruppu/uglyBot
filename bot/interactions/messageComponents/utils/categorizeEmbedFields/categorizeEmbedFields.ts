@@ -1,5 +1,6 @@
 import { APIEmbedField } from "discord-api-types/payloads/v10/channel";
 import { NeverwinterClassesMap } from "../../../../embeds/templates/neverwinter/classesList";
+import { IfactoryInitializations } from "../../typeDefinitions/event";
 import {
   ActionConditions,
   conditionsToActionsMapper,
@@ -59,7 +60,7 @@ export const getSectionInfo = (
   const sectionRecords = seperatedSections[sectionName];
   const sectionUserOccupyCount =
     sectionRecords.filter(({ name, value }) => {
-      value !== availableSlotValue;
+      return value !== availableSlotValue;
     }).length || 0;
   const sectionCapacity = sectionRecords.length || 0;
   const sectionFull = sectionUserOccupyCount > sectionCapacity;
@@ -133,17 +134,19 @@ export const determineActions = (
     memberId,
     requestedUserSection,
     userField,
+    factoryInits,
   }: {
     memberId: string;
     requestedUserSection: Category;
     userField: APIEmbedField;
+    factoryInits: IfactoryInitializations;
   }
 ) => {
+  const { logger } = factoryInits;
   const existingUserIdSections = getExistingMemberRecordDetails(
     seperatedSections,
     memberId
   );
-  console.log({ existingUserIdSections });
   const [
     {
       sectionName = undefined,
@@ -152,22 +155,20 @@ export const determineActions = (
       userRecord = undefined,
     } = {},
   ] = existingUserIdSections;
-  console.log({ sectionName, userExists, userIndex, userRecord });
+
   const currentUserSecInfo = getSectionInfo(
     seperatedSections,
     sectionName || Category.WAITLIST
   );
-  console.log({ currentUserSecInfo });
+
   const requestedSectionInfo = getSectionInfo(
     seperatedSections,
     requestedUserSection || Category.WAITLIST
   );
-  console.log({ requestedSectionInfo });
   const waitListSectioninfo = getSectionInfo(
     seperatedSections,
     Category.WAITLIST
   );
-  console.log({ waitListSectioninfo });
   const conditions = {
     [ActionConditions.USER_DOES_NOT_EXIST_SECTION]: !userExists,
     [ActionConditions.USER_EXISTS_REQUESTED_SECTION]:
@@ -187,10 +188,10 @@ export const determineActions = (
     userIndex,
   });
 
+  logger.log("info", "actions to perform", { actionsList, conditions, currentUserSecInfo, requestedSectionInfo });
   const updatedSections = actionsList
     ? executeEmbedFieldsActions({ actionsList, seperatedSections })
     : seperatedSections;
-  console.log({ updatedSections });
   return Object.keys(defaultSeperation).reduce(
     (accumulatedList: APIEmbedField[], currentSectionName) => {
       return [...accumulatedList, ...updatedSections[currentSectionName]];

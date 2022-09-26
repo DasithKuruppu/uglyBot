@@ -48,6 +48,7 @@ export const raidArtifactSelect = async (
     memberId: member.user.id,
     requestedUserSection: sectionName as Category,
     userField: creatableField,
+    factoryInits
   });
   logger.log("info", "values to update", {
     userExists,

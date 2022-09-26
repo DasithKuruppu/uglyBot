@@ -65,6 +65,7 @@ export const raidClassSelect = async (
     memberId: member.user.id,
     requestedUserSection: currentClassInfo?.type || Category.WAITLIST,
     userField: creatableField,
+    factoryInits,
   });
 
   logger.log("info", "updated fields list", {

@@ -52,6 +52,7 @@ export const waitlistButtonInteract = async (
     memberId: member.user.id,
     requestedUserSection: Category.WAITLIST,
     userField: creatableField,
+    factoryInits
   });
 
   logger.log("info", "updated fields list", {

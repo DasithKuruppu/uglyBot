@@ -129,6 +129,20 @@ export const conditionsToActionsMapper = (
       ],
     },
     {
+      conditions: [
+        ActionConditions.USER_DOES_NOT_EXIST_SECTION,
+        ActionConditions.REQUESTED_SECTION_FULL,
+      ],
+      actions: [
+        {
+          operation: Operation.INSERT,
+          sectionName: Category.WAITLIST,
+          field: userField,
+          index: waitListSectioninfo.sectionUserOccupyCount,
+        },
+      ],
+    },
+    {
       conditions: [ActionConditions.USER_EXISTS_REQUESTED_SECTION],
       actions: [
         {
@@ -153,6 +167,26 @@ export const conditionsToActionsMapper = (
           sectionName: requestedSectionInfo.sectionName,
           field: userField,
           index: requestedSectionInfo.sectionUserOccupyCount,
+        },
+      ],
+    },
+    {
+      conditions: [
+        ActionConditions.USER_EXISTS_DIFFERENT_SECTION,
+        ActionConditions.USER_EXITS_SECTION_FULL,
+      ],
+      actions: [
+        {
+          operation: Operation.DELETE,
+          sectionName: currentUserSecInfo.sectionName,
+          field: userField,
+          index: userIndex,
+        },
+        {
+          operation: Operation.INSERT,
+          sectionName: Category.WAITLIST,
+          field: userField,
+          index: waitListSectioninfo.sectionUserOccupyCount,
         },
       ],
     },

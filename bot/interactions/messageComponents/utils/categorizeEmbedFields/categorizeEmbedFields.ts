@@ -63,7 +63,7 @@ export const getSectionInfo = (
       return value !== availableSlotValue;
     }).length || 0;
   const sectionCapacity = sectionRecords.length || 0;
-  const sectionFull = sectionUserOccupyCount > sectionCapacity;
+  const sectionFull = sectionUserOccupyCount >= sectionCapacity;
   return {
     sectionUserOccupyCount,
     sectionCapacity,

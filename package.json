@@ -47,6 +47,7 @@
     "test": "vitest",
     "discord:syncCommands": "run-func build/utils/updateDiscordCommands.js updateDiscordBotCommands",
     "coverage": "vitest run --coverage",
+    "docs": "docsify serve ./docs",
     "coverage:badge": "coverage-badge-creator --config './badge-config.json'",
     "coverage:replace": "run-func build/utils/replaceReadmeContent.js coverageReplace",
     "updateReadmeCoverage": "npm run coverage:replace && npm run coverage:badge",

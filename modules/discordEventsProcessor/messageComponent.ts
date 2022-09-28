@@ -32,7 +32,7 @@ export const messageComponent = async (
     (Routes as any).webhookMessage(application_id, token),
     handlerResponse || {
       body: {
-        content: "interaction still under development...",
+        content: "Unknown Interaction",
       },
     }
   );

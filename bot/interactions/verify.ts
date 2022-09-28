@@ -2,6 +2,7 @@
 import { APIGatewayProxyEvent } from "aws-lambda";
 import winston from "winston";
 import { verifyKey } from "discord-interactions";
+import { InteractionType } from "discord.js";
 export const verifyRequest = (
   event: APIGatewayProxyEvent,
   factory: { logger: winston.Logger }
@@ -16,8 +17,6 @@ export const verifyRequest = (
   const strBody = event.isBase64Encoded
     ? Buffer.from(eventBody, "base64").toString("utf8")
     : eventBody;
-
-  // const strBody = Buffer.from(event.body || "").toString(); // should be string, for successful sign
   const { logger } = factory;
 
   const isValidRequest = verifyKey(
@@ -47,10 +46,11 @@ export const verifyRequest = (
       body: JSON.stringify({ type: 1 }),
     };
   }
+  const isMessageComponent = InteractionType.MessageComponent === body.type;
   return {
     statusCode: 200,
     body: JSON.stringify({
-      type: 5,
+      type: isMessageComponent ? 6 : 5,
     }),
   };
 };

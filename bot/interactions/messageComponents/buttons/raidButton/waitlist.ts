@@ -2,9 +2,18 @@ import { APIMessageSelectMenuInteractionData } from "discord-api-types/payloads/
 import { EmbedField, Routes } from "discord.js";
 import { NeverwinterClassesMap } from "../../../../embeds/templates/neverwinter/classesList";
 import { IfactoryInitializations } from "../../typeDefinitions/event";
-import { Category, determineActions, getEmbedFieldsSeperatedSections, getExistingMemberRecordDetails } from "../../utils/categorizeEmbedFields/categorizeEmbedFields";
-import { createFieldValue, userState, defaultJoinStatus} from "../../utils/helper/embedFieldAttribute";
-
+import {
+  Category,
+  determineActions,
+  getEmbedFieldsSeperatedSections,
+  getExistingMemberRecordDetails,
+} from "../../utils/categorizeEmbedFields/categorizeEmbedFields";
+import { convertToDiscordDate } from "../../utils/date/dateToDiscordTimeStamp";
+import {
+  createFieldValue,
+  userState,
+  defaultJoinStatus,
+} from "../../utils/helper/embedFieldAttribute";
 
 export const waitlistButtonInteract = async (
   data: APIMessageSelectMenuInteractionData,
@@ -17,7 +26,7 @@ export const waitlistButtonInteract = async (
   } = factoryInits;
   const currentFields = message.embeds[0].fields || [];
   const seperatedSections = getEmbedFieldsSeperatedSections(currentFields);
-  logger.log("info", "waitlist button", {seperatedSections})
+  logger.log("info", "waitlist button", { seperatedSections });
   const [
     {
       userArtifacts = "",
@@ -30,8 +39,9 @@ export const waitlistButtonInteract = async (
   if (!userExists) {
     return {
       body: {
-        content:
-          "Select a class / artifact before joining into wait list",
+        content: `Last activity(${convertToDiscordDate("now", {
+          relative: true,
+        })}) : \n <@${member.user.id}> needs to select class/artifacts before joining wait list`,
       },
     };
   }
@@ -52,7 +62,7 @@ export const waitlistButtonInteract = async (
     memberId: member.user.id,
     requestedUserSection: Category.WAITLIST,
     userField: creatableField,
-    factoryInits
+    factoryInits,
   });
 
   logger.log("info", "updated fields list", {
@@ -70,7 +80,9 @@ export const waitlistButtonInteract = async (
   return {
     body: {
       flags: 64,
-      content: `successfully moved to ${Category.WAITLIST}`,
+      content: `Last activity(${convertToDiscordDate("now", {
+        relative: true,
+      })}) : \n <@${member.user.id}> joined wait list!`,
     },
   };
 };

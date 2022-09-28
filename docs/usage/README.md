@@ -1,15 +1,17 @@
-# Using the bot
+# GETTING STARTED
 
+Currently the bot supports the below mentioned commands.
+## Available Commands
 
-## `/request`
+### `/request`
 
  * `/request info` - Lists information about the bot.
  * `/request role @randomRole` - Assigns the requested role to a user.
 
 
-## `/create`
+### `/create`
 
- * `/create raid` - Creates a raid according to the provided options.
+ * `/create raid` - Creates a raid embed  according to the provided options on the channel the command was used.
     * options 
         1. name (mandatory).
            *  Select a name from the list provided.
@@ -26,7 +28,11 @@
         4. description (optional).
             * More info or description of the raid.
 
+## Demos
 
+### Request Role
+
+### Create Raid
 
 
 

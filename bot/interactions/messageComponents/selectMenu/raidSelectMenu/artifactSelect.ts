@@ -8,7 +8,11 @@ import {
   getEmbedFieldsSeperatedSections,
   getExistingMemberRecordDetails,
 } from "../../utils/categorizeEmbedFields/categorizeEmbedFields";
-import { createFieldValue, userState } from "../../utils/helper/embedFieldAttribute";
+import { convertToDiscordDate } from "../../utils/date/dateToDiscordTimeStamp";
+import {
+  createFieldValue,
+  userState,
+} from "../../utils/helper/embedFieldAttribute";
 export const raidArtifactSelectId = "select_Artifact";
 export const raidArtifactSelect = async (
   data: APIMessageSelectMenuInteractionData,
@@ -29,8 +33,11 @@ export const raidArtifactSelect = async (
   if (!userExists) {
     return {
       body: {
-        content:
-          "Select a class first or make sure your name is on the embeded raid before selecting artifact",
+        content: `Last activity(${convertToDiscordDate("now", {
+          relative: true,
+        })}) : \n Warning - <@${
+          member.user.id
+        }> has to select a class before selecting an artifact !`,
       },
     };
   }
@@ -48,7 +55,7 @@ export const raidArtifactSelect = async (
     memberId: member.user.id,
     requestedUserSection: sectionName as Category,
     userField: creatableField,
-    factoryInits
+    factoryInits,
   });
   logger.log("info", "values to update", {
     userExists,
@@ -68,8 +75,11 @@ export const raidArtifactSelect = async (
   );
   return {
     body: {
-      flags: 1 << 6,
-      content: `${selectedArtifactsList.length} artifacts updated!`,
+      content: `Last activity(${convertToDiscordDate("now", {
+        relative: true,
+      })}) : \n <@${member.user.id}> updated ${
+        selectedArtifactsList.length
+      } artifacts`,
     },
   };
 };

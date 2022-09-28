@@ -1,9 +1,19 @@
 import { APIMessageSelectMenuInteractionData } from "discord-api-types/payloads/v10/interactions";
-import { EmbedField, Routes } from "discord.js";
+import { EmbedField, Routes, BitField } from "discord.js";
 import { NeverwinterClassesMap } from "../../../../embeds/templates/neverwinter/classesList";
 import { IfactoryInitializations } from "../../typeDefinitions/event";
-import { Category, determineActions, getEmbedFieldsSeperatedSections, getExistingMemberRecordDetails } from "../../utils/categorizeEmbedFields/categorizeEmbedFields";
-import { createFieldValue, userState, defaultJoinStatus} from "../../utils/helper/embedFieldAttribute";
+import {
+  Category,
+  determineActions,
+  getEmbedFieldsSeperatedSections,
+  getExistingMemberRecordDetails,
+} from "../../utils/categorizeEmbedFields/categorizeEmbedFields";
+import { convertToDiscordDate } from "../../utils/date/dateToDiscordTimeStamp";
+import {
+  createFieldValue,
+  userState,
+  defaultJoinStatus,
+} from "../../utils/helper/embedFieldAttribute";
 
 export const confirmButtonId = "confirm_btn";
 export const defaultArtifactState = ``;
@@ -19,7 +29,7 @@ export const confirmButtonInteract = async (
   } = factoryInits;
   const currentFields = message.embeds[0].fields || [];
   const seperatedSections = getEmbedFieldsSeperatedSections(currentFields);
-  logger.log("info", "confirm button", {seperatedSections})
+  logger.log("info", "confirm button", { seperatedSections });
   const [
     {
       userArtifacts = "",
@@ -32,8 +42,11 @@ export const confirmButtonInteract = async (
   if (!userExists) {
     return {
       body: {
-        content:
-          "Select a class / artifact before confirming",
+        content: `Last activity(${convertToDiscordDate("now", {
+          relative: true,
+        })}) : \n <@${
+          member.user.id
+        }> needs to select artifact or class before confirming !`,
       },
     };
   }
@@ -54,6 +67,7 @@ export const confirmButtonInteract = async (
     memberId: member.user.id,
     requestedUserSection: sectionName || Category.WAITLIST,
     userField: creatableField,
+    factoryInits,
   });
 
   logger.log("info", "updated fields list", {
@@ -70,8 +84,10 @@ export const confirmButtonInteract = async (
   logger.log("info", "successfully updated user state", { responseResult });
   return {
     body: {
-      flags: 64,
-      content: `successfully updated state as ${userState.CONFIRMED}`,
+      flags: BitField.Flags,
+      content: `Last activity(${convertToDiscordDate("now", {
+        relative: true,
+      })}): \n <@${member.user.id}> confirmed to join raid!`,
     },
   };
 };

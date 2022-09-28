@@ -1,13 +1,12 @@
-# UGLY BOT
+# ABOUT
 
-<img alt="uglyBee" src="./readmeResources/images/uglyBot.png" width="250px">
+
+<img alt="uglyBee" src="./_media/uglyBot.png" width="250px">
 
 This is a simple discord bot buit to interact with some discord users.
 
 
-## License
-
-Distributed under the MIT License. See LICENSE.txt for more information.
+[![forthebadge](https://forthebadge.com/images/badges/it-works-why.svg)](https://forthebadge.com)
 
 ## Contact
 

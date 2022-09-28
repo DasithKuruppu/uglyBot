@@ -8,6 +8,7 @@ import {
   getEmbedFieldsSeperatedSections,
   getExistingMemberRecordDetails,
 } from "../../utils/categorizeEmbedFields/categorizeEmbedFields";
+import { convertToDiscordDate } from "../../utils/date/dateToDiscordTimeStamp";
 import {
   createFieldValue,
   userState,
@@ -38,7 +39,9 @@ export const wontJoinButtonInteract = async (
   if (!userExists) {
     return {
       body: {
-        content: "You have to first join the raid to use wont join option",
+        content: `Last activity(${convertToDiscordDate("now", {
+          relative: true,
+        })}): \n <@${member.user.id}> opted to not join raid`,
       },
     };
   }
@@ -69,7 +72,9 @@ export const wontJoinButtonInteract = async (
   return {
     body: {
       flags: 64,
-      content: `Withdrawn from raid`,
+      content: `Last activity(${convertToDiscordDate("now", {
+        relative: true,
+      })}) : \n <@${member.user.id}> withdrew from raid`,
     },
   };
 };

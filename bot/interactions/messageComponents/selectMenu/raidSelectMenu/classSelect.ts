@@ -9,6 +9,7 @@ import {
   getEmbedFieldsSeperatedSections,
   getExistingMemberRecordDetails,
 } from "../../utils/categorizeEmbedFields/categorizeEmbedFields";
+import { convertToDiscordDate } from "../../utils/date/dateToDiscordTimeStamp";
 import {
   createFieldValue,
   defaultJoinStatus,
@@ -82,8 +83,9 @@ export const raidClassSelect = async (
   logger.log("info", "successfully added user to raid", { responseResult });
   return {
     body: {
-      flags: 1 << 6,
-      content: `successfully joined raid as ${requestedClass}`,
+      content: `Last activity(${convertToDiscordDate("now", {
+        relative: true,
+      })}) : \n <@${member.user.id}> joined raid as ${requestedClass} `,
     },
   };
 };

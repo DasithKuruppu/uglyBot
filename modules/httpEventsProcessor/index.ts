@@ -29,13 +29,22 @@ export const httpEventsHandler = async (
   const strBody = event.isBase64Encoded
     ? Buffer.from(eventBody, "base64").toString("utf8")
     : eventBody;
+  const parsedEventBody = JSON.parse(strBody);
   try {
-    const sqsSendResult = isValidDiscordInteraction ? await sqsClient.sendMessage({
-      QueueUrl: config.DISCORD_EVENTS_SQS,
-      MessageBody: strBody,
-    }) : false;
-  
-    logger.log("info", "Event queued", { config, strBody, sqsSendResult });
+    const sqsSendResult = isValidDiscordInteraction
+      ? await sqsClient.sendMessage({
+          QueueUrl: config.DISCORD_EVENTS_SQS,
+          MessageBody: strBody,
+          MessageGroupId: parsedEventBody.guild_id,
+        })
+      : false;
+
+    logger.log("info", "Event queued", {
+      config,
+      parsedEventBody,
+      sqsSendResult,
+      MessageGroupId: parsedEventBody?.guild_id,
+    });
     return (
       verifyResponse || {
         statusCode: 200,

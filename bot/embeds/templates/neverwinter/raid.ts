@@ -102,9 +102,14 @@ export const raidBuilder = ({
               value: `Frozen`,
               default: false,
             },
+            {
+              label: `Dragonbone Blades`,
+              value: `Blades`,
+              default: false,
+            }
           ],
           min_values: 1,
-          max_values: 7,
+          max_values: 10,
           type: 3,
         },
       ],

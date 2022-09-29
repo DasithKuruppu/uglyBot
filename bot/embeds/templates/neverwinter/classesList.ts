@@ -111,7 +111,7 @@ export const getOptionsList = () => [
     value: ClassNames.CLERIC_DPS,
     default: false,
   },
-  { label: ClassNames.BARB_DPS, value: ClassNames.BARB_DPS, default: false },
+  { label: ClassNames.BARD_DPS, value: ClassNames.BARD_DPS, default: false },
   { label: ClassNames.BARD_HEAL, value: ClassNames.BARD_HEAL, default: false },
   {
     label: ClassNames.WARLOCK_DPS,

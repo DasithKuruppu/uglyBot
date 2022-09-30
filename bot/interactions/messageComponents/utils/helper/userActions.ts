@@ -224,6 +224,57 @@ export const conditionsToActionsMapper = (
       ],
     },
     {
+      conditions: [
+        ActionConditions.USER_EXITS_SECTION_FULL,
+        ActionConditions.USER_EXISTS_DIFFERENT_SECTION,
+        ActionConditions.WAIT_LIST_FULL,
+      ],
+      actions: [
+        {
+          operation: Operation.DELETE,
+          sectionName: currentUserSecInfo.sectionName,
+          field: userField,
+          index: userIndex,
+        },
+        {
+          operation: Operation.REPLACE,
+          sectionName: CategoryToTitleSectionMapper(
+            currentUserSecInfo.sectionName
+          ),
+          field: {
+            ...seperatedSections[
+              CategoryToTitleSectionMapper(currentUserSecInfo.sectionName)
+            ][0],
+            value: `\`Capacity: ${
+              currentUserSecInfo.sectionUserOccupyCount - 1
+            } / ${currentUserSecInfo.sectionCapacity}\``,
+          },
+          index: 0,
+        },
+        {
+          operation: Operation.INSERT,
+          sectionName: requestedSectionInfo.sectionName,
+          field: userField,
+          index: requestedSectionInfo.sectionUserOccupyCount,
+        },
+        {
+          operation: Operation.REPLACE,
+          sectionName: CategoryToTitleSectionMapper(
+            requestedSectionInfo.sectionName
+          ),
+          field: {
+            ...seperatedSections[
+              CategoryToTitleSectionMapper(requestedSectionInfo.sectionName)
+            ][0],
+            value: `\`Capacity: ${
+              requestedSectionInfo.sectionUserOccupyCount + 1
+            } / ${requestedSectionInfo.sectionCapacity}\``,
+          },
+          index: 0,
+        },
+      ],
+    },
+    {
       conditions: [ActionConditions.USER_REMOVE],
       actions: [
         {

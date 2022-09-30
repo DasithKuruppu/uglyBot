@@ -27,8 +27,15 @@ export const raidArtifactSelect = async (
   const selectedArtifactsList = data.values;
 
   const seperatedSections = getEmbedFieldsSeperatedSections(currentFields);
-  const [{ userExists, userRecord, userStatus, sectionName, userIndex }] =
-    getExistingMemberRecordDetails(seperatedSections, member.user.id);
+  const [
+    {
+      userExists = false,
+      userRecord = undefined,
+      userStatus = undefined,
+      sectionName = undefined,
+      userIndex = 0,
+    } = {},
+  ] = getExistingMemberRecordDetails(seperatedSections, member.user.id);
   const existingUserName = userRecord?.name as string;
   if (!userExists) {
     return {

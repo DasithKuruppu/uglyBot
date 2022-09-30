@@ -135,10 +135,12 @@ export const determineActions = (
     requestedUserSection,
     userField,
     factoryInits,
+    userRemove = false,
   }: {
     memberId: string;
     requestedUserSection: Category;
     userField: APIEmbedField;
+    userRemove?: boolean,
     factoryInits: IfactoryInitializations;
   }
 ) => {
@@ -178,6 +180,7 @@ export const determineActions = (
     [ActionConditions.USER_EXITS_SECTION_FULL]: currentUserSecInfo.sectionFull,
     [ActionConditions.REQUESTED_SECTION_FULL]: requestedSectionInfo.sectionFull,
     [ActionConditions.WAIT_LIST_FULL]: waitListSectioninfo.sectionFull,
+    [ActionConditions.USER_REMOVE]: userRemove
   };
 
   const actionsList = conditionsToActionsMapper(conditions, {
@@ -186,6 +189,7 @@ export const determineActions = (
     waitListSectioninfo,
     userField,
     userIndex,
+    seperatedSections
   });
 
   logger.log("info", "actions to perform", { actionsList, conditions, currentUserSecInfo, requestedSectionInfo });

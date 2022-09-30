@@ -14,7 +14,7 @@ export const raidBuilder = ({
   coverImageUrl = "https://pwimages-a.akamaihd.net/arc/a7/cb/a7cbd985065cee4cfa54e285dc6a948a1564178451.jpg",
   timestamp = new Date().toISOString(),
   classOptionsList,
-  buttons = defaultRaidButtonInfo,
+  buttons = defaultRaidButtonInfo.buttons,
 }) => ({
   components: [
     {
@@ -106,7 +106,7 @@ export const raidBuilder = ({
               label: `Dragonbone Blades`,
               value: `Blades`,
               default: false,
-            }
+            },
           ],
           min_values: 1,
           max_values: 10,
@@ -119,23 +119,38 @@ export const raidBuilder = ({
       components: [
         {
           style: 3,
-          label: `Join Confirmed`,
-          custom_id: defaultRaidButtonInfo.buttons.joinConfirmButton.id,
+          label: `Confirmed`,
+          emoji: {
+            id: `751348432093970443`,
+            name: `yes`,
+            animated: true,
+          },
+          custom_id: buttons.joinConfirmButton.id,
           disabled: false,
           type: 2,
         },
         {
           style: 1,
           label: `Join Waitlist`,
-          custom_id: defaultRaidButtonInfo.buttons.joinWaitlistButton.id,
+          custom_id: buttons.joinWaitlistButton.id,
           disabled: false,
+          emoji: {
+            id: `751351078477627402`,
+            name: `pepeT`,
+            animated: false,
+          },
           type: 2,
         },
         {
           style: 4,
-          label: `Unable to Join`,
-          custom_id: defaultRaidButtonInfo.buttons.wontJoinButton.id,
+          label: `Rage quit`,
+          custom_id: buttons.wontJoinButton.id,
           disabled: false,
+          emoji: {
+            id: `513349083415576611`,
+            name: `aPES_Leave`,
+            animated: true,
+          },
           type: 2,
         },
       ],
@@ -155,7 +170,7 @@ export const raidBuilder = ({
       // },
       fields: [
         {
-          name: `=================== DPS ===================`,
+          name: `__𒆜𒆜⚔️ DPS ⚔️𒆜𒆜__`,
           value: `\u200B`,
         },
         {
@@ -189,7 +204,7 @@ export const raidBuilder = ({
           inline: true,
         },
         {
-          name: `=================== Tanks ==================`,
+          name: `__𒆜𒆜🛡️ TANKS 🛡️𒆜𒆜__`,
           value: `\u200B`,
         },
         {
@@ -203,7 +218,7 @@ export const raidBuilder = ({
           inline: true,
         },
         {
-          name: `================== Healers ==================`,
+          name: `__𒆜𒆜⚕️ HEALS ⚕️𒆜𒆜__`,
           value: `\u200B`,
         },
         {
@@ -217,21 +232,21 @@ export const raidBuilder = ({
           inline: true,
         },
         {
-          name: `================== Waiting ==================`,
+          name: `__𒆜𒆜⌛ WAITING LIST ⌛𒆜𒆜__`,
           value: `\u200B`,
         },
         {
-          name: `waiting slot`,
+          name: `WAITLIST`,
           value: `available`,
           inline: true,
         },
         {
-          name: `waiting slot`,
+          name: `WAITLIST`,
           value: `available`,
           inline: true,
         },
         {
-          name: `waiting slot`,
+          name: `WAITLIST`,
           value: `available`,
           inline: true,
         },

@@ -12,6 +12,14 @@ export enum Operation {
   REPLACE = "replace",
 }
 
+export const CategoryToTitleSectionMapper = (requestedCategory: Category) =>
+  ({
+    [Category.DPS.toString()]: Category.DPS_TITLE,
+    [Category.HEALER.toString()]: Category.HEALER_TITLE,
+    [Category.TANK.toString()]: Category.TANK_TITLE,
+    [Category.WAITLIST.toString()]: Category.WAITLIST_TITLE,
+  }[requestedCategory]);
+
 export enum ActionConditions {
   USER_EXISTS_REQUESTED_SECTION = "userExistsRequestedSection",
   USER_EXISTS_DIFFERENT_SECTION = "userExistsDifferentSection",
@@ -19,6 +27,7 @@ export enum ActionConditions {
   USER_EXITS_SECTION_FULL = "userExistSectionFull",
   REQUESTED_SECTION_FULL = "requestedSectionFull",
   WAIT_LIST_FULL = "waitListFull",
+  USER_REMOVE = "userRemove",
 }
 
 export interface IActions {
@@ -101,17 +110,21 @@ export const conditionsToActionsMapper = (
     waitListSectioninfo,
     userIndex,
     userField,
+    seperatedSections,
   }: {
     currentUserSecInfo: ISectionInfo;
     requestedSectionInfo: ISectionInfo;
     waitListSectioninfo: ISectionInfo;
     userField: APIEmbedField;
     userIndex: number;
+    seperatedSections: Record<Category, APIEmbedField[]>;
   }
 ): IActions[] => {
   const conditionsList = Object.entries(conditions)
     .filter(([name, isTrue]) => isTrue)
     .map(([name]) => name);
+
+  const isRemoveUser = conditionsList.includes(ActionConditions.USER_REMOVE);
 
   const conditionsToActions: {
     conditions: ActionConditions[];
@@ -125,6 +138,21 @@ export const conditionsToActionsMapper = (
           sectionName: requestedSectionInfo.sectionName,
           field: userField,
           index: requestedSectionInfo.sectionUserOccupyCount,
+        },
+        {
+          operation: Operation.REPLACE,
+          sectionName: CategoryToTitleSectionMapper(
+            requestedSectionInfo.sectionName
+          ),
+          field: {
+            ...seperatedSections[
+              CategoryToTitleSectionMapper(requestedSectionInfo.sectionName)
+            ][0],
+            value: `\`Capacity: ${
+              requestedSectionInfo.sectionUserOccupyCount + 1
+            } / ${requestedSectionInfo.sectionCapacity}\``,
+          },
+          index: 0,
         },
       ],
     },
@@ -140,6 +168,17 @@ export const conditionsToActionsMapper = (
           field: userField,
           index: waitListSectioninfo.sectionUserOccupyCount,
         },
+        {
+          operation: Operation.REPLACE,
+          sectionName: Category.WAITLIST_TITLE,
+          field: {
+            ...seperatedSections[Category.WAITLIST_TITLE][0],
+            value: `\`Capacity: ${
+              waitListSectioninfo.sectionUserOccupyCount + 1
+            } / ${requestedSectionInfo.sectionCapacity}\``,
+          },
+          index: 0,
+        },
       ],
     },
     {
@@ -154,6 +193,63 @@ export const conditionsToActionsMapper = (
       ],
     },
     {
+      conditions: [
+        ActionConditions.USER_EXISTS_REQUESTED_SECTION,
+        ActionConditions.USER_EXITS_SECTION_FULL,
+        ActionConditions.REQUESTED_SECTION_FULL,
+      ],
+      actions: [
+        {
+          operation: Operation.REPLACE,
+          sectionName: requestedSectionInfo.sectionName,
+          field: userField,
+          index: userIndex,
+        },
+      ],
+    },
+    {
+      conditions: [
+        ActionConditions.USER_EXISTS_REQUESTED_SECTION,
+        ActionConditions.USER_EXITS_SECTION_FULL,
+        ActionConditions.REQUESTED_SECTION_FULL,
+        ActionConditions.WAIT_LIST_FULL,
+      ],
+      actions: [
+        {
+          operation: Operation.REPLACE,
+          sectionName: requestedSectionInfo.sectionName,
+          field: userField,
+          index: userIndex,
+        },
+      ],
+    },
+    {
+      conditions: [ActionConditions.USER_REMOVE],
+      actions: [
+        {
+          operation: Operation.DELETE,
+          sectionName: currentUserSecInfo.sectionName,
+          field: userField,
+          index: userIndex,
+        },
+        {
+          operation: Operation.REPLACE,
+          sectionName: CategoryToTitleSectionMapper(
+            currentUserSecInfo.sectionName
+          ),
+          field: {
+            ...seperatedSections[
+              CategoryToTitleSectionMapper(currentUserSecInfo.sectionName)
+            ][0],
+            value: `\`Capacity: ${
+              currentUserSecInfo.sectionUserOccupyCount - 1
+            } / ${currentUserSecInfo.sectionCapacity}\``,
+          },
+          index: 0,
+        },
+      ],
+    },
+    {
       conditions: [ActionConditions.USER_EXISTS_DIFFERENT_SECTION],
       actions: [
         {
@@ -163,10 +259,40 @@ export const conditionsToActionsMapper = (
           index: userIndex,
         },
         {
+          operation: Operation.REPLACE,
+          sectionName: CategoryToTitleSectionMapper(
+            currentUserSecInfo.sectionName
+          ),
+          field: {
+            ...seperatedSections[
+              CategoryToTitleSectionMapper(currentUserSecInfo.sectionName)
+            ][0],
+            value: `\`Capacity: ${
+              currentUserSecInfo.sectionUserOccupyCount - 1
+            } / ${currentUserSecInfo.sectionCapacity}\``,
+          },
+          index: 0,
+        },
+        {
           operation: Operation.INSERT,
           sectionName: requestedSectionInfo.sectionName,
           field: userField,
           index: requestedSectionInfo.sectionUserOccupyCount,
+        },
+        {
+          operation: Operation.REPLACE,
+          sectionName: CategoryToTitleSectionMapper(
+            requestedSectionInfo.sectionName
+          ),
+          field: {
+            ...seperatedSections[
+              CategoryToTitleSectionMapper(requestedSectionInfo.sectionName)
+            ][0],
+            value: `\`Capacity: ${
+              requestedSectionInfo.sectionUserOccupyCount + 1
+            } / ${requestedSectionInfo.sectionCapacity}\``,
+          },
+          index: 0,
         },
       ],
     },
@@ -183,10 +309,40 @@ export const conditionsToActionsMapper = (
           index: userIndex,
         },
         {
+          operation: Operation.REPLACE,
+          sectionName: CategoryToTitleSectionMapper(
+            currentUserSecInfo.sectionName
+          ),
+          field: {
+            ...seperatedSections[
+              CategoryToTitleSectionMapper(currentUserSecInfo.sectionName)
+            ][0],
+            value: `\`Capacity: ${
+              currentUserSecInfo.sectionUserOccupyCount - 1
+            } / ${currentUserSecInfo.sectionCapacity}\``,
+          },
+          index: 0,
+        },
+        {
           operation: Operation.INSERT,
-          sectionName: Category.WAITLIST,
+          sectionName: requestedSectionInfo.sectionName,
           field: userField,
-          index: waitListSectioninfo.sectionUserOccupyCount,
+          index: requestedSectionInfo.sectionUserOccupyCount,
+        },
+        {
+          operation: Operation.REPLACE,
+          sectionName: CategoryToTitleSectionMapper(
+            requestedSectionInfo.sectionName
+          ),
+          field: {
+            ...seperatedSections[
+              CategoryToTitleSectionMapper(requestedSectionInfo.sectionName)
+            ][0],
+            value: `\`Capacity: ${
+              requestedSectionInfo.sectionUserOccupyCount + 1
+            } / ${requestedSectionInfo.sectionCapacity}\``,
+          },
+          index: 0,
         },
       ],
     },
@@ -203,17 +359,46 @@ export const conditionsToActionsMapper = (
           index: userIndex,
         },
         {
+          operation: Operation.REPLACE,
+          sectionName: CategoryToTitleSectionMapper(
+            currentUserSecInfo.sectionName
+          ),
+          field: {
+            ...seperatedSections[
+              CategoryToTitleSectionMapper(currentUserSecInfo.sectionName)
+            ][0],
+            value: `\`Capacity: ${
+              currentUserSecInfo.sectionUserOccupyCount - 1
+            } / ${currentUserSecInfo.sectionCapacity}\``,
+          },
+          index: 0,
+        },
+        {
           operation: Operation.INSERT,
           sectionName: Category.WAITLIST,
           field: userField,
           index: waitListSectioninfo.sectionUserOccupyCount,
+        },
+        {
+          operation: Operation.REPLACE,
+          sectionName: Category.WAITLIST_TITLE,
+          field: {
+            ...seperatedSections[Category.WAITLIST_TITLE][0],
+            value: `\`Capacity: ${
+              waitListSectioninfo.sectionUserOccupyCount + 1
+            } / ${waitListSectioninfo.sectionCapacity}\``,
+          },
+          index: 0,
         },
       ],
     },
   ];
 
   const foundResult = conditionsToActions.find(({ conditions }) => {
-    return compareConditions(conditions, conditionsList);
+    return compareConditions(
+      conditions,
+      isRemoveUser ? [ActionConditions.USER_REMOVE] : conditionsList
+    );
   });
 
   return foundResult ? foundResult.actions : [];

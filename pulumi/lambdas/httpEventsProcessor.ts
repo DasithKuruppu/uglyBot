@@ -13,6 +13,7 @@ export const httpEventsProcessor = new aws.lambda.CallbackFunction(
     // Only let this Lambda run for a minute before forcefully terminating it.
     timeout: 60,
     runtime: aws.lambda.Runtime.NodeJS16dX,
+    reservedConcurrentExecutions: 5,
     environment: {
       variables: {
         environment: "LAMBDA_DEVELOP",

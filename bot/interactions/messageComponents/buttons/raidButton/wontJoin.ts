@@ -5,6 +5,7 @@ import { IfactoryInitializations } from "../../typeDefinitions/event";
 import {
   availableSlotValue,
   Category,
+  determineActions,
   getEmbedFieldsSeperatedSections,
   getExistingMemberRecordDetails,
 } from "../../utils/categorizeEmbedFields/categorizeEmbedFields";
@@ -45,6 +46,17 @@ export const wontJoinButtonInteract = async (
       },
     };
   }
+  const updatedFieldsList = determineActions(seperatedSections, {
+    memberId: member.user.id,
+    requestedUserSection: sectionName,
+    userField:  {
+      inline: true,
+      name: sectionName,
+      value: availableSlotValue,
+    },
+    factoryInits,
+    userRemove: true,
+  });
 
   const responseResult = await rest.patch(
     (Routes as any).channelMessage(message.channel_id, message.id),
@@ -53,16 +65,7 @@ export const wontJoinButtonInteract = async (
         embeds: [
           {
             ...message.embeds[0],
-            fields: currentFields.map((field) => {
-              if ((userRecord as EmbedField).value === field.value) {
-                return {
-                  ...field,
-                  name: sectionName,
-                  value: availableSlotValue,
-                };
-              }
-              return field;
-            }),
+            fields: updatedFieldsList,
           },
         ],
       },

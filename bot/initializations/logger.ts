@@ -21,14 +21,14 @@ export const loggerInitialize = () => {
             format.prettyPrint(),
         ),
         defaultMeta: { service: config.serviceName },
-        transports: [
+        transports: process.env?.environment !== environmentTypes.LAMBDA_DEVELOP ? [
             //
             // - Write to all logs with level `info` and below to `quick-start-combined.log`.
             // - Write all logs error (and below) to `quick-start-error.log`.
             //
             new transports.File({ filename: config.errorLogFilePath, level: 'error' }),
             new transports.File({ filename: config.combinedLogFilePath }),
-        ]
+        ] : []
     });
 
     //

@@ -6,8 +6,10 @@ import { IfactoryInitializations } from "../../typeDefinitions/event";
 import {
   Category,
   determineActions,
+  fivePersonSeperation,
   getEmbedFieldsSeperatedSections,
   getExistingMemberRecordDetails,
+  tenPersonSeperation,
 } from "../../utils/categorizeEmbedFields/categorizeEmbedFields";
 import { convertToDiscordDate } from "../../utils/date/dateToDiscordTimeStamp";
 import {
@@ -15,6 +17,7 @@ import {
   defaultJoinStatus,
   userState,
 } from "../../utils/helper/embedFieldAttribute";
+import { isFivePersonDungeon } from "../../utils/helper/userActions";
 export const raidClassSelectId = "select_Class";
 export const defaultArtifactState = ``;
 
@@ -32,7 +35,9 @@ export const raidClassSelect = async (
   const currentClassInfo = new Map(
     NeverwinterClassesMap as [[string, { type: Category; emoji: string }]]
   ).get(requestedClass);
-  const seperatedSections = getEmbedFieldsSeperatedSections(currentFields);
+  const fivePerson = isFivePersonDungeon(message.embeds[0]?.title);
+  const sectionSeperation = fivePerson ? fivePersonSeperation : tenPersonSeperation;
+  const seperatedSections = getEmbedFieldsSeperatedSections(currentFields, sectionSeperation);
   const [
     {
       userArtifacts = "",
@@ -67,6 +72,7 @@ export const raidClassSelect = async (
     requestedUserSection: currentClassInfo?.type || Category.WAITLIST,
     userField: creatableField,
     factoryInits,
+    defaultSeperation: sectionSeperation
   });
 
   logger.log("info", "updated fields list", {

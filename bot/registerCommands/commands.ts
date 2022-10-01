@@ -22,29 +22,34 @@ export enum trialNamesList {
   ZCM = "Zariel's Challenge(Master)",
   COKM = "Crown of Keldegonn(Master)",
   TM = "Tiamat(Master)",
+  TOSM = "Temple of Spider(Master)"
 }
 
 export const createRaidNameChoicesList = [
   {
-    name: "Tower of the mad mage",
-    value: "Tower of the mad mage",
+    name: trialNamesList.TOMM,
+    value: trialNamesList.TOMM,
     // description: "Setup a raid for TOMM",
   },
   {
-    name: "Zariel's Challenge(Master)",
-    value: "Zariel's Challenge(Master)",
+    name: trialNamesList.ZCM,
+    value: trialNamesList.ZCM,
     // description: "Setup a raid for ZCM",
   },
   {
-    name: "Crown of Keldegonn(Master)",
-    value: "Crown of Keldegonn(Master)",
+    name: trialNamesList.COKM,
+    value: trialNamesList.COKM,
     // description: "Setup a raid for COKM",
   },
   {
-    name: "Tiamat(Master)",
-    value: "Tiamat(Master)",
+    name: trialNamesList.TM,
+    value: trialNamesList.TM,
     // description: "Setup a raid for TM",
   },
+  {
+    name: trialNamesList.TOSM,
+    value: trialNamesList.TOSM
+  }
 ];
 
 export const create_raid = {

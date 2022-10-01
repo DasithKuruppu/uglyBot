@@ -24,7 +24,7 @@ export type ISectionSeperation = Record<
   { start: number; end: number }
 >;
 
-const defaultSeperation: ISectionSeperation = {
+export const tenPersonSeperation: ISectionSeperation = {
   [Category.DPS_TITLE]: { start: 0, end: 1 },
   [Category.DPS]: { start: 1, end: 7 },
   [Category.TANK_TITLE]: { start: 7, end: 8 },
@@ -33,6 +33,17 @@ const defaultSeperation: ISectionSeperation = {
   [Category.HEALER]: { start: 11, end: 13 },
   [Category.WAITLIST_TITLE]: { start: 13, end: 14 },
   [Category.WAITLIST]: { start: 14, end: 19 },
+};
+
+export const fivePersonSeperation: ISectionSeperation = {
+  [Category.DPS_TITLE]: { start: 0, end: 1 },
+  [Category.DPS]: { start: 1, end: 4 },
+  [Category.TANK_TITLE]: { start: 4, end: 5},
+  [Category.TANK]: { start: 5, end: 6 },
+  [Category.HEALER_TITLE]: { start: 6, end: 7 },
+  [Category.HEALER]: { start: 7, end: 8 },
+  [Category.WAITLIST_TITLE]: { start: 8, end: 9 },
+  [Category.WAITLIST]: { start: 9, end: 13 },
 };
 
 interface IExistingMemberRecordDetails {
@@ -136,12 +147,14 @@ export const determineActions = (
     userField,
     factoryInits,
     userRemove = false,
+    defaultSeperation
   }: {
     memberId: string;
     requestedUserSection: Category;
     userField: APIEmbedField;
-    userRemove?: boolean,
+    defaultSeperation: ISectionSeperation,
     factoryInits: IfactoryInitializations;
+    userRemove?: boolean,
   }
 ) => {
   const { logger } = factoryInits;
@@ -189,7 +202,7 @@ export const determineActions = (
     waitListSectioninfo,
     userField,
     userIndex,
-    seperatedSections
+    seperatedSections,
   });
 
   logger.log("info", "actions to perform", { actionsList, conditions, currentUserSecInfo, requestedSectionInfo });
@@ -206,7 +219,7 @@ export const determineActions = (
 
 export const getEmbedFieldsSeperatedSections = (
   fieldsList: APIEmbedField[],
-  seperateSection: ISectionSeperation = defaultSeperation
+  seperateSection: ISectionSeperation
 ): Record<Category, APIEmbedField[]> => {
   const categoryList = [
     Category.DPS_TITLE,

@@ -1,18 +1,20 @@
 import { APIMessageSelectMenuInteractionData } from "discord-api-types/payloads/v10/interactions";
 import { EmbedField, Routes } from "discord.js";
-import { NeverwinterClassesMap } from "../../../../embeds/templates/neverwinter/classesList";
 import { IfactoryInitializations } from "../../typeDefinitions/event";
 import {
   Category,
   determineActions,
+  fivePersonSeperation,
   getEmbedFieldsSeperatedSections,
   getExistingMemberRecordDetails,
+  tenPersonSeperation,
 } from "../../utils/categorizeEmbedFields/categorizeEmbedFields";
 import { convertToDiscordDate } from "../../utils/date/dateToDiscordTimeStamp";
 import {
   createFieldValue,
   userState,
 } from "../../utils/helper/embedFieldAttribute";
+import { isFivePersonDungeon } from "../../utils/helper/userActions";
 export const raidArtifactSelectId = "select_Artifact";
 export const raidArtifactSelect = async (
   data: APIMessageSelectMenuInteractionData,
@@ -25,8 +27,9 @@ export const raidArtifactSelect = async (
   } = factoryInits;
   const currentFields = message.embeds[0].fields || [];
   const selectedArtifactsList = data.values;
-
-  const seperatedSections = getEmbedFieldsSeperatedSections(currentFields);
+  const fivePerson = isFivePersonDungeon(message.embeds[0]?.title);
+  const sectionSeperation = fivePerson ? fivePersonSeperation : tenPersonSeperation;
+  const seperatedSections = getEmbedFieldsSeperatedSections(currentFields, sectionSeperation);
   const [
     {
       userExists = false,
@@ -63,6 +66,7 @@ export const raidArtifactSelect = async (
     requestedUserSection: sectionName as Category,
     userField: creatableField,
     factoryInits,
+    defaultSeperation: sectionSeperation
   });
   logger.log("info", "values to update", {
     userExists,

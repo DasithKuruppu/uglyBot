@@ -6,8 +6,10 @@ import {
   availableSlotValue,
   Category,
   determineActions,
+  fivePersonSeperation,
   getEmbedFieldsSeperatedSections,
   getExistingMemberRecordDetails,
+  tenPersonSeperation,
 } from "../../utils/categorizeEmbedFields/categorizeEmbedFields";
 import { convertToDiscordDate } from "../../utils/date/dateToDiscordTimeStamp";
 import {
@@ -15,6 +17,7 @@ import {
   userState,
   defaultJoinStatus,
 } from "../../utils/helper/embedFieldAttribute";
+import { isFivePersonDungeon } from "../../utils/helper/userActions";
 
 export const wontJoinButtonInteract = async (
   data: APIMessageSelectMenuInteractionData,
@@ -26,7 +29,9 @@ export const wontJoinButtonInteract = async (
     interactionConfig: { application_id, token, member, message },
   } = factoryInits;
   const currentFields = message.embeds[0].fields || [];
-  const seperatedSections = getEmbedFieldsSeperatedSections(currentFields);
+  const fivePerson = isFivePersonDungeon(message.embeds[0]?.title);
+  const sectionSeperation = fivePerson ? fivePersonSeperation : tenPersonSeperation;
+  const seperatedSections = getEmbedFieldsSeperatedSections(currentFields, sectionSeperation);
   logger.log("info", "wont join button", { seperatedSections });
   const [
     {
@@ -55,6 +60,7 @@ export const wontJoinButtonInteract = async (
       value: availableSlotValue,
     },
     factoryInits,
+    defaultSeperation: sectionSeperation,
     userRemove: true,
   });
 

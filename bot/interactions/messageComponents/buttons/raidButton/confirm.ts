@@ -5,8 +5,10 @@ import { IfactoryInitializations } from "../../typeDefinitions/event";
 import {
   Category,
   determineActions,
+  fivePersonSeperation,
   getEmbedFieldsSeperatedSections,
   getExistingMemberRecordDetails,
+  tenPersonSeperation,
 } from "../../utils/categorizeEmbedFields/categorizeEmbedFields";
 import { convertToDiscordDate } from "../../utils/date/dateToDiscordTimeStamp";
 import {
@@ -14,6 +16,7 @@ import {
   userState,
   defaultJoinStatus,
 } from "../../utils/helper/embedFieldAttribute";
+import { isFivePersonDungeon } from "../../utils/helper/userActions";
 
 export const confirmButtonId = "confirm_btn";
 export const defaultArtifactState = ``;
@@ -28,7 +31,9 @@ export const confirmButtonInteract = async (
     interactionConfig: { application_id, token, member, message },
   } = factoryInits;
   const currentFields = message.embeds[0].fields || [];
-  const seperatedSections = getEmbedFieldsSeperatedSections(currentFields);
+  const fivePerson = isFivePersonDungeon(message.embeds[0]?.title);
+  const sectionSeperation = fivePerson ? fivePersonSeperation : tenPersonSeperation;
+  const seperatedSections = getEmbedFieldsSeperatedSections(currentFields, sectionSeperation);
   logger.log("info", "confirm button", { seperatedSections });
   const [
     {
@@ -68,6 +73,7 @@ export const confirmButtonInteract = async (
     requestedUserSection: sectionName || Category.WAITLIST,
     userField: creatableField,
     factoryInits,
+    defaultSeperation: sectionSeperation
   });
 
   logger.log("info", "updated fields list", {

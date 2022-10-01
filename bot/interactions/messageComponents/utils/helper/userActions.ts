@@ -1,4 +1,5 @@
 import { APIEmbedField } from "discord-api-types/payloads/v10/channel";
+import { trialNamesList } from "../../../../registerCommands/commands";
 import {
   availableSlotValue,
   Category,
@@ -41,6 +42,11 @@ export interface IEmbedFieldActionsArgs {
   actionsList: IActions[];
   seperatedSections: Record<Category, APIEmbedField[]>;
 }
+
+export const isFivePersonDungeon = (title = "") => {
+  const [name] = title.split("-");
+  return [trialNamesList.TOSM as string].includes(name);
+};
 
 export const executeEmbedFieldsActions = ({
   actionsList,

@@ -6,6 +6,35 @@ export const defaultRaidButtonInfo = {
     wontJoinButton: { id: `btn_wont_join` },
   },
 };
+
+export const generateAvailableFields = ({
+  DPS = 6,
+  TANKS = 2,
+  HEALS = 2,
+  WAITLIST = 3,
+}) => ({
+  DPS: Array(DPS).fill({
+    name: `DPS`,
+    value: `available`,
+    inline: true,
+  }),
+  TANKS: Array(TANKS).fill({
+    name: `Tank`,
+    value: `available`,
+    inline: true,
+  }),
+  HEALS: Array(HEALS).fill({
+    name: `Heal`,
+    value: `available`,
+    inline: true,
+  }),
+  WAITLIST: Array(WAITLIST).fill({
+    name: `WAITLIST`,
+    value: `available`,
+    inline: true,
+  }),
+});
+
 export const raidBuilder = ({
   title,
   description,
@@ -15,6 +44,12 @@ export const raidBuilder = ({
   timestamp = new Date().toISOString(),
   classOptionsList,
   buttons = defaultRaidButtonInfo.buttons,
+  template = {
+    DPS: 6,
+    TANKS: 2,
+    HEALS: 2,
+    WAITLIST: 3,
+  },
 }) => ({
   components: [
     {
@@ -160,7 +195,7 @@ export const raidBuilder = ({
   embeds: [
     {
       type: "rich",
-      title: `${title} ${type}`,
+      title: `${title}-${type}`,
       description: `${description}`,
       color: 0xffa200,
       // image: {
@@ -173,83 +208,22 @@ export const raidBuilder = ({
           name: `__𒆜𒆜⚔️ DPS ⚔️𒆜𒆜__`,
           value: `\u200B`,
         },
-        {
-          name: `DPS`,
-          value: `available`,
-          inline: true,
-        },
-        {
-          name: `DPS`,
-          value: `available`,
-          inline: true,
-        },
-        {
-          name: `DPS`,
-          value: `available`,
-          inline: true,
-        },
-        {
-          name: `DPS`,
-          value: `available`,
-          inline: true,
-        },
-        {
-          name: `DPS`,
-          value: `available`,
-          inline: true,
-        },
-        {
-          name: `DPS`,
-          value: `available`,
-          inline: true,
-        },
+        ...generateAvailableFields(template).DPS,
         {
           name: `__𒆜𒆜🛡️ TANKS 🛡️𒆜𒆜__`,
           value: `\u200B`,
         },
-        {
-          name: `Tank`,
-          value: `available`,
-          inline: true,
-        },
-        {
-          name: `Tank`,
-          value: `available`,
-          inline: true,
-        },
+        ...generateAvailableFields(template).TANKS,
         {
           name: `__𒆜𒆜⚕️ HEALS ⚕️𒆜𒆜__`,
           value: `\u200B`,
         },
-        {
-          name: `Heal`,
-          value: `available`,
-          inline: true,
-        },
-        {
-          name: `Heal`,
-          value: `available`,
-          inline: true,
-        },
+        ...generateAvailableFields(template).HEALS,
         {
           name: `__𒆜𒆜⌛ WAITING LIST ⌛𒆜𒆜__`,
           value: `\u200B`,
         },
-        {
-          name: `WAITLIST`,
-          value: `available`,
-          inline: true,
-        },
-        {
-          name: `WAITLIST`,
-          value: `available`,
-          inline: true,
-        },
-        {
-          name: `WAITLIST`,
-          value: `available`,
-          inline: true,
-        },
+        ...generateAvailableFields(template).WAITLIST,
       ],
       timestamp: `${timestamp}`,
       thumbnail: {

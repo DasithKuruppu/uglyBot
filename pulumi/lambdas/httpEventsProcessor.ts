@@ -11,9 +11,8 @@ export const httpEventsProcessor = new aws.lambda.CallbackFunction(
       }),
     // callback: uglyBot.main,
     // Only let this Lambda run for a minute before forcefully terminating it.
-    timeout: 60,
+    timeout: 10,
     runtime: aws.lambda.Runtime.NodeJS16dX,
-    reservedConcurrentExecutions: 5,
     environment: {
       variables: {
         environment: "LAMBDA_DEVELOP",

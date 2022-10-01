@@ -4,9 +4,8 @@ export const discordEventsLambdaCallback = new aws.lambda.CallbackFunction(
   "discordEventsProcess",
   {
     callbackFactory: discordEventsInteractionFactoryHandler,
-    timeout: 60,
+    timeout: 10,
     runtime: aws.lambda.Runtime.NodeJS16dX,
-    reservedConcurrentExecutions: 5,
     environment: {
       variables: {
         environment: "LAMBDA_DEVELOP",

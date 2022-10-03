@@ -17,6 +17,7 @@ import {
   defaultJoinStatus,
   userState,
 } from "../../utils/helper/embedFieldAttribute";
+import { createRaidContent } from "../../utils/helper/raid";
 import { isFivePersonDungeon } from "../../utils/helper/userActions";
 export const raidClassSelectId = "select_Class";
 export const defaultArtifactState = ``;
@@ -78,20 +79,12 @@ export const raidClassSelect = async (
   logger.log("info", "updated fields list", {
     updatedFieldsList,
   });
-  const responseResult = await rest.patch(
-    (Routes as any).channelMessage(message.channel_id, message.id),
-    {
-      body: {
-        embeds: [{ ...message.embeds[0], fields: updatedFieldsList }],
-      },
-    }
-  );
-  logger.log("info", "successfully added user to raid", { responseResult });
   return {
     body: {
-      content: `Last activity(${convertToDiscordDate("now", {
-        relative: true,
-      })}) : \n <@${member.user.id}> joined raid as ${requestedClass} `,
+      embeds: [{ ...message.embeds[0], fields: updatedFieldsList }],
+      content: createRaidContent(message.content, {
+        userActionText: `<@${member.user.id}> joined raid as ${requestedClass} `,
+      }),
     },
   };
 };

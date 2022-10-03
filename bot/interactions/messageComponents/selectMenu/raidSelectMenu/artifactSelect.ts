@@ -14,6 +14,7 @@ import {
   createFieldValue,
   userState,
 } from "../../utils/helper/embedFieldAttribute";
+import { createRaidContent } from "../../utils/helper/raid";
 import { isFivePersonDungeon } from "../../utils/helper/userActions";
 export const raidArtifactSelectId = "select_Artifact";
 export const raidArtifactSelect = async (
@@ -28,8 +29,13 @@ export const raidArtifactSelect = async (
   const currentFields = message.embeds[0].fields || [];
   const selectedArtifactsList = data.values;
   const fivePerson = isFivePersonDungeon(message.embeds[0]?.title);
-  const sectionSeperation = fivePerson ? fivePersonSeperation : tenPersonSeperation;
-  const seperatedSections = getEmbedFieldsSeperatedSections(currentFields, sectionSeperation);
+  const sectionSeperation = fivePerson
+    ? fivePersonSeperation
+    : tenPersonSeperation;
+  const seperatedSections = getEmbedFieldsSeperatedSections(
+    currentFields,
+    sectionSeperation
+  );
   const [
     {
       userExists = false,
@@ -43,11 +49,9 @@ export const raidArtifactSelect = async (
   if (!userExists) {
     return {
       body: {
-        content: `Last activity(${convertToDiscordDate("now", {
-          relative: true,
-        })}) : \n Warning - <@${
-          member.user.id
-        }> has to select a class before selecting an artifact !`,
+        content: createRaidContent(message.content, {
+          userActionText: `Warning - <@${member.user.id}> has to select a class before selecting an artifact !`,
+        }),
       },
     };
   }
@@ -66,7 +70,7 @@ export const raidArtifactSelect = async (
     requestedUserSection: sectionName as Category,
     userField: creatableField,
     factoryInits,
-    defaultSeperation: sectionSeperation
+    defaultSeperation: sectionSeperation,
   });
   logger.log("info", "values to update", {
     userExists,
@@ -76,21 +80,12 @@ export const raidArtifactSelect = async (
     updatedFieldsList,
   });
 
-  const responseResult = await rest.patch(
-    (Routes as any).channelMessage(message.channel_id, message.id),
-    {
-      body: {
-        embeds: [{ ...message.embeds[0], fields: updatedFieldsList }],
-      },
-    }
-  );
   return {
     body: {
-      content: `Last activity(${convertToDiscordDate("now", {
-        relative: true,
-      })}) : \n <@${member.user.id}> updated ${
-        selectedArtifactsList.length
-      } artifacts`,
+      embeds: [{ ...message.embeds[0], fields: updatedFieldsList }],
+      content: createRaidContent(message.content, {
+        userActionText: `<@${member.user.id}> updated ${selectedArtifactsList.length} artifacts`,
+      }),
     },
   };
 };

@@ -18,6 +18,7 @@ import {
   defaultJoinStatus,
 } from "../../utils/helper/embedFieldAttribute";
 import { isFivePersonDungeon } from "../../utils/helper/userActions";
+import { createRaidContent } from "../../utils/helper/raid";
 
 export const wontJoinButtonInteract = async (
   data: APIMessageSelectMenuInteractionData,
@@ -30,8 +31,13 @@ export const wontJoinButtonInteract = async (
   } = factoryInits;
   const currentFields = message.embeds[0].fields || [];
   const fivePerson = isFivePersonDungeon(message.embeds[0]?.title);
-  const sectionSeperation = fivePerson ? fivePersonSeperation : tenPersonSeperation;
-  const seperatedSections = getEmbedFieldsSeperatedSections(currentFields, sectionSeperation);
+  const sectionSeperation = fivePerson
+    ? fivePersonSeperation
+    : tenPersonSeperation;
+  const seperatedSections = getEmbedFieldsSeperatedSections(
+    currentFields,
+    sectionSeperation
+  );
   logger.log("info", "wont join button", { seperatedSections });
   const [
     {
@@ -45,16 +51,16 @@ export const wontJoinButtonInteract = async (
   if (!userExists) {
     return {
       body: {
-        content: `Last activity(${convertToDiscordDate("now", {
-          relative: true,
-        })}): \n <@${member.user.id}> opted to not join raid`,
+        content: createRaidContent(message.content, {
+          userActionText: ` <@${member.user.id}> rage quit the raid !`,
+        }),
       },
     };
   }
   const updatedFieldsList = determineActions(seperatedSections, {
     memberId: member.user.id,
     requestedUserSection: sectionName,
-    userField:  {
+    userField: {
       inline: true,
       name: sectionName,
       value: availableSlotValue,
@@ -64,26 +70,17 @@ export const wontJoinButtonInteract = async (
     userRemove: true,
   });
 
-  const responseResult = await rest.patch(
-    (Routes as any).channelMessage(message.channel_id, message.id),
-    {
-      body: {
-        embeds: [
-          {
-            ...message.embeds[0],
-            fields: updatedFieldsList,
-          },
-        ],
-      },
-    }
-  );
-  logger.log("info", "successfully withdrawn user", { responseResult });
   return {
     body: {
-      flags: 64,
-      content: `Last activity(${convertToDiscordDate("now", {
-        relative: true,
-      })}) : \n <@${member.user.id}> withdrew from raid`,
+      content: createRaidContent(message.content, {
+        userActionText: `<@${member.user.id}> rage quit the raid !`,
+      }),
+      embeds: [
+        {
+          ...message.embeds[0],
+          fields: updatedFieldsList,
+        },
+      ],
     },
   };
 };

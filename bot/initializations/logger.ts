@@ -38,8 +38,8 @@ export const loggerInitialize = () => {
         logger.add(new transports.Console({
             format: format.combine(
                 format.splat(),
-                format.colorize(),
                 format.simple(),
+                format.json()
             )
         }));
     }

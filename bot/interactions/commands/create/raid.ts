@@ -1,7 +1,5 @@
 import {
   APIChatInputApplicationCommandInteractionData,
-  APIApplicationCommandInteractionDataRoleOption,
-  ApplicationCommandOptionType,
   REST,
   Routes,
   APIInteractionGuildMember,
@@ -64,7 +62,7 @@ export const createRaidCommand = async (
     title,
     description,
     coverImageUrl: nameToCoverUrl[title],
-    type,
+    type: type || "Farm Run",
     author:
       (interactionConfig.member as any)?.nick ||
       interactionConfig.member.user.username,
@@ -73,22 +71,10 @@ export const createRaidCommand = async (
       template: { DPS: 3, HEALS: 1, TANKS: 1, WAITLIST: 3 },
     }),
   });
-
-  const responseResult = await rest.post(
-    (Routes as any).channelMessages(interactionConfig.channel_id),
-    {
-      body: {
-        ...raidEmbed,
-        allowed_mentions: {
-          parse: [],
-        },
-      },
-    }
-  );
-  logger.log("info", "created post with embed", responseResult);
   return {
     body: {
       content: `Event/Raid will start at ${requestedDate}`,
+      ...raidEmbed,
       allowed_mentions: {
         parse: [],
       },

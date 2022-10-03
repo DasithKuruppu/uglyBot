@@ -16,6 +16,7 @@ import {
   userState,
   defaultJoinStatus,
 } from "../../utils/helper/embedFieldAttribute";
+import { createRaidContent } from "../../utils/helper/raid";
 import { isFivePersonDungeon } from "../../utils/helper/userActions";
 
 export const waitlistButtonInteract = async (
@@ -29,8 +30,13 @@ export const waitlistButtonInteract = async (
   } = factoryInits;
   const currentFields = message.embeds[0].fields || [];
   const fivePerson = isFivePersonDungeon(message.embeds[0]?.title);
-  const sectionSeperation = fivePerson ? fivePersonSeperation : tenPersonSeperation;
-  const seperatedSections = getEmbedFieldsSeperatedSections(currentFields, sectionSeperation);
+  const sectionSeperation = fivePerson
+    ? fivePersonSeperation
+    : tenPersonSeperation;
+  const seperatedSections = getEmbedFieldsSeperatedSections(
+    currentFields,
+    sectionSeperation
+  );
   logger.log("info", "waitlist button", { seperatedSections });
   const [
     {
@@ -44,9 +50,9 @@ export const waitlistButtonInteract = async (
   if (!userExists) {
     return {
       body: {
-        content: `Last activity(${convertToDiscordDate("now", {
-          relative: true,
-        })}) : \n <@${member.user.id}> needs to select class/artifacts before joining wait list`,
+        content: createRaidContent(message.content, {
+          userActionText: `<@${member.user.id}> needs to select class/artifacts before joining wait list`,
+        })
       },
     };
   }
@@ -68,27 +74,18 @@ export const waitlistButtonInteract = async (
     requestedUserSection: Category.WAITLIST,
     userField: creatableField,
     factoryInits,
-    defaultSeperation: sectionSeperation
+    defaultSeperation: sectionSeperation,
   });
 
   logger.log("info", "updated fields list", {
     updatedFieldsList,
   });
-  const responseResult = await rest.patch(
-    (Routes as any).channelMessage(message.channel_id, message.id),
-    {
-      body: {
-        embeds: [{ ...message.embeds[0], fields: updatedFieldsList }],
-      },
-    }
-  );
-  logger.log("info", "successfully updated user category", { responseResult });
   return {
     body: {
-      flags: 64,
-      content: `Last activity(${convertToDiscordDate("now", {
-        relative: true,
-      })}) : \n <@${member.user.id}> joined wait list!`,
+      embeds: [{ ...message.embeds[0], fields: updatedFieldsList }],
+      content: createRaidContent(message.content, {
+        userActionText: `<@${member.user.id}> joined wait list!`,
+      }),
     },
   };
 };

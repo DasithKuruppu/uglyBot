@@ -83,17 +83,17 @@ export const create_raid = {
           choices: [
             {
               name: "Training run",
-              value: "(Training run)",
+              value: "Training run",
               // description: "Set type of raid to a training run",
             },
             {
               name: "Farm run",
-              value: "(Farm run)",
+              value: "Farm run",
               // description: "Set type of raid to a farm run",
             },
             {
               name: "Wipe run",
-              value: "(Wipe run)",
+              value: "Wipe run",
               // description: "Set type of raid to a wipe with a mix of experienced and inexperienced players",
             },
           ],

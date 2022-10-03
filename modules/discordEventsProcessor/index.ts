@@ -7,7 +7,7 @@ import {
 import { getEnvironmentVariables } from "../../bot/configs";
 import { applicationCommands } from "./applicationCommand";
 import { messageComponent } from "./messageComponent";
-
+import warmer from "lambda-warmer";
 export const discordInteractionEventHandler = {
   [InteractionType.ApplicationCommand]: applicationCommands,
   [InteractionType.MessageComponent]: messageComponent,
@@ -15,12 +15,22 @@ export const discordInteractionEventHandler = {
 
 export const supportedInteractionTypes = Object.keys(discordInteractionEventHandler);
 
+export const lambdaWarmerWrapper = async (event: any) => {
+ 
+};
 export const discordEventsInteractionFactoryHandler = () => {
   const { getLogger } = startBot();
   const logger = getLogger();
   const { discordBotToken } = getEnvironmentVariables();
   const rest = new REST({ version: "10" }).setToken(discordBotToken);
-  return (event) => discordEventsProcessingFunction(event, { logger, rest });
+  return async(event) => {
+    const isWarmerEvent = await warmer(event);
+    logger.log("info", "is lambda warmer invocation", {isWarmerEvent});
+    if(isWarmerEvent){
+      return "warmed"
+    }
+    return discordEventsProcessingFunction(event, { logger, rest })
+  };
 };
 
 export const discordEventsProcessingFunction = async (

@@ -50,7 +50,12 @@ export const verifyRequest = (
   return {
     statusCode: 200,
     body: JSON.stringify({
-      type: isMessageComponent ? 6 : 5,
+      type: isMessageComponent ? 6 : 4,
+      ...(!isMessageComponent && {
+        data: {
+          content: `Please wait while I make some 🥞 pancakes...`,
+        },
+      }),
     }),
   };
 };

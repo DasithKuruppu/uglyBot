@@ -7,7 +7,7 @@ import { Logger } from "winston";
 import { startBot } from "../../bot";
 import { verifyRequest } from "../../bot/interactions/verify";
 import { SQS } from "@aws-sdk/client-sqs";
-
+import warmer from "lambda-warmer";
 /**
  * A simple function that returns the request.
  *
@@ -74,6 +74,16 @@ export const httpEventsFactoryHandler = (config: any) => {
   const logger = getLogger();
   const sqsClient = new SQS({});
 
-  return (event, context) =>
-    httpEventsHandler(event, context, { logger, config, sqsClient }) as any;
+  return async (event, context) => {
+    const isWarmerEvent = await warmer(event);
+    logger.log("info", "is lambda warmer invocation", { isWarmerEvent });
+    if (isWarmerEvent) {
+      return "warmed";
+    }
+    return httpEventsHandler(event, context, {
+      logger,
+      config,
+      sqsClient,
+    }) as any;
+  };
 };

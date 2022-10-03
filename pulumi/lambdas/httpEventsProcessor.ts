@@ -1,4 +1,5 @@
 import * as aws from "@pulumi/aws";
+import * as pulumi from "@pulumi/pulumi";
 import { httpEventsFactoryHandler } from "../../modules/httpEventsProcessor";
 import { discordEventsQueue } from "../sqs/discordEvents";
 
@@ -21,5 +22,37 @@ export const httpEventsProcessor = new aws.lambda.CallbackFunction(
     codePathOptions: {
       extraIncludePaths: ["../environmentConfigs", "./logs"],
     },
+  }
+);
+
+const lambdaWarmRuleHTTP = new aws.cloudwatch.EventRule(
+  "warmUpLambdaRuleHTTP",
+  {
+    scheduleExpression: "rate(5 minutes)",
+    isEnabled: true,
+  }
+);
+
+export const eventBridgePermission = new aws.lambda.Permission(
+  "eventBridgeLambdaInvoke",
+  {
+    action: "lambda:InvokeFunction",
+    function: httpEventsProcessor,
+    principal: "events.amazonaws.com", //aws.iam.Principals.EventsPrincipal.toString(),
+    sourceArn: lambdaWarmRuleHTTP.arn,
+  }
+);
+
+
+
+export const warmHTTPEventsSchedule = new aws.cloudwatch.EventTarget(
+  "warmHTTPEventsProcessor",
+  {
+    arn: httpEventsProcessor.arn,
+    rule: lambdaWarmRuleHTTP.name,
+    input: JSON.stringify({
+      warmer: true,
+      concurrency: 2,
+    }),
   }
 );

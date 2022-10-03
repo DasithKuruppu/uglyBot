@@ -4,5 +4,5 @@
 ![](_media/uglyBot.png)
 
 [How to use](/usage/)
-[Request UglyBot](https://docs.google.com/forms/d/e/1FAIpQLSef4mEHtvInhNDwgCBlFV7zgYQrUjp4-neh3i0Y5aomg2CInw/viewform)
+[Install UglyBot](https://discord.com/api/oauth2/authorize?client_id=1008359396864184460&permissions=8&scope=bot)
 [Discussions](https://github.com/DasithKuruppu/uglyBot/discussions)

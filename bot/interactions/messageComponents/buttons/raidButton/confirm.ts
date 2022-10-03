@@ -16,6 +16,7 @@ import {
   userState,
   defaultJoinStatus,
 } from "../../utils/helper/embedFieldAttribute";
+import { createRaidContent } from "../../utils/helper/raid";
 import { isFivePersonDungeon } from "../../utils/helper/userActions";
 
 export const confirmButtonId = "confirm_btn";
@@ -32,8 +33,13 @@ export const confirmButtonInteract = async (
   } = factoryInits;
   const currentFields = message.embeds[0].fields || [];
   const fivePerson = isFivePersonDungeon(message.embeds[0]?.title);
-  const sectionSeperation = fivePerson ? fivePersonSeperation : tenPersonSeperation;
-  const seperatedSections = getEmbedFieldsSeperatedSections(currentFields, sectionSeperation);
+  const sectionSeperation = fivePerson
+    ? fivePersonSeperation
+    : tenPersonSeperation;
+  const seperatedSections = getEmbedFieldsSeperatedSections(
+    currentFields,
+    sectionSeperation
+  );
   logger.log("info", "confirm button", { seperatedSections });
   const [
     {
@@ -47,11 +53,9 @@ export const confirmButtonInteract = async (
   if (!userExists) {
     return {
       body: {
-        content: `Last activity(${convertToDiscordDate("now", {
-          relative: true,
-        })}) : \n <@${
-          member.user.id
-        }> needs to select artifact or class before confirming !`,
+        content: createRaidContent(message.content, {
+          userActionText: `<@${member.user.id}> needs to select artifact or class before confirming!`,
+        }),
       },
     };
   }
@@ -73,27 +77,18 @@ export const confirmButtonInteract = async (
     requestedUserSection: sectionName || Category.WAITLIST,
     userField: creatableField,
     factoryInits,
-    defaultSeperation: sectionSeperation
+    defaultSeperation: sectionSeperation,
   });
 
   logger.log("info", "updated fields list", {
     updatedFieldsList,
   });
-  const responseResult = await rest.patch(
-    (Routes as any).channelMessage(message.channel_id, message.id),
-    {
-      body: {
-        embeds: [{ ...message.embeds[0], fields: updatedFieldsList }],
-      },
-    }
-  );
-  logger.log("info", "successfully updated user state", { responseResult });
   return {
     body: {
-      flags: BitField.Flags,
-      content: `Last activity(${convertToDiscordDate("now", {
-        relative: true,
-      })}): \n <@${member.user.id}> confirmed to join raid!`,
+      embeds: [{ ...message.embeds[0], fields: updatedFieldsList }],
+      content: createRaidContent(message.content, {
+        userActionText: `<@${member.user.id}> confirmed to join raid!`,
+      }),
     },
   };
 };

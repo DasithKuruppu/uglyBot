@@ -21,7 +21,6 @@ describe("User Actions - executeEmbedFieldActions", () => {
 
   test("Should provide a proper discord long timestamp", () => {
     const dateResult = convertToDiscordDate('2022-09-25T11:31:00+05:30');
-    console.log(new Date(Number(dateResult) * 1000).toLocaleTimeString())
     expect(dateResult).toBe(`<t:1664085660:F>`);
   });
 });

@@ -11,7 +11,7 @@ export const syncDiscordCommands = async (
   const registerableCommandsList = [info, request_role, create_raid];
   try {
     const response = await rest.put(
-      Routes.applicationGuildCommands(discordApplicationID, discordServerId),
+      Routes.applicationCommands(discordApplicationID),
       {
         body: registerableCommandsList,
       }

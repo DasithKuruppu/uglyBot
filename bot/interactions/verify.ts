@@ -25,7 +25,7 @@ export const verifyRequest = (
     timestamp,
     DISCORD_PUBLIC_KEY
   );
-  logger.log("info", "Verifiy info", {
+  logger.log("info", "Verify info", {
     timestamp,
     signature,
     strBody,

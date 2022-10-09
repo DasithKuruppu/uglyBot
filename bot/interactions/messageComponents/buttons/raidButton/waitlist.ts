@@ -1,14 +1,13 @@
 import { APIMessageSelectMenuInteractionData } from "discord-api-types/payloads/v10/interactions";
 import { EmbedField, Routes } from "discord.js";
 import { NeverwinterClassesMap } from "../../../../embeds/templates/neverwinter/classesList";
+import { raidConfigs } from "../../../../embeds/templates/neverwinter/config";
 import { IfactoryInitializations } from "../../typeDefinitions/event";
 import {
   Category,
   determineActions,
-  fivePersonSeperation,
   getEmbedFieldsSeperatedSections,
   getExistingMemberRecordDetails,
-  tenPersonSeperation,
 } from "../../utils/categorizeEmbedFields/categorizeEmbedFields";
 import { convertToDiscordDate } from "../../utils/date/dateToDiscordTimeStamp";
 import {
@@ -16,7 +15,7 @@ import {
   userState,
   defaultJoinStatus,
 } from "../../utils/helper/embedFieldAttribute";
-import { createRaidContent } from "../../utils/helper/raid";
+import { createRaidContent, determineRaidTemplateType } from "../../utils/helper/raid";
 import { isFivePersonDungeon } from "../../utils/helper/userActions";
 
 export const waitlistButtonInteract = async (
@@ -29,10 +28,10 @@ export const waitlistButtonInteract = async (
     interactionConfig: { application_id, token, member, message },
   } = factoryInits;
   const currentFields = message.embeds[0].fields || [];
-  const fivePerson = isFivePersonDungeon(message.embeds[0]?.title);
-  const sectionSeperation = fivePerson
-    ? fivePersonSeperation
-    : tenPersonSeperation;
+  const { templateId } = determineRaidTemplateType({
+    embedFields: currentFields || [],
+  });
+  const sectionSeperation = raidConfigs[templateId];
   const seperatedSections = getEmbedFieldsSeperatedSections(
     currentFields,
     sectionSeperation

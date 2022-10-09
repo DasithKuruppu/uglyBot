@@ -1,15 +1,17 @@
 import * as aws from "@pulumi/aws";
+import * as pulumi from "@pulumi/pulumi";
+import { getEnvironmentFromStack } from '../utils/stackEnvMap';
 import { discordEventsInteractionFactoryHandler } from "../../modules/discordEventsProcessor";
-
+const stack = pulumi.getStack();
 export const discordEventsLambdaCallback = new aws.lambda.CallbackFunction(
-  "discordEventsProcess",
+  `${stack}_discordEventsProcess`,
   {
     callbackFactory: discordEventsInteractionFactoryHandler,
     timeout: 10,
     runtime: aws.lambda.Runtime.NodeJS16dX,
     environment: {
       variables: {
-        environment: "LAMBDA_DEVELOP",
+        environment: getEnvironmentFromStack(stack),
       },
     },
     codePathOptions: {
@@ -19,13 +21,13 @@ export const discordEventsLambdaCallback = new aws.lambda.CallbackFunction(
 );
 
 
-export const lambdaWarmRule = new aws.cloudwatch.EventRule("warmUpLambdaRule", {
+export const lambdaWarmRule = new aws.cloudwatch.EventRule(`${stack}_warmUpLambdaRule`, {
   scheduleExpression: "rate(5 minutes)",
   isEnabled: true,
 });
 
 export const eventBridgePermission = new aws.lambda.Permission(
-  "eventBridgeLambdaInvokeDiscordEvent",
+  `${stack}_eventBridgeLambdaInvokeDiscordEvent`,
   {
     action: "lambda:InvokeFunction",
     function: discordEventsLambdaCallback.name,
@@ -34,7 +36,7 @@ export const eventBridgePermission = new aws.lambda.Permission(
   }
 );
 export const warmDiscordEventsSchedule = new aws.cloudwatch.EventTarget(
-  "warmDiscordEventsProcessor",
+  `${stack}_warmDiscordEventsProcessor`,
   {
     arn: discordEventsLambdaCallback.arn,
     rule: lambdaWarmRule.name,

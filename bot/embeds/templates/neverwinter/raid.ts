@@ -1,3 +1,5 @@
+import { Category } from "../../../interactions/messageComponents/utils/categorizeEmbedFields/categorizeEmbedFields";
+
 // inside a command, event listener, etc.
 export const defaultRaidButtonInfo = {
   buttons: {
@@ -34,6 +36,13 @@ export const generateAvailableFields = ({
     inline: true,
   }),
 });
+
+export const sectionTitleNames = {
+  [Category.DPS_TITLE]: `__𒆜𒆜⚔️ DPS ⚔️𒆜𒆜__`,
+  [Category.TANK_TITLE]: `__𒆜𒆜🛡️ TANKS 🛡️𒆜𒆜__`,
+  [Category.HEALER_TITLE]: `__𒆜𒆜⚕️ HEALS ⚕️𒆜𒆜__`,
+  [Category.WAITLIST_TITLE]: `__𒆜𒆜⌛ WAITING LIST ⌛𒆜𒆜__`
+}
 
 export const raidBuilder = ({
   title,

@@ -42,6 +42,8 @@ export const createRaidCommand = async (
   const description =
     raidOptions.find(({ name }) => name === "description")?.value || "";
   const dateTime = raidOptions.find(({ name }) => name === "date")?.value || "";
+  const partyComposition =
+    raidOptions.find(({ name }) => name === "party")?.value || "Standard";
 
   const nameToCoverUrl = {
     [trialNamesList.TOMM]:
@@ -58,6 +60,13 @@ export const createRaidCommand = async (
 
   const isFivePerson = isFivePersonDungeon(title);
   const requestedDate = convertToDiscordDate(dateTime);
+  const partyOptionsToMap = {
+    Standard: { DPS: 6, HEALS: 2, TANKS: 2, WAITLIST: 3 },
+    Solo_tank: { DPS: 7, HEALS: 2, TANKS: 1, WAITLIST: 3 },
+    Solo_heal: { DPS: 7, HEALS: 1, TANKS: 2, WAITLIST: 3 },
+    Solo_tank_heal: { DPS: 8, HEALS: 1, TANKS: 1, WAITLIST: 3 },
+  };
+
   const raidEmbed = raidBuilder({
     title,
     description,
@@ -67,6 +76,7 @@ export const createRaidCommand = async (
       (interactionConfig.member as any)?.nick ||
       interactionConfig.member.user.username,
     classOptionsList: classOptionsList,
+    template: partyOptionsToMap[partyComposition],
     ...(isFivePerson && {
       template: { DPS: 3, HEALS: 1, TANKS: 1, WAITLIST: 3 },
     }),

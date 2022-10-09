@@ -100,6 +100,30 @@ export const create_raid = {
         },
         {
           type: 3,
+          name: "party",
+          description: "Team composition additional configurations",
+          required: false,
+          choices: [
+            {
+              name: "Standard",
+              value: "Standard",
+            },
+            {
+              name: "Solo tank",
+              value: "Solo_tank",
+            },
+            {
+              name: "Solo heal",
+              value: "Solo_heal",
+            },
+            {
+              name: "Solo tank & heal",
+              value: "Solo_tank_heal",
+            },
+          ],
+        },
+        {
+          type: 3,
           name: "description",
           description: "Set a description",
           required: false,

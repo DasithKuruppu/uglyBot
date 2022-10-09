@@ -35,7 +35,7 @@ export const httpEventsHandler = async (
       ? await sqsClient.sendMessage({
           QueueUrl: config.DISCORD_EVENTS_SQS,
           MessageBody: strBody,
-          MessageGroupId: parsedEventBody.guild_id,
+          MessageGroupId: parsedEventBody?.guild_id || 'other',
         })
       : false;
 

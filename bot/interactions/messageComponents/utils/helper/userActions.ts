@@ -21,6 +21,14 @@ export const CategoryToTitleSectionMapper = (requestedCategory: Category) =>
     [Category.WAITLIST.toString()]: Category.WAITLIST_TITLE,
   }[requestedCategory]);
 
+export const TitleToCategorySectionMapper = (requestedCategory: Category) =>
+  ({
+    [Category.DPS_TITLE.toString()]: Category.DPS,
+    [Category.HEALER_TITLE.toString()]: Category.HEALER,
+    [Category.TANK_TITLE.toString()]: Category.TANK,
+    [Category.WAITLIST_TITLE.toString()]: Category.WAITLIST,
+  }[requestedCategory]);
+
 export enum ActionConditions {
   USER_EXISTS_REQUESTED_SECTION = "userExistsRequestedSection",
   USER_EXISTS_DIFFERENT_SECTION = "userExistsDifferentSection",

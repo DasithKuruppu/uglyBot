@@ -46,6 +46,7 @@
     "build": "parcel build",
     "test": "vitest",
     "discord:syncCommands": "run-func build/utils/updateDiscordCommands.js updateDiscordBotCommands",
+    "discord:syncCommandsStaging": "environment=STAGING run-func build/utils/updateDiscordCommands.js updateDiscordBotCommands",
     "coverage": "vitest run --coverage",
     "docs": "docsify serve ./docs",
     "coverage:badge": "coverage-badge-creator --config './badge-config.json'",

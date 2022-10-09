@@ -2,9 +2,10 @@ import * as aws from "@pulumi/aws";
 import * as pulumi from "@pulumi/pulumi";
 import { httpEventsFactoryHandler } from "../../modules/httpEventsProcessor";
 import { discordEventsQueue } from "../sqs/discordEvents";
-
+import { getEnvironmentFromStack } from "../utils/stackEnvMap";
+const stack = pulumi.getStack();
 export const httpEventsProcessor = new aws.lambda.CallbackFunction(
-  "httpEventsProcess",
+  `${stack}_httpEventsProcess`,
   {
     callbackFactory: () =>
       httpEventsFactoryHandler({
@@ -16,7 +17,7 @@ export const httpEventsProcessor = new aws.lambda.CallbackFunction(
     runtime: aws.lambda.Runtime.NodeJS16dX,
     environment: {
       variables: {
-        environment: "LAMBDA_DEVELOP",
+        environment: getEnvironmentFromStack(stack),
       },
     },
     codePathOptions: {
@@ -26,7 +27,7 @@ export const httpEventsProcessor = new aws.lambda.CallbackFunction(
 );
 
 const lambdaWarmRuleHTTP = new aws.cloudwatch.EventRule(
-  "warmUpLambdaRuleHTTP",
+  `${stack}_warmUpLambdaRuleHTTP`,
   {
     scheduleExpression: "rate(5 minutes)",
     isEnabled: true,
@@ -34,7 +35,7 @@ const lambdaWarmRuleHTTP = new aws.cloudwatch.EventRule(
 );
 
 export const eventBridgePermission = new aws.lambda.Permission(
-  "eventBridgeLambdaInvoke",
+  `${stack}_eventBridgeLambdaInvoke`,
   {
     action: "lambda:InvokeFunction",
     function: httpEventsProcessor,
@@ -46,7 +47,7 @@ export const eventBridgePermission = new aws.lambda.Permission(
 
 
 export const warmHTTPEventsSchedule = new aws.cloudwatch.EventTarget(
-  "warmHTTPEventsProcessor",
+  `${stack}_warmHTTPEventsProcessor`,
   {
     arn: httpEventsProcessor.arn,
     rule: lambdaWarmRuleHTTP.name,

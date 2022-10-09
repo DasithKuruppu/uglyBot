@@ -12,7 +12,7 @@ const mockPrettyPrint = '[mock PrettyPrint]';
 const mockColorize = '[mock Colorize]';
 const mockSimple = '[mock Simple]';
 const mockConsoleTransport = '[mock Console Transport]';
-
+const mockJson = '[mock Json]';
 vi.mock('winston', () => ({
     createLogger: vi.fn(() => ({ add: vi.fn() })),
     format: {
@@ -22,7 +22,8 @@ vi.mock('winston', () => ({
         prettyPrint: vi.fn(() => mockPrettyPrint),
         combine: vi.fn(() => mockLoggerFormat),
         colorize: vi.fn(() => mockColorize),
-        simple: vi.fn(() => mockSimple)
+        simple: vi.fn(() => mockSimple),
+        json: vi.fn(() => mockJson)
     },
     transports: {
         File: vi.fn(({ filename }) => ({ filename })),
@@ -56,7 +57,7 @@ describe('Logger Initialization - loggerInitialize() fn', () => {
 
         expect(format.combine).toBeCalledTimes(2);
         expect(format.combine).toBeCalledWith(mockTimeStamp, mockErrors, mockSplat, mockPrettyPrint);
-        expect(format.combine).toBeCalledWith(mockSplat, mockColorize, mockSimple)
+        expect(format.combine).toBeCalledWith(mockSplat, mockSimple, mockJson)
 
         expect(loggerInit.add).toBeCalledTimes(1);
         expect(loggerInit.add).toBeCalledWith({ mockConsoleTransport });

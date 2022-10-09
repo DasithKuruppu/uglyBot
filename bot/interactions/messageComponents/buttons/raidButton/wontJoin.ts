@@ -6,19 +6,16 @@ import {
   availableSlotValue,
   Category,
   determineActions,
-  fivePersonSeperation,
   getEmbedFieldsSeperatedSections,
   getExistingMemberRecordDetails,
-  tenPersonSeperation,
 } from "../../utils/categorizeEmbedFields/categorizeEmbedFields";
-import { convertToDiscordDate } from "../../utils/date/dateToDiscordTimeStamp";
 import {
   createFieldValue,
   userState,
   defaultJoinStatus,
 } from "../../utils/helper/embedFieldAttribute";
-import { isFivePersonDungeon } from "../../utils/helper/userActions";
-import { createRaidContent } from "../../utils/helper/raid";
+import { createRaidContent, determineRaidTemplateType } from "../../utils/helper/raid";
+import { raidConfigs } from "../../../../embeds/templates/neverwinter/config";
 
 export const wontJoinButtonInteract = async (
   data: APIMessageSelectMenuInteractionData,
@@ -30,10 +27,10 @@ export const wontJoinButtonInteract = async (
     interactionConfig: { application_id, token, member, message },
   } = factoryInits;
   const currentFields = message.embeds[0].fields || [];
-  const fivePerson = isFivePersonDungeon(message.embeds[0]?.title);
-  const sectionSeperation = fivePerson
-    ? fivePersonSeperation
-    : tenPersonSeperation;
+  const { templateId } = determineRaidTemplateType({
+    embedFields: currentFields || [],
+  });
+  const sectionSeperation = raidConfigs[templateId];
   const seperatedSections = getEmbedFieldsSeperatedSections(
     currentFields,
     sectionSeperation

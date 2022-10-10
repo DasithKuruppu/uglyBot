@@ -17,9 +17,15 @@ export const discordEventsLambdaCallback = new aws.lambda.CallbackFunction(
     codePathOptions: {
       extraIncludePaths: ["../environmentConfigs", "./logs"],
     },
+    publish: true,
   }
 );
 
+export const concurencyConfigFixed = new aws.lambda.ProvisionedConcurrencyConfig(`${stack}-discord-events-fixed-concurrency`, {
+  functionName: discordEventsLambdaCallback.name,
+  qualifier: discordEventsLambdaCallback.version,
+  provisionedConcurrentExecutions: 2,
+});
 
 export const lambdaWarmRule = new aws.cloudwatch.EventRule(`${stack}_warmUpLambdaRule`, {
   scheduleExpression: "rate(5 minutes)",

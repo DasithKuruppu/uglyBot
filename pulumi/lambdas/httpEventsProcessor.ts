@@ -2,6 +2,7 @@ import * as aws from "@pulumi/aws";
 import * as pulumi from "@pulumi/pulumi";
 import { httpEventsFactoryHandler } from "../../modules/httpEventsProcessor";
 import { discordEventsQueue } from "../sqs/discordEvents";
+import { discordScheduleEventsQueue } from "../sqs/discordScheduleEvent";
 import { getEnvironmentFromStack } from "../utils/stackEnvMap";
 const stack = pulumi.getStack();
 export const httpEventsProcessor = new aws.lambda.CallbackFunction(
@@ -10,6 +11,7 @@ export const httpEventsProcessor = new aws.lambda.CallbackFunction(
     callbackFactory: () =>
       httpEventsFactoryHandler({
         DISCORD_EVENTS_SQS: discordEventsQueue.url.get(),
+        DISCORD_SCHEDULE_EVENTS_SQS: discordScheduleEventsQueue.url.get()
       }),
     // callback: uglyBot.main,
     // Only let this Lambda run for a minute before forcefully terminating it.
@@ -24,6 +26,7 @@ export const httpEventsProcessor = new aws.lambda.CallbackFunction(
       extraIncludePaths: ["../environmentConfigs", "./logs"],
     },
     publish: true,
+    memorySize: 768
   }
 );
 
@@ -60,7 +63,7 @@ export const warmHTTPEventsSchedule = new aws.cloudwatch.EventTarget(
     rule: lambdaWarmRuleHTTP.name,
     input: JSON.stringify({
       warmer: true,
-      concurrency: 2,
+      concurrency: 1,
     }),
   }
 );

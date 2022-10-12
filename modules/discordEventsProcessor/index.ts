@@ -1,9 +1,7 @@
 import { startBot } from "../../bot/";
 import { REST } from "@discordjs/rest";
 import { InteractionType } from "discord.js";
-import {
-  APIInteraction,
-} from "discord-api-types/v10";
+import { APIInteraction } from "discord-api-types/v10";
 import { getEnvironmentVariables } from "../../bot/configs";
 import { applicationCommands } from "./applicationCommand";
 import { messageComponent } from "./messageComponent";
@@ -13,23 +11,24 @@ export const discordInteractionEventHandler = {
   [InteractionType.MessageComponent]: messageComponent,
 };
 
-export const supportedInteractionTypes = Object.keys(discordInteractionEventHandler);
+export const supportedInteractionTypes = Object.keys(
+  discordInteractionEventHandler
+);
 
-export const lambdaWarmerWrapper = async (event: any) => {
- 
-};
+export const lambdaWarmerWrapper = async (event: any) => {};
 export const discordEventsInteractionFactoryHandler = () => {
   const { getLogger } = startBot();
   const logger = getLogger();
   const { discordBotToken } = getEnvironmentVariables();
   const rest = new REST({ version: "10" }).setToken(discordBotToken);
-  return async(event) => {
+  return async (event) => {
+    logger.log("info", "discord event recieved", event);
     const isWarmerEvent = await warmer(event);
-    logger.log("info", "is lambda warmer invocation", {isWarmerEvent});
-    if(isWarmerEvent){
-      return "warmed"
+    logger.log("info", "is lambda warmer invocation", { isWarmerEvent });
+    if (isWarmerEvent) {
+      return "warmed";
     }
-    return discordEventsProcessingFunction(event, { logger, rest })
+    return discordEventsProcessingFunction(event, { logger, rest });
   };
 };
 
@@ -37,8 +36,6 @@ export const discordEventsProcessingFunction = async (
   event: AWSLambda.SQSEvent,
   { logger, rest }
 ) => {
-  logger.log("info", "discord event recieved", event);
-
   const { Records = [] } = event;
   const interactionData = Records.map(({ body }) =>
     JSON.parse(body)
@@ -50,13 +47,23 @@ export const discordEventsProcessingFunction = async (
     supportedInteractionTypes.includes(String(type));
   const interactionResponses = interactionData
     .filter(supportedInteractions)
-    .map(async ({ application_id, token, data, member, channel_id, type, message }) => {
-      const responseResult = await discordInteractionEventHandler[type](
-        { data, application_id, token, member, channel_id, message },
-        { logger, rest }
-      );
-      return responseResult;
-    });
+    .map(
+      async ({
+        application_id,
+        token,
+        data,
+        member,
+        channel_id,
+        type,
+        message,
+      }) => {
+        const responseResult = await discordInteractionEventHandler[type](
+          { data, application_id, token, member, channel_id, message },
+          { logger, rest }
+        );
+        return responseResult;
+      }
+    );
   const interactionResult = await Promise.all(interactionResponses);
 
   logger.log("info", "interaction response sent", { interactionResult });

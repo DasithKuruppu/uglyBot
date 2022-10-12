@@ -22,7 +22,7 @@ export enum trialNamesList {
   ZCM = "Zariel's Challenge(Master)",
   COKM = "Crown of Keldegonn(Master)",
   TM = "Tiamat(Master)",
-  TOSM = "Temple of Spider(Master)"
+  TOSM = "Temple of Spider(Master)",
 }
 
 export const createRaidNameChoicesList = [
@@ -48,8 +48,8 @@ export const createRaidNameChoicesList = [
   },
   {
     name: trialNamesList.TOSM,
-    value: trialNamesList.TOSM
-  }
+    value: trialNamesList.TOSM,
+  },
 ];
 
 export const create_raid = {
@@ -126,6 +126,18 @@ export const create_raid = {
           type: 3,
           name: "description",
           description: "Set a description",
+          required: false,
+        },
+        {
+          type: 5,
+          name: "enable_event",
+          description: "Create a server event(defaults to true)",
+          required: false,
+        },
+        {
+          type: 4,
+          name: "duration",
+          description: "Duration for event(defaults to 2 hours)",
           required: false,
         },
       ],

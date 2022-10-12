@@ -22,22 +22,29 @@ export const httpEventsHandler = async (
 ): Promise<APIGatewayProxyResult> => {
   const { logger, config, sqsClient } = factory;
   logger.log("info", "Event recieved", event);
-  const verifyResponse = verifyRequest(event, factory);
-  const isValidDiscordInteraction: boolean = !!verifyResponse;
   const isEmptyEventBody = event.body == null && event.body == undefined;
   const eventBody = !isEmptyEventBody ? (event.body as string) : "";
   const strBody = event.isBase64Encoded
     ? Buffer.from(eventBody, "base64").toString("utf8")
     : eventBody;
+  const verifyResponse = verifyRequest(event, { ...factory, strBody });
+  const isValidDiscordInteraction: boolean = !!verifyResponse;
   const parsedEventBody = JSON.parse(strBody);
   try {
-    const sqsSendResult = isValidDiscordInteraction
-      ? await sqsClient.sendMessage({
+    const sqsSendResult =
+      isValidDiscordInteraction &&
+      (await Promise.all([
+        sqsClient.sendMessage({
           QueueUrl: config.DISCORD_EVENTS_SQS,
           MessageBody: strBody,
-          MessageGroupId: parsedEventBody?.guild_id || 'other',
-        })
-      : false;
+          MessageGroupId: parsedEventBody?.guild_id || "other",
+        }),
+        sqsClient.sendMessage({
+          QueueUrl: config.DISCORD_SCHEDULE_EVENTS_SQS,
+          MessageBody: strBody,
+          // MessageGroupId: parsedEventBody?.guild_id || "other",
+        }),
+      ]));
 
     logger.log("info", "Event queued", {
       config,

@@ -5,7 +5,7 @@ export const enum ClassNames {
   PALADIN_HEAL = "Paladin(Heal)",
   BARB_TANK = "Barbarian(Tank)",
   BARB_DPS = "Barbarian(DPS)",
-  ROUGE_DPS = "Rouge(DPS)",
+  ROUGE_DPS = "Rogue(DPS)",
   WIZARD_DPS = "Wizard(DPS)",
   CLERIC_HEAL = "Cleric(Heal)",
   CLERIC_DPS = "Cleric(DPS)",

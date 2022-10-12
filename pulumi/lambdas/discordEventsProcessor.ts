@@ -18,6 +18,7 @@ export const discordEventsLambdaCallback = new aws.lambda.CallbackFunction(
       extraIncludePaths: ["../environmentConfigs", "./logs"],
     },
     publish: true,
+    memorySize: 768
   }
 );
 
@@ -29,7 +30,7 @@ export const concurencyConfigFixed = new aws.lambda.ProvisionedConcurrencyConfig
 
 export const lambdaWarmRule = new aws.cloudwatch.EventRule(`${stack}_warmUpLambdaRule`, {
   scheduleExpression: "rate(5 minutes)",
-  isEnabled: true,
+  isEnabled: false,
 });
 
 export const eventBridgePermission = new aws.lambda.Permission(
@@ -48,7 +49,7 @@ export const warmDiscordEventsSchedule = new aws.cloudwatch.EventTarget(
     rule: lambdaWarmRule.name,
     input: JSON.stringify({
       warmer: true,
-      concurrency: 2,
+      concurrency: 1,
     }),
   }
 );

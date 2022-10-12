@@ -5,20 +5,14 @@ import { verifyKey } from "discord-interactions";
 import { InteractionType } from "discord.js";
 export const verifyRequest = (
   event: APIGatewayProxyEvent,
-  factory: { logger: winston.Logger }
+  factory: { logger: winston.Logger; strBody: string }
 ) => {
   const DISCORD_PUBLIC_KEY = process.env?.DISCORD_PUBLIC_KEY as string;
   const signature = event.headers["x-signature-ed25519"] || "";
   const timestamp = event.headers["x-signature-timestamp"] || "";
   // stops default base 64 encode more info on -
   // https://github.com/pulumi/pulumi-aws-apigateway/issues/30
-  const isEmptyEventBody = event.body == null && event.body == undefined;
-  const eventBody = !isEmptyEventBody ? (event.body as string) : "";
-  const strBody = event.isBase64Encoded
-    ? Buffer.from(eventBody, "base64").toString("utf8")
-    : eventBody;
-  const { logger } = factory;
-
+  const { logger, strBody } = factory;
   const isValidRequest = verifyKey(
     strBody,
     signature,
@@ -30,8 +24,8 @@ export const verifyRequest = (
     signature,
     strBody,
     DISCORD_PUBLIC_KEY,
+    isValidRequest
   });
-  logger.log("info", "Request verify status", { isValidRequest });
   if (!isValidRequest) {
     return {
       statusCode: 401,

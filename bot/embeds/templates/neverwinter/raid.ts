@@ -92,7 +92,7 @@ export const raidBuilder = ({
               default: false,
             },
             {
-              label: `Halaster's Blast Scepture`,
+              label: `Halaster's Blast Scepter`,
               value: `Halasters`,
               default: false,
             },
@@ -151,6 +151,16 @@ export const raidBuilder = ({
               value: `Blades`,
               default: false,
             },
+            {
+              label: `Horn of Valhallah`,
+              value: `VHorn`,
+              default: false,
+            },
+            {
+              label: `Mark of the Black Dragon`,
+              value: `Mark`,
+              default: false,
+            },
           ],
           min_values: 1,
           max_values: 10,
@@ -200,7 +210,6 @@ export const raidBuilder = ({
       ],
     },
   ],
-
   embeds: [
     {
       type: "rich",

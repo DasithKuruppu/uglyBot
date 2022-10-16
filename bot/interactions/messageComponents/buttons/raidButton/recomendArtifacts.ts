@@ -9,24 +9,22 @@ import {
 import { IfactoryInitializations } from "../../typeDefinitions/event";
 import {
   Category,
-  determineActions,
   getEmbedFieldsSeperatedSections,
   getExistingMemberRecordDetails,
 } from "../../utils/categorizeEmbedFields/categorizeEmbedFields";
+import { artifactsSort } from "../../utils/helper/artifactsSorter";
 import {
-  createFieldValue,
-  userState,
   defaultJoinStatus,
+  extractFieldValueAttributes,
 } from "../../utils/helper/embedFieldAttribute";
 import {
   createRaidContent,
   determineRaidTemplateType,
 } from "../../utils/helper/raid";
-import { isFivePersonDungeon } from "../../utils/helper/userActions";
 
 export const defaultArtifactState = ``;
 
-export const confirmButtonInteract = async (
+export const recomendArtifactsButtonInteract = async (
   data: APIMessageSelectMenuInteractionData,
   factoryInits: IfactoryInitializations
 ) => {
@@ -44,7 +42,9 @@ export const confirmButtonInteract = async (
     currentFields,
     sectionSeperation
   );
-  logger.log("info", "confirm button", { seperatedSections });
+  const classNamesMap = new Map(NeverwinterClassesMap);
+
+  logger.log("info", "recomend artifacts button", { seperatedSections });
   const [
     {
       userArtifacts = "",
@@ -54,44 +54,44 @@ export const confirmButtonInteract = async (
       sectionName = Category.WAITLIST,
     } = {},
   ] = getExistingMemberRecordDetails(seperatedSections, member.user.id);
-  if (!userExists) {
+
+  const artifactDetails = [
+    ...seperatedSections[Category.DPS],
+    ...seperatedSections[Category.TANK],
+    ...seperatedSections[Category.HEALER],
+  ];
+  const artifactMemberlist = artifactDetails.filter(({name,value})=>{
+    return value !== 'available';
+  }).map(({ name, value }) => {
+    const { memberId, userStatus, artifactsList } = extractFieldValueAttributes(
+      { fieldValueText: value }
+    );
+
     return {
-      body: {
-        content: createRaidContent(message.content, {
-          userActionText: `<@${member.user.id}> needs to select artifact or class before confirming!`,
-        }),
-      },
+      name: memberId,
+      category: classNamesMap.get(name)?.type || Category.DPS,
+      artifacts: artifactsList,
     };
-  }
-  const userArtifactsParse = userExists
-    ? userArtifacts.replace(/[\{\}]+/gi, "").split(",")
-    : undefined;
-  const creatableField: EmbedField = {
-    name: (userRecord as EmbedField)?.name,
-    value: createFieldValue({
-      memberId: member.user.id,
-      userStatus: userState.CONFIRMED,
-      artifactsList: userArtifactsParse,
-    }),
-    inline: true,
-  };
-
-  const updatedFieldsList = determineActions(seperatedSections, {
-    memberId: member.user.id,
-    requestedUserSection: sectionName || Category.WAITLIST,
-    userField: creatableField,
-    factoryInits,
-    defaultSeperation: sectionSeperation,
   });
-
-  logger.log("info", "updated fields list", {
-    updatedFieldsList,
+  const sortedArtifacts = artifactsSort(artifactMemberlist);
+  logger.log("info", "artifacts sorted", {
+    sortedArtifacts,
+    artifactDetails,
+    artifactMemberlist,
   });
+  const assignedArtifacts = sortedArtifacts
+    .filter(({ artifactName, user }) => user)
+    .map(({ artifactName, user }) => `<@${user}> => ${artifactName}`)
+    .join("\n");
+  const unassignedArtifacts = sortedArtifacts
+    .filter(({ artifactName, user }) => !user)
+    .map(({ artifactName, user }) => artifactName)
+    .join(",");
   return {
     body: {
-      embeds: [{ ...message.embeds[0], fields: updatedFieldsList }],
       content: createRaidContent(message.content, {
-        userActionText: `<@${member.user.id}> confirmed to join raid!`,
+        userArtifacts: `\n𒆜𒆜Artifacts List𒆜𒆜\n${assignedArtifacts}\n𒆜𒆜Excess/Unassigned Artifacts𒆜𒆜\n${unassignedArtifacts}`,
+        userActionText: `<@${member.user.id}> requested to recomend artifacts.`,
       }),
     },
   };

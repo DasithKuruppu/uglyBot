@@ -1,11 +1,12 @@
 import { Category } from "../../../interactions/messageComponents/utils/categorizeEmbedFields/categorizeEmbedFields";
-
+import { ArtifactsList } from "../artifactsList";
 // inside a command, event listener, etc.
 export const defaultRaidButtonInfo = {
   buttons: {
     joinConfirmButton: { id: `btn_join_confirmed` },
     joinWaitlistButton: { id: `btn_waitlist_join` },
     wontJoinButton: { id: `btn_wont_join` },
+    artifactsRecomendButton: { id: `btn_artifacts_recomend`}
   },
 };
 
@@ -80,88 +81,7 @@ export const raidBuilder = ({
         {
           custom_id: `select_Artifact`,
           placeholder: `Select Artifacts`,
-          options: [
-            {
-              label: `Demogorgons Reach`,
-              value: `Demo`,
-              default: false,
-            },
-            {
-              label: `Mythallar`,
-              value: `Mythallar`,
-              default: false,
-            },
-            {
-              label: `Halaster's Blast Scepter`,
-              value: `Halasters`,
-              default: false,
-            },
-            {
-              label: `Wyvern - Venom Coated Knives`,
-              value: `Wyvern`,
-              default: false,
-            },
-            {
-              label: `Lantern of Revelation`,
-              value: `Lantern`,
-              default: false,
-            },
-            {
-              label: `Heart of Black Dragon`,
-              value: `Black Dragon`,
-              default: false,
-            },
-            {
-              label: `Charm of the Serphant`,
-              value: `Charm`,
-              default: false,
-            },
-            {
-              label: `Token of Chromatic`,
-              value: `Token`,
-              default: false,
-            },
-            {
-              label: `Thirst`,
-              value: `Thirst`,
-              default: false,
-            },
-            {
-              label: `Vanguards Banner`,
-              value: `Vanguards`,
-              default: false,
-            },
-            {
-              label: `Neverwinters Standard`,
-              value: `Standard`,
-              default: false,
-            },
-            {
-              label: `Sparkling Fey Emblem`,
-              value: `Fey Emblem`,
-              default: false,
-            },
-            {
-              label: `Frozen Storytellers Journal`,
-              value: `Frozen`,
-              default: false,
-            },
-            {
-              label: `Dragonbone Blades`,
-              value: `Blades`,
-              default: false,
-            },
-            {
-              label: `Horn of Valhallah`,
-              value: `VHorn`,
-              default: false,
-            },
-            {
-              label: `Mark of the Black Dragon`,
-              value: `Mark`,
-              default: false,
-            },
-          ],
+          options: ArtifactsList.map(({label,shortName})=>({label,value:shortName,default:false})),
           min_values: 1,
           max_values: 10,
           type: 3,
@@ -203,6 +123,18 @@ export const raidBuilder = ({
           emoji: {
             id: `513349083415576611`,
             name: `aPES_Leave`,
+            animated: true,
+          },
+          type: 2,
+        },
+        {
+          style: 2,
+          label: `Recommend Artifacts`,
+          custom_id: buttons.artifactsRecomendButton.id,
+          disabled: false,
+          emoji: {
+            id: `852657550969143306`,
+            name: `pepeshy`,
             animated: true,
           },
           type: 2,

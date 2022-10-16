@@ -8,19 +8,27 @@ export const createRaidContent = (
   {
     eventDate = undefined,
     userActionText = "",
-  }: { eventDate?: string; userActionText?: string }
+    userArtifacts = undefined,
+  }: { eventDate?: string; userActionText?: string; userArtifacts?: string }
 ) => {
-  const [extractEventDateText] = previousText.split("\n");
+  const [
+    extractEventDateText,
+    lastActivityTime,
+    lastAction,
+    ...artifactsTextList
+  ] = previousText.split("\n");
   const eventDateIsValid = extractEventDateText.includes("Event/Raid");
   const processedEventDate = eventDate
     ? `Event/Raid will start at ${convertToDiscordDate(eventDate)}`
     : eventDateIsValid
     ? extractEventDateText
     : "";
-
+  const processedUserArtifacts = userArtifacts
+    ? userArtifacts
+    : artifactsTextList.join('\n');
   return `${processedEventDate}\nLast activity(${convertToDiscordDate("now", {
     relative: true,
-  })}) :\n${userActionText}`;
+  })}) :\n${userActionText}\n${processedUserArtifacts}`;
 };
 
 export interface IDetermineRaidTemplateType {
@@ -120,7 +128,7 @@ export const determineRaidTemplateType = ({
       templateMetaInfo?.[Category.HEALER]?.count || 0,
       templateMetaInfo?.[Category.WAITLIST_TITLE]?.count || 0,
       templateMetaInfo?.[Category.WAITLIST]?.count || 0,
-    ].join('U')
+    ].join("U"),
   };
   return standardizedTemplateInfo;
 };

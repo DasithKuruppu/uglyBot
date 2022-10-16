@@ -4,11 +4,13 @@ import { confirmButtonInteract } from "./raidButton/confirm";
 import { defaultRaidButtonInfo } from "../../../embeds/templates/neverwinter/raid";
 import { waitlistButtonInteract } from "./raidButton/waitlist";
 import { wontJoinButtonInteract } from "./raidButton/wontJoin";
+import { recomendArtifactsButtonInteract } from "./raidButton/recomendArtifacts"
 
 export const buttonInteractions = {
   [defaultRaidButtonInfo.buttons.joinConfirmButton.id]: confirmButtonInteract,
   [defaultRaidButtonInfo.buttons.joinWaitlistButton.id]: waitlistButtonInteract,
-  [defaultRaidButtonInfo.buttons.wontJoinButton.id]: wontJoinButtonInteract
+  [defaultRaidButtonInfo.buttons.wontJoinButton.id]: wontJoinButtonInteract,
+  [defaultRaidButtonInfo.buttons.artifactsRecomendButton.id]: recomendArtifactsButtonInteract,
 };
 
 export const recognizedButtonInteractionComponentIds =

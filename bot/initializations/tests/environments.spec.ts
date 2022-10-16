@@ -36,7 +36,7 @@ describe("Environments Initialization - environmentsInitialize() fn", () => {
     const environmentInit = environmentsInitialize();
     // expect(path.resolve).toBeCalledWith(stubbedPath, DEVELOP_ENV_CONFIG_PATH);
     expect(dotenv.config).toHaveBeenCalledWith({
-      override: true,
+      override: false,
       path: mockedResolvePath,
     });
     expect(environmentInit).toEqual({ parsed: true });
@@ -49,7 +49,7 @@ describe("Environments Initialization - environmentsInitialize() fn", () => {
     const environmentInit = environmentsInitialize();
     //expect(path.resolve).toBeCalledWith(stubbedPath, DEVELOP_ENV_CONFIG_PATH);
     expect(dotenv.config).toHaveBeenCalledWith({
-      override: true,
+      override: false,
       path: mockedResolvePath,
     });
     expect(environmentInit).toEqual({ parsed: true });

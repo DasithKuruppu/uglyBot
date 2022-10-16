@@ -16,6 +16,8 @@ describe("Configs", () => {
         [availableEnvVariables.DISCORD_APPLICATION_ID]: "mockTest",
         [availableEnvVariables.DISCORD_SERVER_ID]: "mockTest",
         [availableEnvVariables.DISCORD_TOKEN]: "mockTest",
+        [availableEnvVariables.DISCORD_BOT_NAME]: "mockTest",
+        [availableEnvVariables.DISCORD_BOT_ID]: "mockTest",
       },
     });
     const envVariables = getEnvironmentVariables();
@@ -23,6 +25,8 @@ describe("Configs", () => {
       discordApplicationID: "mockTest",
       discordBotToken: "mockTest",
       discordServerId: "mockTest",
+      discordBotId: "mockTest",
+      discordBotName: "mockTest"
     });
   });
 });

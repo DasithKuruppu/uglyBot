@@ -25,8 +25,9 @@ export const createEvent = async (
   const title =
     raidOptions.find(({ name }) => name === "name")?.value || "Untitled";
   const raidType = raidOptions.find(({ name }) => name === "type")?.value || "";
-  const guildEventCreate =
-    raidOptions.find(({ name }) => name === "enable_event")?.value || true;
+  const guildEventCreate = raidOptions.find(
+    ({ name }) => name === "enable_event"
+  )?.value;
   const durationHours =
     raidOptions.find(({ name }) => name === "duration")?.value || 2;
   const description =
@@ -37,7 +38,9 @@ export const createEvent = async (
   const eventStartDate = eventDate.toISOString();
   const eventEndDate = eventDate.add(durationHours, "hour").toISOString();
   const shouldCreateEvent =
-    guildEventCreate && isAllowedCommand && isAllowedSubCommand;
+    (guildEventCreate == undefined ? true : guildEventCreate) &&
+    isAllowedCommand &&
+    isAllowedSubCommand;
   logger.log("info", "Event schedule details", {
     commandName,
     subCommandName,

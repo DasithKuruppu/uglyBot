@@ -90,7 +90,7 @@ export const recomendArtifactsButtonInteract = async (
   return {
     body: {
       content: createRaidContent(message.content, {
-        userArtifacts: `\n𒆜𒆜Artifacts List𒆜𒆜\n${assignedArtifacts}\n𒆜𒆜Excess/Unassigned Artifacts𒆜𒆜\n${unassignedArtifacts}`,
+        userArtifacts: `\n𒆜𒆜Assigned/Recommended Artifacts List𒆜𒆜\n${assignedArtifacts}\n𒆜𒆜Excess/Unassigned Artifacts𒆜𒆜\n${unassignedArtifacts}`,
         userActionText: `<@${member.user.id}> requested to recomend artifacts.`,
       }),
     },

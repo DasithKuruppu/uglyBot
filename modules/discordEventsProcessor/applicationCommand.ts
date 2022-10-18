@@ -6,14 +6,20 @@ import {
 } from "../../bot/interactions/commands";
 
 export const applicationCommands = async (
-  { data, application_id, token, member, channel_id },
+  { data, application_id, token, member, guild_id, channel_id },
   { logger, rest }
 ) => {
   const commandResponse = recognizedCommands.includes(data.name)
     ? await commandActions[data.name](data, {
         logger,
         rest,
-        interactionConfig: { application_id, token, member, channel_id },
+        interactionConfig: {
+          application_id,
+          token,
+          guild_id,
+          member,
+          channel_id,
+        },
       })
     : unrecognizedCommand();
 

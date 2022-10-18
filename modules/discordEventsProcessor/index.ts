@@ -54,11 +54,20 @@ export const discordEventsProcessingFunction = async (
         data,
         member,
         channel_id,
+        guild_id,
         type,
         message,
       }) => {
         const responseResult = await discordInteractionEventHandler[type](
-          { data, application_id, token, member, channel_id, message },
+          {
+            data,
+            application_id,
+            token,
+            member,
+            channel_id,
+            guild_id,
+            message,
+          },
           { logger, rest }
         );
         return responseResult;

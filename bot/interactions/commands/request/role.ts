@@ -5,6 +5,7 @@ import {
   REST,
   Routes,
   APIInteractionGuildMember,
+  APIApplicationCommandInteractionDataSubcommandOption,
 } from "discord.js";
 import { Logger } from "winston";
 
@@ -38,24 +39,28 @@ export const disallowedRolesMessages = {
 };
 
 export const requestRoleCommand = async (
-  data: APIChatInputApplicationCommandInteractionData & { guild_id: string },
+  data: APIChatInputApplicationCommandInteractionData,
   factoryInits: factoryInitializations
 ) => {
   const { rest, logger, interactionConfig } = factoryInits;
   const { guild_id } = interactionConfig;
   const resolvedRoles = data.resolved?.roles || {};
-  const [{ type, value, name }] =
-    data.options as APIApplicationCommandInteractionDataRoleOption[];
-
-  if (type !== ApplicationCommandOptionType.Role) {
+  const [{ type: commandType, options: subCommandOptions = [] }] =
+    data.options as APIApplicationCommandInteractionDataSubcommandOption[];
+  const [{ type, value: roleName = "" }] =
+    subCommandOptions as APIApplicationCommandInteractionDataRoleOption[];
+  if (
+    commandType !== ApplicationCommandOptionType.Subcommand ||
+    type != ApplicationCommandOptionType.Role
+  ) {
     return {
       body: {
-        content: "Unsupported input, only a role could be specified",
+        content: "Unsupported input",
       },
     };
   }
 
-  const currentRole = resolvedRoles[value];
+  const currentRole = resolvedRoles[roleName];
   const isAllowedRole = allowedRoles.includes(currentRole?.name);
   if (!isAllowedRole) {
     return {

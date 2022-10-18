@@ -7,12 +7,25 @@ export const info = {
 
 export const request_role = {
   name: "request",
-  description: "choose a type of request to make",
+  description: "Choose a type of request to make",
   options: [
     {
-      type: 8,
+      type: 1,
       name: "role",
       description: "request a role",
+      options: [
+        {
+          type: 8,
+          name: "name",
+          description: "A valid role name",
+          required: true,
+        },
+      ],
+    },
+    {
+      type: 1,
+      name: "invite_link",
+      description: "The number of people to invite using link between 1 - 100",
     },
   ],
 };

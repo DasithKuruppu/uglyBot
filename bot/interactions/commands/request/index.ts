@@ -2,7 +2,7 @@ import {
   APIInteractionGuildMember,
   ApplicationCommandType,
   REST,
-  APIChatInputApplicationCommandInteractionData
+  APIChatInputApplicationCommandInteractionData,
 } from "discord.js";
 import { Logger } from "winston";
 import { requestRoleCommand } from "./role";

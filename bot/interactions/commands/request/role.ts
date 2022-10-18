@@ -12,6 +12,7 @@ interface factoryInitializations {
   logger: Logger;
   rest: REST;
   interactionConfig: {
+    guild_id: string;
     application_id: string;
     token: string;
     member: APIInteractionGuildMember;
@@ -29,7 +30,7 @@ export const allowedRoles = [
   "Tester",
   "Barely Completed TOMM",
   "Hell Pit Completed",
-  "Spider Wipe Completed"
+  "Spider Wipe Completed",
 ];
 export const disallowedRolesMessages = {
   Friend: ({ roleId }) =>
@@ -41,6 +42,7 @@ export const requestRoleCommand = async (
   factoryInits: factoryInitializations
 ) => {
   const { rest, logger, interactionConfig } = factoryInits;
+  const { guild_id } = interactionConfig;
   const resolvedRoles = data.resolved?.roles || {};
   const [{ type, value, name }] =
     data.options as APIApplicationCommandInteractionDataRoleOption[];
@@ -71,7 +73,7 @@ export const requestRoleCommand = async (
   }
   const patchResult = await rest.put(
     (Routes as any).guildMemberRole(
-      data?.guild_id as string,
+      guild_id as string,
       interactionConfig.member.user.id,
       currentRole.id
     )

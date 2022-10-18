@@ -6,6 +6,7 @@ import {
 } from "discord.js";
 import { Logger } from "winston";
 import { requestRoleCommand } from "./role";
+import { inviteLinkCommand} from "./inviteLink"
 import { unrecognizedCommand } from "..";
 interface factoryInitializations {
   logger: Logger;
@@ -20,6 +21,7 @@ interface factoryInitializations {
 export const commandName_request = "request";
 export const availableSubCommands = {
   role: requestRoleCommand,
+  invite_link: inviteLinkCommand
 };
 export const recognizedSubCommands = Object.keys(availableSubCommands);
 export const requestCommand = async (

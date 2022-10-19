@@ -83,6 +83,34 @@ describe.only("Raid - determineRaidTemplateType", () => {
         { name: "Wizard(DPS)", value: `<@randomnameone>`, inline: true },
       ],
     });
-    expect(result).toEqual({});
+    expect(result).toEqual({
+      templateId: "1U2U0U0U0U0U0U0",
+      templateMetaInfo: {
+        [Category.DPS_TITLE]: {
+          count: 1,
+        },
+        [Category.DPS]: {
+          count: 2,
+        },
+        [Category.HEALER_TITLE]: {
+          count: 0,
+        },
+        [Category.HEALER]: {
+          count: 0,
+        },
+        [Category.TANK_TITLE]: {
+          count: 0,
+        },
+        [Category.TANK]: {
+          count: 0,
+        },
+        [Category.WAITLIST_TITLE]: {
+          count: 0,
+        },
+        [Category.WAITLIST]: {
+          count: 0,
+        },
+      },
+    });
   });
 });

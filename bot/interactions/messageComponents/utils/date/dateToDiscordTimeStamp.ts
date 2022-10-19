@@ -1,4 +1,7 @@
-import dayjs from "dayjs-parser/dayjs";
+import dayjs from "dayjs";
+import dayjsParser from "dayjs-parser";
+
+dayjs.extend(dayjsParser);
 
 export const convertToDiscordDate = (date: string, { long = true, relative = false } = {}) => {
   const dateConvertible = dayjs(date).unix();

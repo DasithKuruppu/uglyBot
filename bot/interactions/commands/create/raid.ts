@@ -60,6 +60,7 @@ export const createRaidCommand = async (
 
   const isFivePerson = isFivePersonDungeon(title);
   const requestedDate = convertToDiscordDate(dateTime);
+  logger.log("info", "create attributes", {isFivePerson, requestedDate, dateTime});
   const partyOptionsToMap = {
     Standard: { DPS: 6, HEALS: 2, TANKS: 2, WAITLIST: 3 },
     Solo_tank: { DPS: 7, HEALS: 2, TANKS: 1, WAITLIST: 3 },

@@ -1,7 +1,7 @@
+import * as aws from "@pulumi/aws";
 import { environmentsInitialize } from "./environments";
 import { loggerInitialize } from "./logger";
 import { dataRedactor } from "./redactor";
-
 // Initialize the logger
 export const initializeAll = () => {
   const logger = loggerInitialize();
@@ -9,7 +9,7 @@ export const initializeAll = () => {
     level: "info",
     message: "Logger initialized",
   });
-
+  const documentClient = new aws.sdk.DynamoDB.DocumentClient();
   // Initialize environment data and variables
   const envConfiginitialization = environmentsInitialize();
   const envConfigInitializedLoglevel = envConfiginitialization.error
@@ -25,5 +25,5 @@ export const initializeAll = () => {
       : dataRedactor(envConfiginitialization),
   });
 
-  return { logger, envConfiginitialization };
+  return { logger, documentClient, envConfiginitialization };
 };

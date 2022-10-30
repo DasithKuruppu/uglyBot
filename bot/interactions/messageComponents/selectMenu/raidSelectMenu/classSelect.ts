@@ -2,6 +2,7 @@ import { APIMessageSelectMenuInteractionData } from "discord-api-types/payloads/
 import { EmbedField, Routes } from "discord.js";
 import { NeverwinterClassesMap } from "../../../../embeds/templates/neverwinter/classesList";
 import { raidConfigs } from "../../../../embeds/templates/neverwinter/config";
+import { membersTable } from "../../../../../pulumi/persistantStore/tables/members";
 import { IfactoryInitializations } from "../../typeDefinitions/event";
 
 import {
@@ -15,7 +16,10 @@ import {
   defaultJoinStatus,
   userState,
 } from "../../utils/helper/embedFieldAttribute";
-import { createRaidContent, determineRaidTemplateType } from "../../utils/helper/raid";
+import {
+  createRaidContent,
+  determineRaidTemplateType,
+} from "../../utils/helper/raid";
 import { isFivePersonDungeon } from "../../utils/helper/userActions";
 export const raidClassSelectId = "select_Class";
 export const defaultArtifactState = ``;
@@ -27,7 +31,8 @@ export const raidClassSelect = async (
   const {
     logger,
     rest,
-    interactionConfig: { application_id, token, member, message },
+    documentClient,
+    interactionConfig: { application_id, token, guild_id, member, message },
   } = factoryInits;
   const currentFields = message.embeds[0].fields || [];
   const requestedClass = data.values[0];
@@ -53,18 +58,32 @@ export const raidClassSelect = async (
     ? userArtifacts.replace(/[\{\}]+/gi, "").split(",")
     : undefined;
   const userStatusParse = userStatus?.replace(/[\[\]]+/gi, "");
+  const { Item = {} } = await documentClient
+    .get({
+      TableName: membersTable.name.get(),
+      Key: {
+        discordMemberId: member.user.id,
+        className: requestedClass,
+      },
+    })
+    .promise();
+  logger.log("info", "persisted Item", {
+    Item,
+    userArtifactsParse
+  });
   const creatableField: EmbedField = {
     name: requestedClass,
     value: createFieldValue({
       memberId: member.user.id,
       userStatus: userStatusParse as userState,
-      artifactsList: userArtifactsParse,
+      artifactsList: userArtifactsParse ? userArtifactsParse : Item?.artifactsList,
     }),
     inline: true,
   };
 
   logger.log("info", "values to update", {
     requestedClass,
+    Item,
     creatableField,
     userArtifacts,
     seperatedSections,
@@ -76,7 +95,7 @@ export const raidClassSelect = async (
     requestedUserSection: currentClassInfo?.type || Category.WAITLIST,
     userField: creatableField,
     factoryInits,
-    defaultSeperation: sectionSeperation
+    defaultSeperation: sectionSeperation,
   });
 
   logger.log("info", "updated fields list", {

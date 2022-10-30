@@ -2,7 +2,8 @@ import { apiEndpoint } from "./apiGateway";
 import { warmDiscordEventsSchedule } from "./lambdas/discordEventsProcessor";
 import { warmHTTPEventsSchedule } from "./lambdas/httpEventsProcessor";
 import { discordEventsQueue } from "./sqs/discordEvents";
-
+import { membersTable } from "./persistantStore/tables/members";
+//import { memberActionsTable } from "./persistantStore/tables/memberActions";
 export default {
   apiGatewayEndpointUrl: apiEndpoint.url,
   cloudwatchSchedule: {
@@ -12,4 +13,8 @@ export default {
   sqs: {
     discordEventsUrl: discordEventsQueue.url,
   },
+  persistantStore:{
+    membersTable: membersTable.name,
+    //memberActionsTable: memberActionsTable.name.get()
+  }
 };

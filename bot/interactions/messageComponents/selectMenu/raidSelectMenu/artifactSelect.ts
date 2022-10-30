@@ -2,6 +2,8 @@ import { APIMessageSelectMenuInteractionData } from "discord-api-types/payloads/
 import { EmbedField, Routes } from "discord.js";
 import { raidConfigs } from "../../../../embeds/templates/neverwinter/config";
 import { IfactoryInitializations } from "../../typeDefinitions/event";
+import { membersTable } from "../../../../../pulumi/persistantStore/tables/members";
+import { setUpdateValues } from "../../../../store/utils";
 import {
   Category,
   determineActions,
@@ -13,7 +15,10 @@ import {
   createFieldValue,
   userState,
 } from "../../utils/helper/embedFieldAttribute";
-import { createRaidContent, determineRaidTemplateType } from "../../utils/helper/raid";
+import {
+  createRaidContent,
+  determineRaidTemplateType,
+} from "../../utils/helper/raid";
 import { isFivePersonDungeon } from "../../utils/helper/userActions";
 export const raidArtifactSelectId = "select_Artifact";
 export const raidArtifactSelect = async (
@@ -23,7 +28,8 @@ export const raidArtifactSelect = async (
   const {
     logger,
     rest,
-    interactionConfig: { application_id, token, member, message },
+    documentClient,
+    interactionConfig: { application_id, token, guild_id, member, message },
   } = factoryInits;
   const currentFields = message.embeds[0].fields || [];
   const selectedArtifactsList = data.values;
@@ -44,7 +50,7 @@ export const raidArtifactSelect = async (
       userIndex = 0,
     } = {},
   ] = getExistingMemberRecordDetails(seperatedSections, member.user.id);
-  const existingUserName = userRecord?.name as string;
+  const existingUserClassType = userRecord?.name as string;
   if (!userExists) {
     return {
       body: {
@@ -56,7 +62,7 @@ export const raidArtifactSelect = async (
   }
   const userStatusParse = userStatus?.replace(/[\[\]]+/gi, "");
   const creatableField: EmbedField = {
-    name: existingUserName,
+    name: existingUserClassType,
     value: createFieldValue({
       memberId: member.user.id,
       userStatus: userStatusParse as userState,
@@ -71,14 +77,41 @@ export const raidArtifactSelect = async (
     factoryInits,
     defaultSeperation: sectionSeperation,
   });
+  const updateValues = setUpdateValues({
+    artifactsList: selectedArtifactsList,
+    serverId: guild_id,
+    updatedAt: Date.now(),
+  });
+  try {
+    await documentClient
+      .update({
+        TableName: membersTable.name.get(),
+        Key: {
+          discordMemberId: member.user.id,
+          className: existingUserClassType,
+        },
+        ReturnValues: "UPDATED_NEW",
+        UpdateExpression: updateValues.updateExpression,
+        ExpressionAttributeNames: updateValues.updateExpressionAttributeNames,
+        ExpressionAttributeValues: updateValues.updateExpressionAttributeValues,
+      })
+      .promise();
+  } catch (error) {
+    logger.log(
+      "error",
+      (error as any).message || "error occured updating record",
+      error
+    );
+  }
   logger.log("info", "values to update", {
     userExists,
     userRecord,
+    guild_id,
     selectedArtifactsList,
     creatableField,
+    updateValues,
     updatedFieldsList,
   });
-
   return {
     body: {
       embeds: [{ ...message.embeds[0], fields: updatedFieldsList }],

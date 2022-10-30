@@ -19,12 +19,12 @@ export const enum DebuffArtifactsNames {
 
 export const ArtifactsList = [
   {
-    label: "Demogorgons Reach",
+    label: "Demogorgon's Reach",
     shortName: DebuffArtifactsNames.DEMO,
     priority: 2,
   },
   {
-    label: "Mythallar",
+    label: "Mythallar Fragment",
     shortName: DebuffArtifactsNames.MYTHALLAR,
     priority: 1,
   },
@@ -34,67 +34,67 @@ export const ArtifactsList = [
     priority: 1,
   },
   {
-    label: `Wyvern - Venom Coated Knives`,
+    label: "Wyvern-Venom Coated Knives",
     shortName: DebuffArtifactsNames.WYVERN,
     priority: 3,
   },
   {
-    label: `Lantern of Revelation`,
+    label: "Lantern of Revelation",
     shortName: DebuffArtifactsNames.LANTERN,
     priority: 4,
   },
   {
-    label: `Heart of Black Dragon`,
+    label: "Heart of the Black Dragon",
     shortName: DebuffArtifactsNames.BLACK_DRAGON,
     priority: 4,
   },
   {
-    label: `Charm of the Serphant`,
+    label: "Charm of the Serpent",
     shortName: DebuffArtifactsNames.CHARM,
     priority: 4,
   },
   {
-    label: `Token of Chromatic`,
+    label: "Token of Chromatic Storm",
     shortName: DebuffArtifactsNames.TOKEN,
     priority: 4,
   },
   {
-    label: `Thirst`,
+    label: "Thirst",
     shortName: DebuffArtifactsNames.THIRST,
     priority: 4,
   },
   {
-    label: `Vanguards Banner`,
+    label: "Vanguard's Banner",
     shortName: DebuffArtifactsNames.VANGUARDS,
     priority: 5,
   },
   {
-    label: `Neverwinters Standard`,
+    label: "Neverwinter's Standard",
     shortName: DebuffArtifactsNames.STANDARD,
     priority: 5,
   },
   {
-    label: `Sparkling Fey Emblem`,
+    label: "Sparkling Fey Emblem",
     shortName: DebuffArtifactsNames.FEY_EMBLEM,
     priority: 5,
   },
   {
-    label: `Frozen Storytellers Journal`,
+    label: "Frozen Storyteller's Journal",
     shortName: DebuffArtifactsNames.FROZEN,
     priority: 5,
   },
   {
-    label: `Dragonbone Blades`,
+    label: "Dragonbone Blades",
     shortName: DebuffArtifactsNames.BLADES,
     priority: 2,
   },
   {
-    label: `Horn of Valhallah`,
+    label: "Horn of Valhalla",
     shortName: DebuffArtifactsNames.HORN,
     priority: 0,
   },
   {
-    label: `Mark of the Black Dragon`,
+    label: "Black Dragon's Mark",
     shortName: DebuffArtifactsNames.MARK,
     priority: 4,
   },

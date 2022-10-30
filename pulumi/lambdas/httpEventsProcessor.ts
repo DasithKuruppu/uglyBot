@@ -38,11 +38,11 @@ const lambdaWarmRuleHTTP = new aws.cloudwatch.EventRule(
   }
 );
 
-export const concurencyConfigFixed = new aws.lambda.ProvisionedConcurrencyConfig(`${stack}-http-events-fixed-concurrency`, {
-  functionName: httpEventsProcessor.name,
-  qualifier: httpEventsProcessor.version,
-  provisionedConcurrentExecutions: 2,
-});
+// export const concurencyConfigFixed = new aws.lambda.ProvisionedConcurrencyConfig(`${stack}-http-events-fixed-concurrency`, {
+//   functionName: httpEventsProcessor.name,
+//   qualifier: httpEventsProcessor.version,
+//   provisionedConcurrentExecutions: 2,
+// });
 
 export const eventBridgePermission = new aws.lambda.Permission(
   `${stack}_eventBridgeLambdaInvoke`,

@@ -15,10 +15,10 @@ export const supportedInteractionTypes = Object.keys(
   discordInteractionEventHandler
 );
 
-export const lambdaWarmerWrapper = async (event: any) => {};
 export const discordEventsInteractionFactoryHandler = () => {
-  const { getLogger } = startBot();
+  const { getLogger, getDocumentClient } = startBot();
   const logger = getLogger();
+  const documentClient = getDocumentClient();
   const { discordBotToken } = getEnvironmentVariables();
   const rest = new REST({ version: "10" }).setToken(discordBotToken);
   return async (event) => {
@@ -28,13 +28,17 @@ export const discordEventsInteractionFactoryHandler = () => {
     if (isWarmerEvent) {
       return "warmed";
     }
-    return discordEventsProcessingFunction(event, { logger, rest });
+    return discordEventsProcessingFunction(event, {
+      logger,
+      rest,
+      documentClient,
+    });
   };
 };
 
 export const discordEventsProcessingFunction = async (
   event: AWSLambda.SQSEvent,
-  { logger, rest }
+  { logger, rest, documentClient }
 ) => {
   const { Records = [] } = event;
   const interactionData = Records.map(({ body }) =>
@@ -68,7 +72,7 @@ export const discordEventsProcessingFunction = async (
             guild_id,
             message,
           },
-          { logger, rest }
+          { logger, rest, documentClient }
         );
         return responseResult;
       }

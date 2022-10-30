@@ -1,11 +1,11 @@
 import { initializeAll } from "./initializations";
 
 export const startBot = () => {
-  const { logger } = initializeAll();
+  const { logger, documentClient } = initializeAll();
   logger.log({
     level: "info",
     message: "Bot started !",
   });
 
-  return { getLogger: () => logger };
+  return { getLogger: () => logger, getDocumentClient: () => documentClient };
 };

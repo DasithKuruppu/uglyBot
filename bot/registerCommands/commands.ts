@@ -24,6 +24,32 @@ export const request_role = {
     },
     {
       type: 1,
+      name: "build",
+      description: "request a build",
+      options: [
+        {
+          type: 6,
+          name: "user",
+          description: "The name of the user you want the builds of",
+          required: true,
+        },
+        {
+          type: 3,
+          name: "type",
+          description: "The type of build you want",
+          required: true,
+          choices: [
+            {
+              name: "All",
+              value: "all",
+              // description: "Set type of raid to a training run",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      type: 1,
       name: "invite_link",
       description: "The number of people to invite using link between 1 - 100",
     },

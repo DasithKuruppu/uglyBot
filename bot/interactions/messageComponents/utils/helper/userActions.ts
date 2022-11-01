@@ -173,6 +173,36 @@ export const conditionsToActionsMapper = (
     {
       conditions: [
         ActionConditions.USER_DOES_NOT_EXIST_SECTION,
+        ActionConditions.WAIT_LIST_FULL,
+        ActionConditions.USER_EXITS_SECTION_FULL,
+      ],
+      actions: [
+        {
+          operation: Operation.INSERT,
+          sectionName: requestedSectionInfo.sectionName,
+          field: userField,
+          index: requestedSectionInfo.sectionUserOccupyCount,
+        },
+        {
+          operation: Operation.REPLACE,
+          sectionName: CategoryToTitleSectionMapper(
+            requestedSectionInfo.sectionName
+          ),
+          field: {
+            ...seperatedSections[
+              CategoryToTitleSectionMapper(requestedSectionInfo.sectionName)
+            ][0],
+            value: `\`Capacity: ${
+              requestedSectionInfo.sectionUserOccupyCount + 1
+            } / ${requestedSectionInfo.sectionCapacity}\``,
+          },
+          index: 0,
+        },
+      ],
+    },
+    {
+      conditions: [
+        ActionConditions.USER_DOES_NOT_EXIST_SECTION,
         ActionConditions.REQUESTED_SECTION_FULL,
       ],
       actions: [

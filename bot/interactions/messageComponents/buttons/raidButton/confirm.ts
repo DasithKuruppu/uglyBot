@@ -76,7 +76,7 @@ export const confirmButtonInteract = async (
     inline: true,
   };
 
-  const updatedFieldsList = determineActions(seperatedSections, {
+  const { updatedFieldsList } = determineActions(seperatedSections, {
     memberId: member.user.id,
     requestedUserSection: sectionName || Category.WAITLIST,
     userField: creatableField,

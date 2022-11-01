@@ -20,6 +20,7 @@ import {
   determineRaidTemplateType,
 } from "../../utils/helper/raid";
 import { isFivePersonDungeon } from "../../utils/helper/userActions";
+import { createEmbedArtifactSortContent } from "../../utils/helper/artifactsSorter";
 export const raidArtifactSelectId = "select_Artifact";
 export const raidArtifactSelect = async (
   data: APIMessageSelectMenuInteractionData,
@@ -70,7 +71,7 @@ export const raidArtifactSelect = async (
     }),
     inline: true,
   };
-  const updatedFieldsList = determineActions(seperatedSections, {
+  const {updatedFieldsList, updatedSections} = determineActions(seperatedSections, {
     memberId: member.user.id,
     requestedUserSection: sectionName as Category,
     userField: creatableField,
@@ -117,6 +118,7 @@ export const raidArtifactSelect = async (
       embeds: [{ ...message.embeds[0], fields: updatedFieldsList }],
       content: createRaidContent(message.content, {
         userActionText: `<@${member.user.id}> updated ${selectedArtifactsList.length} artifacts`,
+        userArtifacts: createEmbedArtifactSortContent(updatedSections)
       }),
     },
   };

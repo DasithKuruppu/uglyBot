@@ -10,12 +10,16 @@ import {
   getExistingMemberRecordDetails,
 } from "../../utils/categorizeEmbedFields/categorizeEmbedFields";
 import { convertToDiscordDate } from "../../utils/date/dateToDiscordTimeStamp";
+import { createEmbedArtifactSortContent } from "../../utils/helper/artifactsSorter";
 import {
   createFieldValue,
   userState,
   defaultJoinStatus,
 } from "../../utils/helper/embedFieldAttribute";
-import { createRaidContent, determineRaidTemplateType } from "../../utils/helper/raid";
+import {
+  createRaidContent,
+  determineRaidTemplateType,
+} from "../../utils/helper/raid";
 import { isFivePersonDungeon } from "../../utils/helper/userActions";
 
 export const waitlistButtonInteract = async (
@@ -51,7 +55,7 @@ export const waitlistButtonInteract = async (
       body: {
         content: createRaidContent(message.content, {
           userActionText: `<@${member.user.id}> needs to select class/artifacts before joining wait list`,
-        })
+        }),
       },
     };
   }
@@ -68,13 +72,16 @@ export const waitlistButtonInteract = async (
     inline: true,
   };
 
-  const updatedFieldsList = determineActions(seperatedSections, {
-    memberId: member.user.id,
-    requestedUserSection: Category.WAITLIST,
-    userField: creatableField,
-    factoryInits,
-    defaultSeperation: sectionSeperation,
-  });
+  const { updatedFieldsList, updatedSections } = determineActions(
+    seperatedSections,
+    {
+      memberId: member.user.id,
+      requestedUserSection: Category.WAITLIST,
+      userField: creatableField,
+      factoryInits,
+      defaultSeperation: sectionSeperation,
+    }
+  );
 
   logger.log("info", "updated fields list", {
     updatedFieldsList,
@@ -84,6 +91,7 @@ export const waitlistButtonInteract = async (
       embeds: [{ ...message.embeds[0], fields: updatedFieldsList }],
       content: createRaidContent(message.content, {
         userActionText: `<@${member.user.id}> joined wait list!`,
+        userArtifacts: createEmbedArtifactSortContent(updatedSections),
       }),
     },
   };

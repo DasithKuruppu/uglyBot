@@ -14,8 +14,12 @@ import {
   userState,
   defaultJoinStatus,
 } from "../../utils/helper/embedFieldAttribute";
-import { createRaidContent, determineRaidTemplateType } from "../../utils/helper/raid";
+import {
+  createRaidContent,
+  determineRaidTemplateType,
+} from "../../utils/helper/raid";
 import { raidConfigs } from "../../../../embeds/templates/neverwinter/config";
+import { createEmbedArtifactSortContent } from "../../utils/helper/artifactsSorter";
 
 export const wontJoinButtonInteract = async (
   data: APIMessageSelectMenuInteractionData,
@@ -54,7 +58,7 @@ export const wontJoinButtonInteract = async (
       },
     };
   }
-  const updatedFieldsList = determineActions(seperatedSections, {
+  const { updatedFieldsList } = determineActions(seperatedSections, {
     memberId: member.user.id,
     requestedUserSection: sectionName,
     userField: {
@@ -71,6 +75,7 @@ export const wontJoinButtonInteract = async (
     body: {
       content: createRaidContent(message.content, {
         userActionText: `<@${member.user.id}> rage quit the raid !`,
+        userArtifacts: createEmbedArtifactSortContent(seperatedSections),
       }),
       embeds: [
         {

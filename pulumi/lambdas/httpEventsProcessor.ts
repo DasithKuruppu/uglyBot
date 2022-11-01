@@ -14,7 +14,7 @@ export const httpEventsProcessor = new aws.lambda.CallbackFunction(
         DISCORD_SCHEDULE_EVENTS_SQS: discordScheduleEventsQueue.url.get()
       }),
     // callback: uglyBot.main,
-    // Only let this Lambda run for a minute before forcefully terminating it.
+    // Only let this Lambda run for 10 secs before forcefully terminating it.
     timeout: 10,
     runtime: aws.lambda.Runtime.NodeJS16dX,
     environment: {

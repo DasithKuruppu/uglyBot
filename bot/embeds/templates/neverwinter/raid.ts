@@ -6,7 +6,6 @@ export const defaultRaidButtonInfo = {
     joinConfirmButton: { id: `btn_join_confirmed` },
     joinWaitlistButton: { id: `btn_waitlist_join` },
     wontJoinButton: { id: `btn_wont_join` },
-    artifactsRecomendButton: { id: `btn_artifacts_recomend`}
   },
 };
 
@@ -126,19 +125,7 @@ export const raidBuilder = ({
             animated: true,
           },
           type: 2,
-        },
-        {
-          style: 2,
-          label: `Recommend Artifacts`,
-          custom_id: buttons.artifactsRecomendButton.id,
-          disabled: false,
-          emoji: {
-            id: `852657550969143306`,
-            name: `pepeshy`,
-            animated: true,
-          },
-          type: 2,
-        },
+        }
       ],
     },
   ],

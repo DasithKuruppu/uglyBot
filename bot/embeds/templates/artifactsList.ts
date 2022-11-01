@@ -1,4 +1,4 @@
-export const enum DebuffArtifactsNames {
+export const enum ArtifactsNames {
   DEMO = "Demo",
   MYTHALLAR = "Mythallar",
   HALASTERS = "Halasters",
@@ -15,87 +15,126 @@ export const enum DebuffArtifactsNames {
   BLADES = "Blades",
   HORN = "Horn",
   MARK = "Mark",
+  PALADIN_SIGIL = "Sigil",
+  TIAMAT= "Tiamat"
+}
+
+export const enum ArtifactTypes {
+  DEBUFF = "Debuff",
+  BUFF = "Buff",
+  UTILITY = "Utility",
+  MITIGATION = "Mitigation",
 }
 
 export const ArtifactsList = [
   {
     label: "Demogorgon's Reach",
-    shortName: DebuffArtifactsNames.DEMO,
+    shortName: ArtifactsNames.DEMO,
     priority: 2,
+    type: [ArtifactTypes.DEBUFF],
   },
   {
     label: "Mythallar Fragment",
-    shortName: DebuffArtifactsNames.MYTHALLAR,
+    shortName: ArtifactsNames.MYTHALLAR,
     priority: 1,
+    type: [ArtifactTypes.DEBUFF],
   },
   {
     label: "Halaster's Blast Scepter",
-    shortName: DebuffArtifactsNames.HALASTERS,
+    shortName: ArtifactsNames.HALASTERS,
     priority: 1,
+    type: [ArtifactTypes.DEBUFF],
   },
   {
     label: "Wyvern-Venom Coated Knives",
-    shortName: DebuffArtifactsNames.WYVERN,
+    shortName: ArtifactsNames.WYVERN,
     priority: 3,
+    type: [ArtifactTypes.DEBUFF, ArtifactTypes.MITIGATION],
+    nonStackingArtifact: [ArtifactsNames.BLADES],
   },
   {
     label: "Lantern of Revelation",
-    shortName: DebuffArtifactsNames.LANTERN,
+    shortName: ArtifactsNames.LANTERN,
     priority: 4,
+    type: [ArtifactTypes.DEBUFF],
   },
   {
     label: "Heart of the Black Dragon",
-    shortName: DebuffArtifactsNames.BLACK_DRAGON,
+    shortName: ArtifactsNames.BLACK_DRAGON,
     priority: 4,
+    type: [ArtifactTypes.DEBUFF],
   },
   {
     label: "Charm of the Serpent",
-    shortName: DebuffArtifactsNames.CHARM,
+    shortName: ArtifactsNames.CHARM,
     priority: 4,
+    type: [ArtifactTypes.DEBUFF],
   },
   {
     label: "Token of Chromatic Storm",
-    shortName: DebuffArtifactsNames.TOKEN,
+    shortName: ArtifactsNames.TOKEN,
     priority: 4,
+    type: [ArtifactTypes.DEBUFF],
   },
   {
     label: "Thirst",
-    shortName: DebuffArtifactsNames.THIRST,
+    shortName: ArtifactsNames.THIRST,
     priority: 4,
+    type: [ArtifactTypes.DEBUFF],
   },
   {
     label: "Vanguard's Banner",
-    shortName: DebuffArtifactsNames.VANGUARDS,
+    shortName: ArtifactsNames.VANGUARDS,
     priority: 5,
+    type: [ArtifactTypes.DEBUFF, ArtifactTypes.MITIGATION],
   },
   {
     label: "Neverwinter's Standard",
-    shortName: DebuffArtifactsNames.STANDARD,
+    shortName: ArtifactsNames.STANDARD,
     priority: 5,
+    type: [ArtifactTypes.DEBUFF],
   },
   {
     label: "Sparkling Fey Emblem",
-    shortName: DebuffArtifactsNames.FEY_EMBLEM,
+    shortName: ArtifactsNames.FEY_EMBLEM,
     priority: 5,
+    type: [ArtifactTypes.DEBUFF, ArtifactTypes.MITIGATION],
   },
   {
     label: "Frozen Storyteller's Journal",
-    shortName: DebuffArtifactsNames.FROZEN,
+    shortName: ArtifactsNames.FROZEN,
     priority: 5,
+    type: [ArtifactTypes.BUFF],
   },
   {
     label: "Dragonbone Blades",
-    shortName: DebuffArtifactsNames.BLADES,
+    shortName: ArtifactsNames.BLADES,
     priority: 2,
+    type: [ArtifactTypes.DEBUFF, ArtifactTypes.MITIGATION],
+    nonStackingArtifact: [ArtifactsNames.WYVERN],
   },
   {
     label: "Horn of Valhalla",
-    shortName: DebuffArtifactsNames.HORN,
+    shortName: ArtifactsNames.HORN,
     priority: 0,
+    type: [ArtifactTypes.UTILITY],
+  },
+  {
+    label: "Sigil of the Paladin",
+    shortName: ArtifactsNames.PALADIN_SIGIL,
+    priority: 1,
+    type: [ArtifactTypes.MITIGATION],
+  },
+  {
+    label: "Tiamat's Orb",
+    shortName: ArtifactsNames.TIAMAT,
+    priority: 1,
+    type: [ArtifactTypes.MITIGATION],
   },
   {
     label: "Black Dragon's Mark",
-    shortName: DebuffArtifactsNames.MARK,
+    shortName: ArtifactsNames.MARK,
     priority: 4,
+    type: [ArtifactTypes.DEBUFF],
   },
 ];

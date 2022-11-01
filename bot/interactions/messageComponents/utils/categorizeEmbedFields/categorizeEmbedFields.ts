@@ -124,14 +124,14 @@ export const determineActions = (
     userField,
     factoryInits,
     userRemove = false,
-    defaultSeperation
+    defaultSeperation,
   }: {
     memberId: string;
     requestedUserSection: Category;
     userField: APIEmbedField;
-    defaultSeperation: ISectionSeperation,
+    defaultSeperation: ISectionSeperation;
     factoryInits: IfactoryInitializations;
-    userRemove?: boolean,
+    userRemove?: boolean;
   }
 ) => {
   const { logger } = factoryInits;
@@ -170,7 +170,7 @@ export const determineActions = (
     [ActionConditions.USER_EXITS_SECTION_FULL]: currentUserSecInfo.sectionFull,
     [ActionConditions.REQUESTED_SECTION_FULL]: requestedSectionInfo.sectionFull,
     [ActionConditions.WAIT_LIST_FULL]: waitListSectioninfo.sectionFull,
-    [ActionConditions.USER_REMOVE]: userRemove
+    [ActionConditions.USER_REMOVE]: userRemove,
   };
 
   const actionsList = conditionsToActionsMapper(conditions, {
@@ -182,16 +182,24 @@ export const determineActions = (
     seperatedSections,
   });
 
-  logger.log("info", "actions to perform", { actionsList, conditions, currentUserSecInfo, requestedSectionInfo });
+  logger.log("info", "actions to perform", {
+    actionsList,
+    conditions,
+    currentUserSecInfo,
+    requestedSectionInfo,
+  });
   const updatedSections = actionsList
     ? executeEmbedFieldsActions({ actionsList, seperatedSections })
     : seperatedSections;
-  return Object.keys(defaultSeperation).reduce(
-    (accumulatedList: APIEmbedField[], currentSectionName) => {
-      return [...accumulatedList, ...updatedSections[currentSectionName]];
-    },
-    []
-  );
+  return {
+    updatedFieldsList: Object.keys(defaultSeperation).reduce(
+      (accumulatedList: APIEmbedField[], currentSectionName) => {
+        return [...accumulatedList, ...updatedSections[currentSectionName]];
+      },
+      []
+    ),
+    updatedSections,
+  };
 };
 
 export const getEmbedFieldsSeperatedSections = (

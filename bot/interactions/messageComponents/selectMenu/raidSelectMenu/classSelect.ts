@@ -21,6 +21,7 @@ import {
   determineRaidTemplateType,
 } from "../../utils/helper/raid";
 import { isFivePersonDungeon } from "../../utils/helper/userActions";
+import { createEmbedArtifactSortContent } from "../../utils/helper/artifactsSorter";
 export const raidClassSelectId = "select_Class";
 export const defaultArtifactState = ``;
 
@@ -90,7 +91,7 @@ export const raidClassSelect = async (
     sectionRequested: currentClassInfo?.type,
   });
 
-  const updatedFieldsList = determineActions(seperatedSections, {
+  const {updatedFieldsList, updatedSections} = determineActions(seperatedSections, {
     memberId: member.user.id,
     requestedUserSection: currentClassInfo?.type || Category.WAITLIST,
     userField: creatableField,
@@ -106,6 +107,7 @@ export const raidClassSelect = async (
       embeds: [{ ...message.embeds[0], fields: updatedFieldsList }],
       content: createRaidContent(message.content, {
         userActionText: `<@${member.user.id}> joined raid as ${requestedClass} `,
+        userArtifacts: createEmbedArtifactSortContent(updatedSections)
       }),
     },
   };

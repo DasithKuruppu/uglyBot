@@ -10,7 +10,6 @@ import {
   getEmbedFieldsSeperatedSections,
   getExistingMemberRecordDetails,
 } from "../../utils/categorizeEmbedFields/categorizeEmbedFields";
-import { convertToDiscordDate } from "../../utils/date/dateToDiscordTimeStamp";
 import {
   createFieldValue,
   userState,
@@ -19,7 +18,6 @@ import {
   createRaidContent,
   determineRaidTemplateType,
 } from "../../utils/helper/raid";
-import { isFivePersonDungeon } from "../../utils/helper/userActions";
 import { createEmbedArtifactSortContent } from "../../utils/helper/artifactsSorter";
 export const raidArtifactSelectId = "select_Artifact";
 export const raidArtifactSelect = async (

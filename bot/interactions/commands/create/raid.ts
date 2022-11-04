@@ -4,21 +4,26 @@ import {
   Routes,
   APIInteractionGuildMember,
 } from "discord.js";
+import ShortUniqueId from 'short-unique-id';
 import { Logger } from "winston";
 import { raidBuilder } from "../../../embeds/templates/neverwinter/raid";
 import { getOptionsList } from "../../../embeds/templates/neverwinter/classesList";
 import { convertToDiscordDate } from "../../messageComponents/utils/date/dateToDiscordTimeStamp";
+import { raidsTable } from "../../../../pulumi/persistantStore/tables/raids";
 import {
   createRaidNameChoicesList,
   trialNamesList,
 } from "../../../registerCommands/commands";
 import { isFivePersonDungeon } from "../../messageComponents/utils/helper/userActions";
+import { setUpdateValues } from "../../../store/utils";
 interface factoryInitializations {
   logger: Logger;
   rest: REST;
+  documentClient: any,
   interactionConfig: {
     application_id: string;
     token: string;
+    guild_id: string;
     member: APIInteractionGuildMember;
     channel_id: string;
   };
@@ -28,7 +33,7 @@ export const createRaidCommand = async (
   data: APIChatInputApplicationCommandInteractionData & { guild_id: string },
   factoryInits: factoryInitializations
 ) => {
-  const { rest, logger, interactionConfig } = factoryInits;
+  const { rest, logger, documentClient, interactionConfig } = factoryInits;
   logger.log("info", "recieved create/raid interaction", {
     data,
     interactionConfig,
@@ -60,6 +65,7 @@ export const createRaidCommand = async (
 
   const isFivePerson = isFivePersonDungeon(title);
   const requestedDate = convertToDiscordDate(dateTime);
+  const requestedRelativeDate = convertToDiscordDate(dateTime,{relative:true})
   logger.log("info", "create attributes", {isFivePerson, requestedDate, dateTime});
   const partyOptionsToMap = {
     Standard: { DPS: 6, HEALS: 2, TANKS: 2, WAITLIST: 3 },
@@ -67,10 +73,13 @@ export const createRaidCommand = async (
     Solo_heal: { DPS: 7, HEALS: 1, TANKS: 2, WAITLIST: 3 },
     Solo_tank_heal: { DPS: 8, HEALS: 1, TANKS: 1, WAITLIST: 3 },
   };
-
+  const uniqueRaidId = new ShortUniqueId({ length: 10 })();
   const raidEmbed = raidBuilder({
     title,
     description,
+    raidId: uniqueRaidId,
+    eventDateTime: requestedDate,
+    relativeEventDateTime: requestedRelativeDate,
     coverImageUrl: nameToCoverUrl[title],
     type: type || "Farm Run",
     author:
@@ -82,9 +91,45 @@ export const createRaidCommand = async (
       template: { DPS: 3, HEALS: 1, TANKS: 1, WAITLIST: 3 },
     }),
   });
+  const updateValues = setUpdateValues({
+    title,
+    creatorId: interactionConfig.member?.user?.id,
+    autorName:(interactionConfig.member as any)?.nick ||
+    interactionConfig.member?.user?.username,
+    eventDiscordDateTime: requestedDate,
+    isFivePerson,
+    description,
+    template:JSON.stringify(partyOptionsToMap[partyComposition] || {}),
+    coverImageUrl: nameToCoverUrl[title],
+    type,
+    raidEmbed: JSON.stringify(raidEmbed),
+    serverId: interactionConfig?.guild_id,
+    updatedAt: Date.now(),
+  });
+  logger.log("info", "creating raid", {
+    updateValues,
+    raidId: uniqueRaidId,
+  });
+  const createdRaid = await documentClient
+  .update({
+    TableName: raidsTable.name.get(),
+    Key: {
+      raidId: uniqueRaidId,
+      createdAt: Date.now(),
+    },
+    ReturnValues: "UPDATED_NEW",
+    UpdateExpression: updateValues.updateExpression,
+    ExpressionAttributeNames: updateValues.updateExpressionAttributeNames,
+    ExpressionAttributeValues: updateValues.updateExpressionAttributeValues,
+  })
+  .promise();
+  logger.log("info", "created raid", {
+    createdRaid,
+    updateValues,
+  });
   return {
     body: {
-      content: `Event/Raid will start at ${requestedDate}`,
+      content: `Event/Raid will start on ${requestedDate}`,
       ...raidEmbed,
       allowed_mentions: {
         parse: [],

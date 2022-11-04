@@ -24,6 +24,7 @@
         "lambda-warmer": "^1.2.2",
         "replace-in-file": "^6.3.5",
         "run-func": "^3.0.0",
+        "short-unique-id": "^4.4.4",
         "tweetnacl": "^1.0.3",
         "winston": "^3.8.1"
     }

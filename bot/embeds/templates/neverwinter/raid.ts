@@ -41,13 +41,16 @@ export const sectionTitleNames = {
   [Category.DPS_TITLE]: `__𒆜𒆜⚔️ DPS ⚔️𒆜𒆜__`,
   [Category.TANK_TITLE]: `__𒆜𒆜🛡️ TANKS 🛡️𒆜𒆜__`,
   [Category.HEALER_TITLE]: `__𒆜𒆜⚕️ HEALS ⚕️𒆜𒆜__`,
-  [Category.WAITLIST_TITLE]: `__𒆜𒆜⌛ WAITING LIST ⌛𒆜𒆜__`
-}
+  [Category.WAITLIST_TITLE]: `__𒆜𒆜⌛ WAITING LIST ⌛𒆜𒆜__`,
+};
 
 export const raidBuilder = ({
   title,
   description,
+  raidId = "defaultId",
   type = "",
+  eventDateTime = "",
+  relativeEventDateTime = "",
   author = "",
   coverImageUrl = "https://pwimages-a.akamaihd.net/arc/a7/cb/a7cbd985065cee4cfa54e285dc6a948a1564178451.jpg",
   timestamp = new Date().toISOString(),
@@ -80,7 +83,12 @@ export const raidBuilder = ({
         {
           custom_id: `select_Artifact`,
           placeholder: `Select Artifacts`,
-          options: ArtifactsList.map(({label,shortName})=>({label,value:shortName,default:false})),
+          options: ArtifactsList.map(({ label, shortName, emoji }) => ({
+            label,
+            value: shortName,
+            emoji,
+            default: false,
+          })),
           min_values: 1,
           max_values: 10,
           type: 3,
@@ -125,7 +133,7 @@ export const raidBuilder = ({
             animated: true,
           },
           type: 2,
-        }
+        },
       ],
     },
   ],
@@ -133,7 +141,7 @@ export const raidBuilder = ({
     {
       type: "rich",
       title: `${title}-${type}`,
-      description: `${description}`,
+      description: `\n🆔 ${raidId}\n⏱️ ${eventDateTime}\n⌛ ${relativeEventDateTime}\n\n${description}\n`,
       color: 0xffa200,
       // image: {
       //   url: coverImageUrl,

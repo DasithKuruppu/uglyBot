@@ -10,6 +10,7 @@ import {
   getExistingMemberRecordDetails,
 } from "../../utils/categorizeEmbedFields/categorizeEmbedFields";
 import { convertToDiscordDate } from "../../utils/date/dateToDiscordTimeStamp";
+import { extractShortArtifactNames, isEmoji } from "../../utils/helper/artifactsRenderer";
 import { createEmbedArtifactSortContent } from "../../utils/helper/artifactsSorter";
 import {
   createFieldValue,
@@ -60,14 +61,17 @@ export const waitlistButtonInteract = async (
     };
   }
   const userArtifactsParse = userExists
-    ? userArtifacts.replace(/[\{\}]+/gi, "").split(",")
+    ? userArtifacts.replace(/[\{\}]+/gi, "").split(/[,|\s]+/)
     : undefined;
+    const [firstArtifact="unknown"] = userArtifactsParse || [];
+    const isEmojiText = isEmoji(firstArtifact);
+    const emojiProcessedArtifactlist = isEmojiText ? extractShortArtifactNames(userArtifactsParse) : userArtifactsParse;
   const creatableField: EmbedField = {
     name: (userRecord as EmbedField)?.name,
     value: createFieldValue({
       memberId: member.user.id,
       userStatus: userState.TENTATIVE,
-      artifactsList: userArtifactsParse,
+      artifactsList: emojiProcessedArtifactlist,
     }),
     inline: true,
   };

@@ -245,7 +245,10 @@ export const createEmbedArtifactSortContent = (seperatedSections)=>{
   });
   const sortedArtifacts = artifactsSort(artifactMemberlist);
   const assignedArtifacts = Object.entries(sortedArtifacts)
-    .map(([user,artifactName]) => `<@${user}> => ${artifactName}`)
+    .map(([user,artifactName]) => {
+      const emojiDetails = ArtifactsList.find(({shortName})=>artifactName === shortName)?.emoji;
+      const emojiRender = emojiDetails ? `<:${emojiDetails?.name}:${emojiDetails?.id}>` : "❔";
+      return `<@${user}> => ${emojiDetails} ${artifactName}`})
     .join("\n");
   return `\n𒆜𒆜Assigned/Recommended Artifacts List𒆜𒆜\n${assignedArtifacts}\n`;
 }

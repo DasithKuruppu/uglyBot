@@ -3,6 +3,7 @@ import { warmDiscordEventsSchedule } from "./lambdas/discordEventsProcessor";
 import { warmHTTPEventsSchedule } from "./lambdas/httpEventsProcessor";
 import { discordEventsQueue } from "./sqs/discordEvents";
 import { membersTable } from "./persistantStore/tables/members";
+import { raidsTable } from "./persistantStore/tables/raids";
 //import { memberActionsTable } from "./persistantStore/tables/memberActions";
 export default {
   apiGatewayEndpointUrl: apiEndpoint.url,
@@ -15,6 +16,7 @@ export default {
   },
   persistantStore:{
     membersTable: membersTable.name,
+    raidsTable: raidsTable.name,
     //memberActionsTable: memberActionsTable.name.get()
   }
 };

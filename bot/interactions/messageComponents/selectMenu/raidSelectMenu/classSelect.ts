@@ -22,6 +22,7 @@ import {
 } from "../../utils/helper/raid";
 import { isFivePersonDungeon } from "../../utils/helper/userActions";
 import { createEmbedArtifactSortContent } from "../../utils/helper/artifactsSorter";
+import { extractShortArtifactNames, isEmoji } from "../../utils/helper/artifactsRenderer";
 export const raidClassSelectId = "select_Class";
 export const defaultArtifactState = ``;
 
@@ -56,8 +57,11 @@ export const raidClassSelect = async (
     } = {},
   ] = getExistingMemberRecordDetails(seperatedSections, member.user.id);
   const userArtifactsParse = userExists
-    ? userArtifacts.replace(/[\{\}]+/gi, "").split(",")
+    ? userArtifacts.replace(/[\{\}]+/gi, "").split(/[,|\s]+/)
     : undefined;
+  const [firstArtifact="unknown"] = userArtifactsParse || [];
+  const isEmojiText = isEmoji(firstArtifact);
+  const emojiProcessedArtifactlist = isEmojiText ? extractShortArtifactNames(userArtifactsParse) : userArtifactsParse;
   const userStatusParse = userStatus?.replace(/[\[\]]+/gi, "");
   const { Item = {} } = await documentClient
     .get({
@@ -70,14 +74,15 @@ export const raidClassSelect = async (
     .promise();
   logger.log("info", "persisted Item", {
     Item,
-    userArtifactsParse
+    userArtifactsParse,
+    emojiProcessedArtifactlist,
   });
   const creatableField: EmbedField = {
     name: requestedClass,
     value: createFieldValue({
       memberId: member.user.id,
       userStatus: userStatusParse as userState,
-      artifactsList: userArtifactsParse ? userArtifactsParse : Item?.artifactsList,
+      artifactsList: userArtifactsParse ? emojiProcessedArtifactlist : Item?.artifactsList,
     }),
     inline: true,
   };

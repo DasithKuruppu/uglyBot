@@ -1,5 +1,6 @@
 import { APIEmbedField } from "discord-api-types/payloads/v10/channel";
 import { IfactoryInitializations } from "../../typeDefinitions/event";
+import { extractFieldName } from "../helper/embedFieldAttribute";
 import {
   ActionConditions,
   conditionsToActionsMapper,
@@ -29,6 +30,7 @@ interface IExistingMemberRecordDetails {
   userRecord?: APIEmbedField;
   sectionName?: Category;
   sectionUserOccupyCount: number;
+  optionalClasses?: string[];
   sectionCapacity: number;
   userStatus?: string;
   userArtifacts?: string;
@@ -85,14 +87,22 @@ export const getExistingMemberRecordDetails = (
         const [userId, userStatus, userArtifacts] = userExists
           ? sectionRecords[foundUserIndex].value.split(seperator)
           : [];
-
+        const { fieldName = "unknown", optionalClasses = [] } = userExists
+          ? extractFieldName({
+              fieldNameText: sectionRecords[foundUserIndex].name,
+            })
+          : {};
         const returnResult = userExists
           ? [
               ...accumulated,
               {
                 userExists,
                 userIndex: foundUserIndex,
-                userRecord: sectionRecords[foundUserIndex],
+                userRecord: {
+                  ...sectionRecords[foundUserIndex],
+                  name: fieldName,
+                },
+                optionalClasses,
                 userStatus,
                 userArtifacts,
                 sectionName: currentSectionName,

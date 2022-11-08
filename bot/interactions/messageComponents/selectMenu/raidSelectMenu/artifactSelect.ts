@@ -11,6 +11,7 @@ import {
   getExistingMemberRecordDetails,
 } from "../../utils/categorizeEmbedFields/categorizeEmbedFields";
 import {
+  createFieldName,
   createFieldValue,
   userState,
 } from "../../utils/helper/embedFieldAttribute";
@@ -19,6 +20,12 @@ import {
   determineRaidTemplateType,
 } from "../../utils/helper/raid";
 import { createEmbedArtifactSortContent } from "../../utils/helper/artifactsSorter";
+import {
+  defaultClassName,
+  getOptionsList,
+  NeverwinterClassesMap,
+} from "../../../../embeds/templates/neverwinter/classesList";
+import { getLastUsersClass } from "../../utils/storeOps/fetchData";
 export const raidArtifactSelectId = "select_Artifact";
 export const raidArtifactSelect = async (
   data: APIMessageSelectMenuInteractionData,
@@ -31,6 +38,7 @@ export const raidArtifactSelect = async (
     interactionConfig: { application_id, token, guild_id, member, message },
   } = factoryInits;
   const currentFields = message.embeds[0].fields || [];
+  const [raidTitle] = (message.embeds[0]?.title || "").split("-");
   const selectedArtifactsList = data.values;
   const { templateId } = determineRaidTemplateType({
     embedFields: currentFields || [],
@@ -40,28 +48,36 @@ export const raidArtifactSelect = async (
     currentFields,
     sectionSeperation
   );
+  const defaultClass = getOptionsList().find(
+    ({ value }) => value === defaultClassName
+  );
+  const PersistedClassInfo = await getLastUsersClass(member, { documentClient });
+  const defaultClassType =
+    (new Map(NeverwinterClassesMap).get(PersistedClassInfo.className || defaultClass?.value)
+      ?.type as Category) || Category.WAITLIST;
   const [
     {
       userExists = false,
       userRecord = undefined,
       userStatus = undefined,
-      sectionName = undefined,
+      sectionName = defaultClassType,
+      optionalClasses=[],
       userIndex = 0,
     } = {},
   ] = getExistingMemberRecordDetails(seperatedSections, member.user.id);
   const existingUserClassType = userRecord?.name as string;
-  if (!userExists) {
-    return {
-      body: {
-        content: createRaidContent(message.content, {
-          userActionText: `Warning - <@${member.user.id}> has to select a class before selecting an artifact !`,
-        }),
-      },
-    };
-  }
   const userStatusParse = userStatus?.replace(/[\[\]]+/gi, "");
   const creatableField: EmbedField = {
-    name: existingUserClassType,
+    name: createFieldName(
+      {
+        fieldName:
+          (userRecord as EmbedField)?.name ||
+          PersistedClassInfo.className ||
+          (defaultClass?.value as string),
+          optionalClasses
+      },
+      { classNamesList: getOptionsList() }
+    ),
     value: createFieldValue({
       memberId: member.user.id,
       userStatus: userStatusParse as userState,
@@ -69,17 +85,21 @@ export const raidArtifactSelect = async (
     }),
     inline: true,
   };
-  const {updatedFieldsList, updatedSections} = determineActions(seperatedSections, {
-    memberId: member.user.id,
-    requestedUserSection: sectionName as Category,
-    userField: creatableField,
-    factoryInits,
-    defaultSeperation: sectionSeperation,
-  });
+  const { updatedFieldsList, updatedSections } = determineActions(
+    seperatedSections,
+    {
+      memberId: member.user.id,
+      requestedUserSection: sectionName as Category,
+      userField: creatableField,
+      factoryInits,
+      defaultSeperation: sectionSeperation,
+    }
+  );
   const updateValues = setUpdateValues({
     artifactsList: selectedArtifactsList,
     serverId: guild_id,
     updatedAt: Date.now(),
+    optionalClasses,
   });
   try {
     await documentClient
@@ -116,7 +136,7 @@ export const raidArtifactSelect = async (
       embeds: [{ ...message.embeds[0], fields: updatedFieldsList }],
       content: createRaidContent(message.content, {
         userActionText: `<@${member.user.id}> updated ${selectedArtifactsList.length} artifacts`,
-        userArtifacts: createEmbedArtifactSortContent(updatedSections)
+        userArtifacts: createEmbedArtifactSortContent(updatedSections,raidTitle),
       }),
     },
   };

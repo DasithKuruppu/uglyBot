@@ -14,9 +14,6 @@ import { Category } from "../../categorizeEmbedFields/categorizeEmbedFields";
 import { APIEmbedField } from "discord-api-types/payloads/v10/channel";
 import { NeverwinterClassesMap } from "../../../../../embeds/templates/neverwinter/classesList";
 import { createFieldValue } from "../embedFieldAttribute";
-const classMapNeverwinter = new Map<string, { type: string; emoji: string }>(
-  NeverwinterClassesMap
-);
 
 describe("User Actions - executeEmbedFieldActions", () => {
   beforeEach(() => {

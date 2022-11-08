@@ -10,8 +10,15 @@ import {
   vi,
 } from "vitest";
 import { ArtifactsNames } from "../../../../../embeds/templates/artifactsList";
+import { trialNamesList } from "../../../../../registerCommands/commands";
 import { Category } from "../../categorizeEmbedFields/categorizeEmbedFields";
-import { artifactsSort, decompressArtifacts, sortArtifactPriority, groupDecompressedArtifacts, artifactPicker} from "../artifactsSorter";
+import {
+  artifactsSort,
+  decompressArtifacts,
+  sortArtifactPriority,
+  groupDecompressedArtifacts,
+  artifactPicker,
+} from "../artifactsSorter";
 
 describe.only("artifactsSorter - decompressArtifacts", () => {
   beforeEach(() => {
@@ -50,10 +57,38 @@ describe.only("artifactsSorter - decompressArtifacts", () => {
       },
     ];
     const result = decompressArtifacts(artifactsList);
-    const sortResult = sortArtifactPriority(result);
-    const finalArtifacts = groupDecompressedArtifacts(sortResult);
-    const pickedArtifact = artifactPicker(finalArtifacts);
-    console.log(pickedArtifact);
+    expect(result.length).toBe(9);
+  });
+});
+
+describe.only("artifactsSorter - sortArtifactPriority", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.restoreAllMocks();
+    vi.resetModules();
+  });
+  test("Should return a expanded denormalized list of artifacts", () => {
+    const artifactsList = [
+      {
+        name: "Jim",
+        category: Category.DPS,
+        artifacts: [
+          ArtifactsNames.WYVERN,
+          ArtifactsNames.BLADES,
+          ArtifactsNames.LANTERN,
+        ],
+      },
+      {
+        name: "Karen",
+        category: Category.DPS,
+        artifacts: [
+          ArtifactsNames. WYVERN,
+          ArtifactsNames.BLADES,
+          ArtifactsNames.ERRATIC_DRIFT_GLOBE,
+        ],
+      },
+    ];
+    const result = artifactsSort(artifactsList, trialNamesList.COKM)
     expect(result).toBe([]);
   });
 });

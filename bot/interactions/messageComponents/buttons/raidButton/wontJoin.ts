@@ -31,6 +31,7 @@ export const wontJoinButtonInteract = async (
     interactionConfig: { application_id, token, member, message },
   } = factoryInits;
   const currentFields = message.embeds[0].fields || [];
+  const [raidTitle] = (message.embeds[0]?.title || "").split("-");
   const { templateId } = determineRaidTemplateType({
     embedFields: currentFields || [],
   });
@@ -58,24 +59,30 @@ export const wontJoinButtonInteract = async (
       },
     };
   }
-  const { updatedFieldsList } = determineActions(seperatedSections, {
-    memberId: member.user.id,
-    requestedUserSection: sectionName,
-    userField: {
-      inline: true,
-      name: sectionName,
-      value: availableSlotValue,
-    },
-    factoryInits,
-    defaultSeperation: sectionSeperation,
-    userRemove: true,
-  });
+  const { updatedFieldsList, updatedSections } = determineActions(
+    seperatedSections,
+    {
+      memberId: member.user.id,
+      requestedUserSection: sectionName,
+      userField: {
+        inline: true,
+        name: sectionName,
+        value: availableSlotValue,
+      },
+      factoryInits,
+      defaultSeperation: sectionSeperation,
+      userRemove: true,
+    }
+  );
 
   return {
     body: {
       content: createRaidContent(message.content, {
         userActionText: `<@${member.user.id}> rage quit the raid !`,
-        userArtifacts: createEmbedArtifactSortContent(seperatedSections),
+        userArtifacts: createEmbedArtifactSortContent(
+          updatedSections,
+          raidTitle
+        ),
       }),
       embeds: [
         {

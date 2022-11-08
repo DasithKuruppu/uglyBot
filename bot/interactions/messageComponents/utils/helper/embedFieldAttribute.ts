@@ -1,4 +1,5 @@
 import { ArtifactsNames } from "../../../../embeds/templates/artifactsList";
+import { getOptionsList } from "../../../../embeds/templates/neverwinter/classesList";
 import {
   displayArtifactAsEmoji,
   extractShortArtifactNames,
@@ -11,6 +12,66 @@ export enum userState {
   CONFIRMED = "Confirmed",
 }
 export const defaultJoinStatus = userState.TENTATIVE;
+
+export const createFieldName = (
+  {
+    fieldName = "",
+    optionalClasses = [],
+  }: { fieldName: string; optionalClasses?: string[] },
+  { classNamesList = [] }: { classNamesList: any[] }
+) => {
+  const foundClassName: { emoji?: any } =
+    classNamesList.find(({ value }) => value === fieldName) || {};
+  const { emoji: { id = "unknown", name = "unknown" } = {} } = foundClassName;
+  const optionalClassesEmoji = optionalClasses.map((optionalClassName) => {
+    const classDetails = classNamesList.find(
+      ({ value }) => value === optionalClassName
+    );
+    const { emoji: { id = "unknown", name = "unknown" } = {} } = classDetails;
+    return `<:${name}:${id}>`;
+  });
+  return foundClassName
+    ? `${[`<:${name}:${id}>`, ...optionalClassesEmoji].join("|")} ${fieldName}`
+    : `❔ ${fieldName}`;
+};
+
+export const extractFieldName = (
+  { fieldNameText = "" },
+  {
+    seperator = " ",
+    classNamesList = getOptionsList(),
+  }: { classNamesList?: any[]; seperator?: string } = {}
+) => {
+  const splitFieldName = fieldNameText.split(seperator);
+  const [emojis, fieldName] = splitFieldName;
+  const isEmoji = splitFieldName.length > 1;
+  const optionalClasses = isEmoji
+    ? emojis
+        .split("|")
+        .map((optionalClassEmoji) => {
+          const emojiIdCaptureRegexp = /<:.+:(.+)>/gi;
+          const [capturedText = "unknown", captureEmojiId = "unknown"] =
+          emojiIdCaptureRegexp.exec(optionalClassEmoji) || [];
+          const classDetails =
+            classNamesList.find(({ emoji: { id, name } }) => {
+              const isValid = id === captureEmojiId;
+              console.log({
+                id,
+                optionalClassEmoji,
+                capturedText,
+                captureEmojiId,
+                isValid,
+              });
+              return isValid;
+            }) || {};
+          const { value } = classDetails;
+          return value;
+        })
+        .slice(1)
+        .filter((valid) => valid)
+    : [];
+  return { fieldName: isEmoji ? fieldName : fieldNameText, optionalClasses };
+};
 
 export const createFieldValue = ({
   memberId,

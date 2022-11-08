@@ -1,3 +1,4 @@
+import { dataexchange } from "@pulumi/aws";
 import {
   ArtifactsList,
   ArtifactsNames,
@@ -8,7 +9,7 @@ import { trialNamesList } from "../../../../registerCommands/commands";
 import { Category } from "../categorizeEmbedFields/categorizeEmbedFields";
 import { extractFieldValueAttributes } from "./embedFieldAttribute";
 
-const fieldSorter = (fields) => (a, b) =>
+export const fieldSorter = (fields) => (a, b) =>
   fields
     .map((field) => {
       let order = 1;
@@ -20,27 +21,30 @@ const fieldSorter = (fields) => (a, b) =>
     })
     .reduce((p, n) => (p ? p : n), 0);
 
-export const stackingArtifacts = ArtifactsList.reduce(
-  (prev, { shortName, nonStackingArtifact }) => {
+export const getStackingArtifacts = () =>
+  ArtifactsList.reduce((prev, { shortName, nonStackingArtifact }) => {
     const foundInPrev = prev.find((stackingList) => {
       return stackingList.includes(shortName);
     });
     const isStacking =
       nonStackingArtifact && nonStackingArtifact.length >= 1 && !foundInPrev;
-    return isStacking ? [...prev, [shortName, ...(nonStackingArtifact || [])]] : prev;
-  },
-  [] as ArtifactsNames[][]
-).flatMap((stackingArtifactsList = []) => {
-  // deprioritize all except first
-  return stackingArtifactsList.slice(1);
-});
+    return isStacking
+      ? [...prev, [shortName, ...(nonStackingArtifact || [])]]
+      : prev;
+  }, [] as ArtifactsNames[][]);
 export interface IpriorityOptions {
   artifactsList?: typeof ArtifactsList;
   userType?: Category;
   deprioritizeStackingArtifacts?: boolean;
   deprioritizeMitigationArtifacts?: boolean;
   deprioritizeUtilityArtifacts?: boolean;
+  depriorotizeStackingArtifacts?: boolean;
   deprioritizeLevel?: number;
+  availableArtifacts?: {
+    name: string;
+    category: Category;
+    artifacts: string[];
+  }[];
 }
 
 export const getPriorityLevel = (
@@ -50,9 +54,27 @@ export const getPriorityLevel = (
     userType = Category.DPS,
     deprioritizeMitigationArtifacts = true,
     deprioritizeUtilityArtifacts = true,
+    depriorotizeStackingArtifacts = true,
     deprioritizeLevel = 20,
+    availableArtifacts = [],
   }: IpriorityOptions = {}
 ) => {
+  const stackingArtifacts = getStackingArtifacts();
+  const availableStackingArtifactsCount = stackingArtifacts.reduce(
+    (prev, stackingList = []) => {
+      const currentStackingListCount = stackingList.map((artifactName) => {
+        return {
+          artifactName,
+          count: availableArtifacts.filter(({ artifacts = [] }) =>
+            artifacts.includes(artifactName)
+          ).length,
+        };
+      });
+      return [...prev, currentStackingListCount.sort(fieldSorter(["-count"]))];
+    },
+    [] as any[]
+  );
+
   const artifactDetails = artifactsList.find(
     ({ shortName }) => artifactShortName === shortName
   );
@@ -63,9 +85,24 @@ export const getPriorityLevel = (
   const isDebuff = artifactDetails?.type.includes(ArtifactTypes.DEBUFF);
   const isBuff = artifactDetails?.type.includes(ArtifactTypes.BUFF);
   const isBuffDebuff = isBuff || isDebuff;
-
+  const [firstStackingArtifact, ...otherStackingArtifacts] =
+    availableStackingArtifactsCount.find((artifactsStackingCountList) =>
+      artifactsStackingCountList
+        .map(({ artifactName }) => artifactName)
+        .includes(artifactShortName)
+    ) || [];
+  const otherStackingArtifactsList = otherStackingArtifacts.map(
+    ({ artifactName }) => artifactName
+  );
   const dpsReducePriorityLevel =
     userType === Category.DPS && isBuffDebuff ? 0 : 4;
+
+  if (
+    depriorotizeStackingArtifacts &&
+    otherStackingArtifactsList.includes(artifactShortName)
+  ) {
+    return deprioritizeLevel;
+  }
 
   if (
     !isBuffDebuff &&
@@ -103,33 +140,34 @@ export const decompressArtifacts = (
 ) => {
   return availableArtifactsList.reduce(
     (prev: any[], { name, category, artifacts }) => {
-      return [
-        ...prev,
-        ...artifacts.map((artifactShortName) => {
-          const artifactDetails = ArtifactsList.find(
-            ({ shortName }) => artifactShortName === shortName
-          );
-          const usersWithArtifactCount = availableArtifactsList.reduce(
-            (prevCount, { name, artifacts: userArtifacts }) => {
-              return userArtifacts.includes(artifactShortName)
-                ? prevCount + 1
-                : prevCount;
-            },
-            0
-          );
-          return {
-            artifactShortName,
-            userName: name,
-            artifactsCount: artifacts.length,
-            usersWithArtifactCount,
-            processedPriority: getPriorityLevel(artifactShortName, {
-              ...priorityOptions,
-              userType: category,
-            }),
-            ...artifactDetails,
-          };
-        }),
-      ];
+      const artifactDecompressData = artifacts.map((artifactShortName) => {
+        const artifactDetails = ArtifactsList.find(
+          ({ shortName }) => artifactShortName === shortName
+        );
+        const usersWithArtifactCount = availableArtifactsList.reduce(
+          (prevCount, { name, artifacts: userArtifacts }) => {
+            return userArtifacts.includes(artifactShortName)
+              ? prevCount + 1
+              : prevCount;
+          },
+          0
+        );
+        const processedPriority = getPriorityLevel(artifactShortName, {
+          ...priorityOptions,
+          userType: category,
+          availableArtifacts: availableArtifactsList,
+        });
+        return {
+          artifactShortName,
+          userName: name,
+          artifactsCount: artifacts.length,
+          usersWithArtifactCount,
+          processedPriority,
+          ...artifactDetails,
+        };
+      });
+    
+      return [...prev, ...artifactDecompressData];
     },
     []
   );
@@ -140,8 +178,8 @@ export const sortArtifactPriority = (
   {
     priority = [
       "artifactsCount",
-      "usersWithArtifactCount",
       "processedPriority",
+      "usersWithArtifactCount",
     ],
   } = {}
 ) => {
@@ -160,23 +198,11 @@ export const groupDecompressedArtifacts = (decompressedArtifacts) => {
   );
 };
 
-export const artifactPicker = (
-  groupedArtifacts,
-  { stackingArtifactsList = stackingArtifacts } = {}
-) => {
+export const artifactPicker = (groupedArtifacts) => {
   const groupEntriesList = Object.entries(groupedArtifacts);
   return groupEntriesList.reduce((prev, [userName, artifacts], index) => {
     const assignableArtifact = (artifacts as string[]).find((artifactName) => {
-      const stackingArtifacts =
-        stackingArtifactsList.find((list) => list.includes(artifactName)) || [];
-      const stackingArtifactExists = prev?.assignedArtifacts?.find(
-        (assignedArtifact) =>
-          (stackingArtifacts as ArtifactsNames[]).includes(assignedArtifact)
-      );
-      return (
-        !prev?.assignedArtifacts?.includes(artifactName) &&
-        !stackingArtifactExists
-      );
+      return !prev?.assignedArtifacts?.includes(artifactName);
     });
     const isLastItem = index === groupEntriesList.length - 1;
     const returnResult = {
@@ -209,12 +235,13 @@ export const artifactsSort = (
     default: false,
   };
   const deprioritizeMitigationArtifacts = !requiresMitigation[raidName];
+  const priorityOptions = {
+    deprioritizeMitigationArtifacts,
+    deprioritizeUtilityArtifacts: raidName !== trialNamesList.TOMM,
+    deprioritizeStackingArtifacts: true,
+  };
   const decompressedArtifacts = decompressArtifacts(availableArtifactsList, {
-    priorityOptions: {
-      deprioritizeMitigationArtifacts,
-      deprioritizeUtilityArtifacts: raidName !== trialNamesList.TOMM,
-      deprioritizeStackingArtifacts: true,
-    },
+    priorityOptions,
   });
   const sortResult = sortArtifactPriority(decompressedArtifacts);
   const groupedArtifacts = groupDecompressedArtifacts(sortResult);
@@ -222,33 +249,38 @@ export const artifactsSort = (
   return pickedArtifacts;
 };
 
-
-export const createEmbedArtifactSortContent = (seperatedSections)=>{
+export const createEmbedArtifactSortContent = (seperatedSections, raidName) => {
   const artifactDetails = [
     ...seperatedSections[Category.DPS],
     ...seperatedSections[Category.TANK],
     ...seperatedSections[Category.HEALER],
   ];
   const classNamesMap = new Map(NeverwinterClassesMap);
-  const artifactMemberlist = artifactDetails.filter(({name,value})=>{
-    return value !== 'available';
-  }).map(({ name, value }) => {
-    const { memberId, userStatus, artifactsList } = extractFieldValueAttributes(
-      { fieldValueText: value }
-    );
+  const artifactMemberlist = artifactDetails
+    .filter(({ name, value }) => {
+      return value !== "available";
+    })
+    .map(({ name, value }) => {
+      const { memberId, userStatus, artifactsList } =
+        extractFieldValueAttributes({ fieldValueText: value });
 
-    return {
-      name: memberId,
-      category: (classNamesMap.get(name)?.type) as Category || Category.DPS,
-      artifacts: artifactsList,
-    };
-  });
-  const sortedArtifacts = artifactsSort(artifactMemberlist);
+      return {
+        name: memberId,
+        category: (classNamesMap.get(name)?.type as Category) || Category.DPS,
+        artifacts: artifactsList,
+      };
+    });
+  const sortedArtifacts = artifactsSort(artifactMemberlist, raidName);
   const assignedArtifacts = Object.entries(sortedArtifacts)
-    .map(([user,artifactName]) => {
-      const emojiDetails = ArtifactsList.find(({shortName})=>artifactName === shortName)?.emoji;
-      const emojiRender = emojiDetails ? `<:${emojiDetails?.name}:${emojiDetails?.id}>` : "❔";
-      return `<@${user}> => ${emojiDetails} ${artifactName}`})
+    .map(([user, artifactName]) => {
+      const emojiDetails = ArtifactsList.find(
+        ({ shortName }) => artifactName === shortName
+      )?.emoji;
+      const emojiRender = emojiDetails
+        ? `<:${emojiDetails?.name}:${emojiDetails?.id}>`
+        : "❔";
+      return `<@${user}> => ${emojiRender} ${artifactName}`;
+    })
     .join("\n");
   return `\n𒆜𒆜Assigned/Recommended Artifacts List𒆜𒆜\n${assignedArtifacts}\n`;
-}
+};

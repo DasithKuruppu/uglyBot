@@ -1,5 +1,5 @@
 import { Category } from "../../../interactions/messageComponents/utils/categorizeEmbedFields/categorizeEmbedFields";
-import { ArtifactsList } from "../artifactsList";
+import { ArtifactsList, ArtifactsNames } from "../artifactsList";
 // inside a command, event listener, etc.
 export const defaultRaidButtonInfo = {
   buttons: {
@@ -72,7 +72,7 @@ export const raidBuilder = ({
           placeholder: `Select Class`,
           options: classOptionsList || [],
           min_values: 1,
-          max_values: 1,
+          max_values: 3,
           type: 3,
         },
       ],

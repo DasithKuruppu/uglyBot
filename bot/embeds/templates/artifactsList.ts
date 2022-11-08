@@ -32,7 +32,7 @@ export const ArtifactsList = [
   {
     label: "Demogorgon's Reach",
     shortName: ArtifactsNames.DEMO,
-    priority: 2,
+    priority: 1,
     type: [ArtifactTypes.DEBUFF],
     emoji: {
       id: `999523830630461541`,
@@ -43,7 +43,7 @@ export const ArtifactsList = [
   {
     label: "Mythallar Fragment",
     shortName: ArtifactsNames.MYTHALLAR,
-    priority: 1,
+    priority: 2,
     type: [ArtifactTypes.DEBUFF],
     emoji: {
       id: `999523841544028240`,
@@ -54,7 +54,7 @@ export const ArtifactsList = [
   {
     label: "Halaster's Blast Scepter",
     shortName: ArtifactsNames.HALASTERS,
-    priority: 1,
+    priority: 2,
     type: [ArtifactTypes.DEBUFF],
     emoji: {
       id: `999523834770227270`,
@@ -65,7 +65,7 @@ export const ArtifactsList = [
   {
     label: "Wyvern-Venom Coated Knives",
     shortName: ArtifactsNames.WYVERN,
-    priority: 3,
+    priority: 4,
     type: [ArtifactTypes.DEBUFF, ArtifactTypes.MITIGATION],
     nonStackingArtifact: [ArtifactsNames.BLADES],
     emoji: {
@@ -198,7 +198,7 @@ export const ArtifactsList = [
   {
     label: "Dragonbone Blades",
     shortName: ArtifactsNames.BLADES,
-    priority: 2,
+    priority: 3,
     type: [ArtifactTypes.DEBUFF, ArtifactTypes.MITIGATION],
     nonStackingArtifact: [ArtifactsNames.WYVERN],
     emoji: {

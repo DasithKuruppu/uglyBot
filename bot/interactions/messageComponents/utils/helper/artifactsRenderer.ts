@@ -5,18 +5,16 @@ import {
 
 export const displayArtifactAsEmoji = (
   artifactShortNamesList: string[] = [],
-  { seperator = /[,|\s]+/ }={}
+  { seperator = /[,|\s]+/ } = {}
 ) => {
-  console.log({artifactShortNamesList});
-  return artifactShortNamesList
-    .map((artifactName) => {
-      const foundArtifact = ArtifactsList.find(
-        ({ shortName }) => shortName === artifactName
-      );
-      const { emoji: { id = "unknown", name = "unknown" } = {} } =
-        ArtifactsList.find(({ shortName }) => shortName === artifactName) || {};
-      return foundArtifact ? `<:${name}:${id}>` : "❔";
-    });
+  return artifactShortNamesList.map((artifactName) => {
+    const foundArtifact = ArtifactsList.find(
+      ({ shortName }) => shortName === artifactName
+    );
+    const { emoji: { id = "unknown", name = "unknown" } = {} } =
+      foundArtifact || {};
+    return foundArtifact ? `<:${name}:${id}>` : "❔";
+  });
 };
 
 export const extractShortArtifactNames = (emojiList) => {
@@ -32,7 +30,6 @@ export const extractShortArtifactNames = (emojiList) => {
   });
 };
 
-
-export const isEmoji = (emojiText)=>{
-    return emojiText.includes("<") && emojiText.includes(">");
-}
+export const isEmoji = (emojiText) => {
+  return emojiText.includes("<") && emojiText.includes(">");
+};

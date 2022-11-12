@@ -3,6 +3,7 @@ import { APIGatewayProxyEvent } from "aws-lambda";
 import winston from "winston";
 import { verifyKey } from "discord-interactions";
 import { InteractionType } from "discord.js";
+import { userProfile } from "../modals/profile"
 export const verifyRequest = (
   event: APIGatewayProxyEvent,
   factory: { logger: winston.Logger; strBody: string }
@@ -40,16 +41,37 @@ export const verifyRequest = (
       body: JSON.stringify({ type: 1 }),
     };
   }
+  const requiresModalCommand = ["create profile"];
+  const subCommandName =  body?.data?.options?.[0]?.name;
+  const commandName = [body?.data?.name, subCommandName].join(" ");
+  const isModalInteraction = requiresModalCommand.includes(commandName);
   const isMessageComponent = InteractionType.MessageComponent === body.type;
+  const responseType = isModalInteraction ? "modalInteraction" : isMessageComponent ? "messageComponent" : "default";
+  const responseTypes = {
+    messageComponent: 6,
+    modalInteraction: 9,
+    default: 4
+  }
+  logger.log("info", "command info", {
+    responseType,
+    isModalInteraction,
+    isMessageComponent,
+    commandName
+  });
   return {
     statusCode: 200,
     body: JSON.stringify({
-      type: isMessageComponent ? 6 : 4,
-      ...(!isMessageComponent && {
+      type: responseTypes[responseType],
+      ...(!isModalInteraction && !isMessageComponent && {
         data: {
           content: `Please wait while I make some 🥞 pancakes...`,
         },
       }),
+      ...(isModalInteraction) && {
+        data: {
+          ...userProfile,
+        }
+      },
     }),
   };
 };

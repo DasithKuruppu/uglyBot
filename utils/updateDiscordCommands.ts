@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { initializeAll } from "../bot/initializations";
 import { syncDiscordCommands } from "../bot/registerCommands/sync";
 import { getEnvironmentVariables } from "../bot/configs";

@@ -6,7 +6,7 @@ import {
 } from "../../../../embeds/templates/neverwinter/classesList";
 import { raidConfigs } from "../../../../embeds/templates/neverwinter/config";
 import { membersTable } from "../../../../../pulumi/persistantStore/tables/members";
-import { IfactoryInitializations } from "../../typeDefinitions/event";
+import { IfactoryInitializations } from "../../../typeDefinitions/event";
 
 import {
   Category,

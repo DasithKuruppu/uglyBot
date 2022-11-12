@@ -7,7 +7,7 @@ import {
   defaultClassName,
 } from "../../../../embeds/templates/neverwinter/classesList";
 import { raidConfigs } from "../../../../embeds/templates/neverwinter/config";
-import { IfactoryInitializations } from "../../typeDefinitions/event";
+import { IfactoryInitializations } from "../../../typeDefinitions/event";
 import {
   Category,
   determineActions,

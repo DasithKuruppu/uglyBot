@@ -38,6 +38,13 @@ export const generateAvailableFields = ({
 });
 
 export const sectionTitleNames = {
+  [Category.DPS_TITLE]: `───────── <:dps:911695908482207774> DPS <:dps:911695908482207774> ─────────`,
+  [Category.TANK_TITLE]: `──────── <:tank:911695908134060112> TANKS <:tank:911695908134060112> ────────`,
+  [Category.HEALER_TITLE]: `──────── <:healer:911695908117315654> HEALS <:healer:911695908117315654> ────────`,
+  [Category.WAITLIST_TITLE]: `────── ⌛ WAITING LIST ⌛ ──────`,
+};
+
+export const previousSectionTitleNames = {
   [Category.DPS_TITLE]: `__𒆜𒆜⚔️ DPS ⚔️𒆜𒆜__`,
   [Category.TANK_TITLE]: `__𒆜𒆜🛡️ TANKS 🛡️𒆜𒆜__`,
   [Category.HEALER_TITLE]: `__𒆜𒆜⚕️ HEALS ⚕️𒆜𒆜__`,
@@ -150,22 +157,22 @@ export const raidBuilder = ({
       // },
       fields: [
         {
-          name: `__𒆜𒆜⚔️ DPS ⚔️𒆜𒆜__`,
+          name: sectionTitleNames[Category.DPS_TITLE],
           value: `\u200B`,
         },
         ...generateAvailableFields(template).DPS,
         {
-          name: `__𒆜𒆜🛡️ TANKS 🛡️𒆜𒆜__`,
+          name: sectionTitleNames[Category.TANK_TITLE],
           value: `\u200B`,
         },
         ...generateAvailableFields(template).TANKS,
         {
-          name: `__𒆜𒆜⚕️ HEALS ⚕️𒆜𒆜__`,
+          name: sectionTitleNames[Category.HEALER_TITLE],
           value: `\u200B`,
         },
         ...generateAvailableFields(template).HEALS,
         {
-          name: `__𒆜𒆜⌛ WAITING LIST ⌛𒆜𒆜__`,
+          name: sectionTitleNames[Category.WAITLIST_TITLE],
           value: `\u200B`,
         },
         ...generateAvailableFields(template).WAITLIST,

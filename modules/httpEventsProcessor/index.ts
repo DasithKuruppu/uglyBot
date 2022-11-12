@@ -75,7 +75,6 @@ export const httpEventsHandler = async (
  * return a wrapped main function with the initialized
  * variables passed on
  * */
-
 export const httpEventsFactoryHandler = (config: any) => {
   const { getLogger } = startBot();
   const logger = getLogger();

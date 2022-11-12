@@ -1,5 +1,5 @@
 import { APIEmbedField } from "discord-api-types/payloads/v10/channel";
-import { IfactoryInitializations } from "../../typeDefinitions/event";
+import { IfactoryInitializations } from "../../../typeDefinitions/event";
 import { extractFieldName } from "../helper/embedFieldAttribute";
 import {
   ActionConditions,

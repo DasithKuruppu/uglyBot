@@ -1,7 +1,7 @@
 import { APIMessageSelectMenuInteractionData } from "discord-api-types/payloads/v10/interactions";
 import { EmbedField, Routes } from "discord.js";
 import { raidConfigs } from "../../../../embeds/templates/neverwinter/config";
-import { IfactoryInitializations } from "../../typeDefinitions/event";
+import { IfactoryInitializations } from "../../../typeDefinitions/event";
 import { membersTable } from "../../../../../pulumi/persistantStore/tables/members";
 import { setUpdateValues } from "../../../../store/utils";
 import {
@@ -53,7 +53,7 @@ export const raidArtifactSelect = async (
   );
   const PersistedClassInfo = await getLastUsersClass(member, { documentClient });
   const defaultClassType =
-    (new Map(NeverwinterClassesMap).get(PersistedClassInfo.className || defaultClass?.value)
+    (new Map(NeverwinterClassesMap).get(PersistedClassInfo?.className || defaultClass?.value)
       ?.type as Category) || Category.WAITLIST;
   const [
     {
@@ -72,7 +72,7 @@ export const raidArtifactSelect = async (
       {
         fieldName:
           (userRecord as EmbedField)?.name ||
-          PersistedClassInfo.className ||
+          PersistedClassInfo?.className ||
           (defaultClass?.value as string),
           optionalClasses
       },

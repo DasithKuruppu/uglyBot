@@ -34,7 +34,7 @@
       "distDir": "./build/utils",
       "isLibrary": true,
       "optimize": false,
-      "outputFormat": "esmodule",
+      "outputFormat": "commonjs",
       "engines": {
         "node": ">= 16"
       }
@@ -56,7 +56,6 @@
   },
   "author": "dasith kuruppu",
   "license": "MIT",
-  "type": "module",
   "dependencies": {
     "@aws-sdk/client-sqs": "^3.170.0",
     "@discordjs/rest": "^1.1.0",

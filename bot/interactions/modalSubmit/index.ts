@@ -5,44 +5,41 @@ import {
   APIChatInputApplicationCommandInteractionData,
 } from "discord.js";
 import { Logger } from "winston";
-import { createRaidCommand } from "./raid";
-import { profileCommand } from "./profile";
-import { unrecognizedCommand } from "..";
+import { unrecognizedCommand } from "../commands";
+import { userProfile } from "./userProfile";
 interface factoryInitializations {
   logger: Logger;
   rest: REST;
+  documentClient: any,
   interactionConfig: {
     application_id: string;
     token: string;
+    guild_id: string;
     member: APIInteractionGuildMember;
-    channel_id: string,
+    channel_id: string;
+    message: string;
   };
 }
 
-export const commandName_create = "create";
-export const availableSubCommands = {
-  raid: createRaidCommand,
-  user_profile: profileCommand,
+export const availableModalSubmits = {
+  user_profile: userProfile,
 };
-export const recognizedSubCommands = Object.keys(availableSubCommands);
-export const createCommand = async (
+export const recognizedSubCommands = Object.keys(availableModalSubmits);
+export const modalSubmit = async (
   data: APIChatInputApplicationCommandInteractionData & { type: number },
   factoryInits: factoryInitializations
 ) => {
   const { logger, rest, interactionConfig } = factoryInits;
-  logger.log("info", `command - ${commandName_create}`, { data });
+  logger.log("info", `submission`, { data });
   const { options, type } = data;
   const [{ name = "" } = {}] = options || [];
-  if (type !== ApplicationCommandType.ChatInput) {
-    return {
-      body: {
-        content: "Unsupported input used",
-      },
-    };
-  }
   const subCommandResult = recognizedSubCommands.includes(name)
-    ? await availableSubCommands[name](data, factoryInits)
-    : unrecognizedCommand();
+    ? await availableModalSubmits[name](data, factoryInits)
+    : {
+        body: {
+          content: "Unknown submission",
+        },
+      };
 
   return subCommandResult;
 };

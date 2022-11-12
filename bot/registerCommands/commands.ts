@@ -56,12 +56,77 @@ export const request_role = {
   ],
 };
 
+export const remove_raidUser = {
+    name: "remove",
+    description: "remove a user",
+    options: [
+      {
+        type: 1,
+        name: "raid_user",
+        description: "remove a raid user",
+        options: [
+          {
+            type: 6,
+            name: "user",
+            description: "The user you want to remove",
+            required: true,
+          },
+          {
+            type: 3,
+            name: "raid_id",
+            description: "The id of the raid you want the user removed from",
+            required: true,
+          },
+          {
+            type: 3,
+            name: "reason",
+            description: "Reason for removing",
+            required: false,
+            choices: [
+              {
+                name: "did not show up",
+                value: "did not show up",
+              },
+              {
+                name: "informed Unable to join",
+                value: "informed Unable to join",
+              },
+              {
+                name: "did not meet requirements",
+                value: "did not meet requirements",
+              },
+              {
+                name: "was wiping floor all day",
+                value: "was wiping floor all day",
+              },
+              {
+                name: "is too ugly",
+                value: "is too ugly",
+              },
+              {
+                name: "coulden't hold aggro",
+                value: "coulden't hold aggro",
+              },
+              {
+                name: "ignores mechanics",
+                value: "ignores mechanics",
+              },
+            ],
+          },
+        ],
+      },
+    ]
+  };
+
 export enum trialNamesList {
   TOMM = "Tower of the mad mage",
   ZCM = "Zariel's Challenge(Master)",
   COKM = "Crown of Keldegonn(Master)",
   TM = "Tiamat(Master)",
   TOSM = "Temple of Spider(Master)",
+  VOS = "Vault of Stars",
+  STANDARD_DUNGEON = "Standard Dungeon",
+  STANDARD_TRIAL = "Standard Trial"
 }
 
 export const createRaidNameChoicesList = [
@@ -88,6 +153,18 @@ export const createRaidNameChoicesList = [
   {
     name: trialNamesList.TOSM,
     value: trialNamesList.TOSM,
+  },
+  {
+    name: trialNamesList.VOS,
+    value: trialNamesList.VOS,
+  },
+  {
+    name: trialNamesList.STANDARD_DUNGEON,
+    value: trialNamesList.STANDARD_DUNGEON,
+  },
+  {
+    name: trialNamesList.STANDARD_TRIAL,
+    value: trialNamesList.STANDARD_TRIAL,
   },
 ];
 
@@ -180,6 +257,11 @@ export const create_raid = {
           required: false,
         },
       ],
+    },
+    {
+      type: 1,
+      name: "profile",
+      description: "Setup your profile"
     },
   ],
 };

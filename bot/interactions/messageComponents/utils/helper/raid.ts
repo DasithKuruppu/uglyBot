@@ -1,5 +1,5 @@
 import { APIEmbedField } from "discord-api-types/payloads/v10/channel";
-import { sectionTitleNames } from "../../../../embeds/templates/neverwinter/raid";
+import { previousSectionTitleNames, sectionTitleNames } from "../../../../embeds/templates/neverwinter/raid";
 import { Category } from "../categorizeEmbedFields/categorizeEmbedFields";
 import { convertToDiscordDate } from "../date/dateToDiscordTimeStamp";
 import { TitleToCategorySectionMapper } from "./userActions";
@@ -47,6 +47,10 @@ export const determineRaidTemplateType = ({
       } = processed;
       const [newSectionTitle, newSectionTitleValue] =
         Object.entries(sectionTitleNames).find(
+          ([sectionName, sectionTitle]) => {
+            return sectionTitle === name;
+          }
+        ) || Object.entries(previousSectionTitleNames).find(
           ([sectionName, sectionTitle]) => {
             return sectionTitle === name;
           }

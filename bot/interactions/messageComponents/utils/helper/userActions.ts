@@ -53,7 +53,7 @@ export interface IEmbedFieldActionsArgs {
 
 export const isFivePersonDungeon = (title = "") => {
   const [name] = title.split("-");
-  return [trialNamesList.TOSM as string].includes(name);
+  return [trialNamesList.TOSM as string, trialNamesList.STANDARD_DUNGEON, trialNamesList.VOS].includes(name);
 };
 
 export const executeEmbedFieldsActions = ({
@@ -219,7 +219,7 @@ export const conditionsToActionsMapper = (
             ...seperatedSections[Category.WAITLIST_TITLE][0],
             value: `\`Capacity: ${
               waitListSectioninfo.sectionUserOccupyCount + 1
-            } / ${requestedSectionInfo.sectionCapacity}\``,
+            } / ${waitListSectioninfo.sectionCapacity}\``,
           },
           index: 0,
         },

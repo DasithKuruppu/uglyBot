@@ -11,7 +11,7 @@ export const tenPersonSeperation: ISectionSeperation = {
   [Category.HEALER_TITLE]: { start: 10, end: 11 },
   [Category.HEALER]: { start: 11, end: 13 },
   [Category.WAITLIST_TITLE]: { start: 13, end: 14 },
-  [Category.WAITLIST]: { start: 14, end: 19 },
+  [Category.WAITLIST]: { start: 14, end: 20 },
 };
 
 export const tenPersonSoloTankSeperation: ISectionSeperation = {
@@ -22,7 +22,7 @@ export const tenPersonSoloTankSeperation: ISectionSeperation = {
   [Category.HEALER_TITLE]: { start: 10, end: 11 },
   [Category.HEALER]: { start: 11, end: 13 },
   [Category.WAITLIST_TITLE]: { start: 13, end: 14 },
-  [Category.WAITLIST]: { start: 14, end: 19 },
+  [Category.WAITLIST]: { start: 14, end: 20 },
 };
 
 export const tenPersonSoloHealSeperation: ISectionSeperation = {
@@ -33,7 +33,7 @@ export const tenPersonSoloHealSeperation: ISectionSeperation = {
   [Category.HEALER_TITLE]: { start: 11, end: 12 },
   [Category.HEALER]: { start: 12, end: 13 },
   [Category.WAITLIST_TITLE]: { start: 13, end: 14 },
-  [Category.WAITLIST]: { start: 14, end: 19 },
+  [Category.WAITLIST]: { start: 14, end: 20 },
 };
 
 export const tenPersonSoloHealTankSeperation: ISectionSeperation = {
@@ -44,7 +44,7 @@ export const tenPersonSoloHealTankSeperation: ISectionSeperation = {
   [Category.HEALER_TITLE]: { start: 11, end: 12 },
   [Category.HEALER]: { start: 12, end: 13 },
   [Category.WAITLIST_TITLE]: { start: 13, end: 14 },
-  [Category.WAITLIST]: { start: 14, end: 19 },
+  [Category.WAITLIST]: { start: 14, end: 20 },
 };
 
 export const fivePersonSeperation: ISectionSeperation = {
@@ -64,4 +64,9 @@ export const raidConfigs = {
   "1U7U1U2U1U1U1U3": tenPersonSoloHealSeperation,
   "1U8U1U1U1U1U1U3": tenPersonSoloHealTankSeperation,
   "1U3U1U1U1U1U1U3": fivePersonSeperation,
+  // compatible with previous configs
+  "1U6U1U2U1U2U1U6": tenPersonSeperation,
+  "1U7U1U1U1U2U1U6": tenPersonSoloTankSeperation,
+  "1U7U1U2U1U1U1U6": tenPersonSoloHealSeperation,
+  "1U8U1U1U1U1U1U6": tenPersonSoloHealTankSeperation,
 };

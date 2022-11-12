@@ -31,7 +31,7 @@ export const createFieldName = (
     return `<:${name}:${id}>`;
   });
   return foundClassName
-    ? `${[`<:${name}:${id}>`, ...optionalClassesEmoji].join("|")} ${fieldName}`
+    ? [`<:${name}:${id}>`, ...optionalClassesEmoji].join("|")
     : `❔ ${fieldName}`;
 };
 
@@ -44,8 +44,8 @@ export const extractFieldName = (
 ) => {
   const splitFieldName = fieldNameText.split(seperator);
   const [emojis, fieldName] = splitFieldName;
-  const isEmoji = splitFieldName.length > 1;
-  const optionalClasses = isEmoji
+  const isEmoji = /<:.+:(.+)>/gi.test(fieldNameText);
+  const classList = isEmoji
     ? emojis
         .split("|")
         .map((optionalClassEmoji) => {
@@ -55,22 +55,15 @@ export const extractFieldName = (
           const classDetails =
             classNamesList.find(({ emoji: { id, name } }) => {
               const isValid = id === captureEmojiId;
-              console.log({
-                id,
-                optionalClassEmoji,
-                capturedText,
-                captureEmojiId,
-                isValid,
-              });
               return isValid;
             }) || {};
           const { value } = classDetails;
           return value;
         })
-        .slice(1)
         .filter((valid) => valid)
-    : [];
-  return { fieldName: isEmoji ? fieldName : fieldNameText, optionalClasses };
+    : [fieldName];
+  const [primaryClass, ...optionalClasses] = classList;
+  return { fieldName: primaryClass, optionalClasses };
 };
 
 export const createFieldValue = ({

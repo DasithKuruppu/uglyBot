@@ -3,6 +3,7 @@ import {
   REST,
   Routes,
   APIInteractionGuildMember,
+  RESTPostAPIChannelMessageResult,
 } from "discord.js";
 import ShortUniqueId from 'short-unique-id';
 import { Logger } from "winston";
@@ -59,6 +60,7 @@ export const createRaidCommand = async (
       "https://cdn.player.one/sites/player.one/files/styles/full_large/public/2022/01/12/neverwinter-update.jpg",
     [trialNamesList.TM]:
       "https://db4sgowjqfwig.cloudfront.net/campaigns/68638/assets/330407/Tiamat_Mobile.jpg?1400812964",
+    [trialNamesList.VOS]: "https://pwimages-a.akamaihd.net/arc/14/57/1457e07177cd42d03f8ef695335a88441613762258.jpg",
     [trialNamesList.TOSM]:
       "https://static.wikia.nocookie.net/forgottenrealms/images/f/fd/Spider_Temple_Concept.png/revision/latest/scale-to-width-down/350?cb=20210725190230",
   };
@@ -68,9 +70,9 @@ export const createRaidCommand = async (
   const requestedRelativeDate = convertToDiscordDate(dateTime,{relative:true})
   logger.log("info", "create attributes", {isFivePerson, requestedDate, dateTime});
   const partyOptionsToMap = {
-    Standard: { DPS: 6, HEALS: 2, TANKS: 2, WAITLIST: 3 },
-    Solo_tank: { DPS: 7, HEALS: 2, TANKS: 1, WAITLIST: 3 },
-    Solo_heal: { DPS: 7, HEALS: 1, TANKS: 2, WAITLIST: 3 },
+    Standard: { DPS: 6, HEALS: 2, TANKS: 2, WAITLIST: 6 },
+    Solo_tank: { DPS: 7, HEALS: 2, TANKS: 1, WAITLIST: 6 },
+    Solo_heal: { DPS: 7, HEALS: 1, TANKS: 2, WAITLIST: 6 },
     Solo_tank_heal: { DPS: 8, HEALS: 1, TANKS: 1, WAITLIST: 3 },
   };
   const uniqueRaidId = new ShortUniqueId({ length: 10 })();
@@ -91,6 +93,25 @@ export const createRaidCommand = async (
       template: { DPS: 3, HEALS: 1, TANKS: 1, WAITLIST: 3 },
     }),
   });
+  logger.log("info", "creating raid", {
+    raidId: uniqueRaidId,
+    raidEmbed
+  });
+  const raidCreateResponse = await rest.patch(
+    (Routes as any).webhookMessage(
+      interactionConfig.application_id,
+      interactionConfig.token,
+    ),
+    {
+      body: {
+        content: `Event/Raid will start on ${requestedDate}`,
+        ...raidEmbed,
+        allowed_mentions: {
+          parse: [],
+        },
+      },
+    }
+  ) as RESTPostAPIChannelMessageResult;
   const updateValues = setUpdateValues({
     title,
     creatorId: interactionConfig.member?.user?.id,
@@ -104,11 +125,9 @@ export const createRaidCommand = async (
     type,
     raidEmbed: JSON.stringify(raidEmbed),
     serverId: interactionConfig?.guild_id,
+    messageId: raidCreateResponse?.id,
+    channelId: raidCreateResponse?.channel_id,
     updatedAt: Date.now(),
-  });
-  logger.log("info", "creating raid", {
-    updateValues,
-    raidId: uniqueRaidId,
   });
   const createdRaid = await documentClient
   .update({
@@ -123,19 +142,13 @@ export const createRaidCommand = async (
     ExpressionAttributeValues: updateValues.updateExpressionAttributeValues,
   })
   .promise();
+  
   logger.log("info", "created raid", {
     createdRaid,
     updateValues,
+    raidCreateResponse
   });
-  return {
-    body: {
-      content: `Event/Raid will start on ${requestedDate}`,
-      ...raidEmbed,
-      allowed_mentions: {
-        parse: [],
-      },
-    },
-  };
+  return false;
 };
 
 //https://discordjs.guide/popular-topics/embeds.html#resending-a-received-embed

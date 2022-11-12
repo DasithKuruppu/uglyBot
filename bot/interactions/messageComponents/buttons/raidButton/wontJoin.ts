@@ -1,7 +1,7 @@
 import { APIMessageSelectMenuInteractionData } from "discord-api-types/payloads/v10/interactions";
 import { EmbedField, Routes } from "discord.js";
 import { NeverwinterClassesMap } from "../../../../embeds/templates/neverwinter/classesList";
-import { IfactoryInitializations } from "../../typeDefinitions/event";
+import { IfactoryInitializations } from "../../../typeDefinitions/event";
 import {
   availableSlotValue,
   Category,

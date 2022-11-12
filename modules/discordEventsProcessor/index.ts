@@ -6,9 +6,11 @@ import { getEnvironmentVariables } from "../../bot/configs";
 import { applicationCommands } from "./applicationCommand";
 import { messageComponent } from "./messageComponent";
 import warmer from "lambda-warmer";
+import { modal } from "./modal";
 export const discordInteractionEventHandler = {
   [InteractionType.ApplicationCommand]: applicationCommands,
   [InteractionType.MessageComponent]: messageComponent,
+  [InteractionType.ModalSubmit]: modal
 };
 
 export const supportedInteractionTypes = Object.keys(

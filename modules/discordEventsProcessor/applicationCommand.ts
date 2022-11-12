@@ -28,9 +28,11 @@ export const applicationCommands = async (
     commandName: data.name,
     commandResponse,
   });
-  const responseResult = await rest.patch(
-    (Routes as any).webhookMessage(application_id, token),
-    commandResponse
-  );
+  const responseResult = commandResponse
+    ? await rest.patch(
+        (Routes as any).webhookMessage(application_id, token),
+        commandResponse
+      )
+    : false;
   return responseResult;
 };

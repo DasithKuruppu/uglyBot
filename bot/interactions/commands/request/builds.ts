@@ -29,8 +29,6 @@ export const buildCommand = async (
   factoryInits: factoryInitializations
 ) => {
   const { rest, logger, interactionConfig } = factoryInits;
-  const { guild_id } = interactionConfig;
-  const resolvedRoles = data.resolved?.roles || {};
   const [{ type: subCommandType, options: subCommandOptions = [] }] =
     data.options as APIApplicationCommandInteractionDataSubcommandOption[];
   const userId = subCommandOptions.find(({ name }) => name === "user")?.value;

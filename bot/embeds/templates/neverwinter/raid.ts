@@ -17,30 +17,30 @@ export const generateAvailableFields = ({
 }) => ({
   DPS: Array(DPS).fill({
     name: `DPS`,
-    value: `available`,
+    value: `-`,
     inline: true,
   }),
   TANKS: Array(TANKS).fill({
     name: `Tank`,
-    value: `available`,
+    value: `-`,
     inline: true,
   }),
   HEALS: Array(HEALS).fill({
     name: `Heal`,
-    value: `available`,
+    value: `-`,
     inline: true,
   }),
   WAITLIST: Array(WAITLIST).fill({
     name: `WAITLIST`,
-    value: `available`,
+    value: `-`,
     inline: true,
   }),
 });
 
 export const sectionTitleNames = {
   [Category.DPS_TITLE]: `───────── <:dps:911695908482207774> DPS <:dps:911695908482207774> ─────────`,
-  [Category.TANK_TITLE]: `──────── <:tank:911695908134060112> TANKS <:tank:911695908134060112> ────────`,
-  [Category.HEALER_TITLE]: `──────── <:healer:911695908117315654> HEALS <:healer:911695908117315654> ────────`,
+  [Category.TANK_TITLE]: `───────── <:tank:911695908134060112> TANKS <:tank:911695908134060112> ─────────`,
+  [Category.HEALER_TITLE]: `───────── <:healer:911695908117315654> HEALS <:healer:911695908117315654> ─────────`,
   [Category.WAITLIST_TITLE]: `────── ⌛ WAITING LIST ⌛ ──────`,
 };
 
@@ -131,7 +131,7 @@ export const raidBuilder = ({
         },
         {
           style: 4,
-          label: `Rage quit`,
+          label: `Rage Quit`,
           custom_id: buttons.wontJoinButton.id,
           disabled: false,
           emoji: {
@@ -147,7 +147,7 @@ export const raidBuilder = ({
   embeds: [
     {
       type: "rich",
-      title: `${title}-${type}`,
+      title: `${title} [${type}]`,
       description: `\n🆔 ${raidId}\n⏱️ ${eventDateTime}\n⌛ ${relativeEventDateTime}\n\n${description}\n`,
       color: 0xffa200,
       // image: {
@@ -177,14 +177,14 @@ export const raidBuilder = ({
         },
         ...generateAvailableFields(template).WAITLIST,
       ],
-      timestamp: `${timestamp}`,
+      timestamp: `${timestamp}.`,
       thumbnail: {
         url: coverImageUrl,
         height: 0,
         width: 0,
       },
       footer: {
-        text: `Created by - ${author}`,
+        text: `Created by ${author}.`,
       },
     },
   ],

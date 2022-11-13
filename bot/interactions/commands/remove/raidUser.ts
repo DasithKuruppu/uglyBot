@@ -53,8 +53,8 @@ export const removeRaidUserCommand = async (
   if (!raidChannelId || !raidMessageId) {
     return {
       body: {
-        content: `No record for this raid exists or you are not the creator of this raid. 
-        Unable to remove user <@${userId}>`,
+        content: `No record for this raid exists or you are not the creator of this raid.
+        Unable to remove <@${userId}>.`,
         allowed_mentions: {
           parse: [],
         },
@@ -68,8 +68,8 @@ export const removeRaidUserCommand = async (
   if (!findRaidMessage) {
     return {
       body: {
-        content: `Could not find the raid message accociated with this raid Id. 
-          Unable to remove user <@${userId}>`,
+        content: `Could not find the raid message associated with this raid ID.
+          Unable to remove <@${userId}>.`,
         allowed_mentions: {
           parse: [],
         },
@@ -99,7 +99,7 @@ export const removeRaidUserCommand = async (
   if (!userExists) {
     return {
       body: {
-        content: `Could not find this user <@${userId}> on the embed`,
+        content: `Could not find <@${userId}> on the embed.`,
         allowed_mentions: {
           parse: [],
         },
@@ -139,14 +139,14 @@ export const removeRaidUserCommand = async (
     findRaidMessage,
     raidEditResponse,
   });
-  const reasonText = reason ? `since he/she ${reason}` : `for no specified reason`;
+  const reasonText = reason
+    ? `since they ${reason}`
+    : `for no specified reason`;
   return {
     body: {
-      content: `<@${
-        interactionConfig.member?.user?.id
-      }> removed user <@${userId}> ${reasonText}
-      *Please do note that there is a known limitation/bug on discord API which will cause the emojis to not show up once a user is removed.
-      You could however do any interaction(like press confirm) on the embed after removing a user to make it show the emojis again*`,
+      content: `<@${interactionConfig.member?.user?.id}> removed <@${userId}> ${reasonText}.
+      *Please do note that there is a known limitation/bug on the Discord API which will cause the emojis to not show up once a user is removed.
+      You could however do any interaction (like press confirm) on the embed after removing a user to make it show the emojis again.*`,
       allowed_mentions: {
         parse: [],
       },

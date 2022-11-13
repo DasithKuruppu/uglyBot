@@ -1,20 +1,20 @@
 // using native map or other functions causes serios pulumi serialization issues so values are hardcoded atm
 export const enum ClassNames {
-  RANGER_DPS = "Ranger(DPS)",
-  PALADIN_TANK = "Paladin(Tank)",
-  PALADIN_HEAL = "Paladin(Heal)",
-  BARB_TANK = "Barbarian(Tank)",
-  BARB_DPS = "Barbarian(DPS)",
-  ROUGE_DPS = "Rogue(DPS)",
-  WIZARD_DPS = "Wizard(DPS)",
-  CLERIC_HEAL = "Cleric(Heal)",
-  CLERIC_DPS = "Cleric(DPS)",
-  BARD_DPS = "Bard(DPS)",
-  BARD_HEAL = "Bard(Heal)",
-  WARLOCK_DPS = "Warlock(DPS)",
-  WARLOCK_HEAL = "Warlock(Heal)",
-  FIGHTER_DPS = "Fighter(DPS)",
-  FIGHTER_TANK = "Fighter(TANK)",
+  RANGER_DPS = "Ranger (DPS)",
+  PALADIN_TANK = "Paladin (Tank)",
+  PALADIN_HEAL = "Paladin (Heal)",
+  BARB_TANK = "Barbarian (Tank)",
+  BARB_DPS = "Barbarian (DPS)",
+  ROUGE_DPS = "Rogue (DPS)",
+  WIZARD_DPS = "Wizard (DPS)",
+  CLERIC_HEAL = "Cleric (Heal)",
+  CLERIC_DPS = "Cleric (DPS)",
+  BARD_DPS = "Bard (DPS)",
+  BARD_HEAL = "Bard (Heal)",
+  WARLOCK_DPS = "Warlock (DPS)",
+  WARLOCK_HEAL = "Warlock (Heal)",
+  FIGHTER_DPS = "Fighter (DPS)",
+  FIGHTER_TANK = "Fighter (Tank)",
 }
 
 export const NeverwinterClassesMap: [string, { type: string }][] = [
@@ -34,7 +34,6 @@ export const NeverwinterClassesMap: [string, { type: string }][] = [
   [ClassNames.FIGHTER_DPS, { type: "DPS" }],
   [ClassNames.FIGHTER_TANK, { type: "TANK" }],
 ];
-
 
 export const defaultClassName = ClassNames.RANGER_DPS;
 

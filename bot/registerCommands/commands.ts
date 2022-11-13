@@ -254,7 +254,7 @@ export const create_raid = {
         {
           type: 4,
           name: "duration",
-          description: "Duration for the Discord event. (Default: 2 Hours)",
+          description: "Duration for the Discord event. (Default: 1 Hour)",
           required: false,
         },
       ],

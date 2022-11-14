@@ -5,6 +5,7 @@ import {
   ArtifactTypes,
 } from "../../../../embeds/templates/artifactsList";
 import { NeverwinterClassesMap } from "../../../../embeds/templates/neverwinter/classesList";
+import { availableSlotValue } from "../../../../embeds/templates/neverwinter/raid";
 import { trialNamesList } from "../../../../registerCommands/commands";
 import { Category } from "../categorizeEmbedFields/categorizeEmbedFields";
 import { extractFieldValueAttributes } from "./embedFieldAttribute";
@@ -258,7 +259,7 @@ export const createEmbedArtifactSortContent = (seperatedSections, raidName) => {
   const classNamesMap = new Map(NeverwinterClassesMap);
   const artifactMemberlist = artifactDetails
     .filter(({ name, value }) => {
-      return value !== "available";
+      return value !== availableSlotValue;
     })
     .map(({ name, value }) => {
       const { memberId, userStatus, artifactsList } =
@@ -282,5 +283,5 @@ export const createEmbedArtifactSortContent = (seperatedSections, raidName) => {
       return `<@${user}> => ${emojiRender} ${artifactName}`;
     })
     .join("\n");
-  return `\n𒆜𒆜Assigned/Recommended Artifacts List𒆜𒆜\n${assignedArtifacts}\n`;
+  return `\nAssigned/Recommended Artifacts List\n${assignedArtifacts}\n`;
 };

@@ -23,8 +23,8 @@ import {
 import {
   createRaidContent,
   determineRaidTemplateType,
+  getRaidTitle,
 } from "../../utils/helper/raid";
-import { isFivePersonDungeon } from "../../utils/helper/userActions";
 import { createEmbedArtifactSortContent } from "../../utils/helper/artifactsSorter";
 import {
   extractShortArtifactNames,
@@ -44,7 +44,7 @@ export const raidClassSelect = async (
     documentClient,
     interactionConfig: { application_id, token, guild_id, member, message },
   } = factoryInits;
-  const [raidTitle] = (message.embeds[0]?.title || "").split("-");
+  const raidTitle = getRaidTitle(message.embeds[0]?.title)?.raidTitle;
   const currentFields = message.embeds[0].fields || [];
   const [requestedClass, ...optionalRequestedClasses] = data.values;
   const currentClassInfo = new Map(
@@ -92,7 +92,7 @@ export const raidClassSelect = async (
     name: createFieldName(
       {
         fieldName: requestedClass,
-        optionalClasses: optionalRequestedClasses
+        optionalClasses: optionalRequestedClasses,
       },
       { classNamesList: getOptionsList() }
     ),

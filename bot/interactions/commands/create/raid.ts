@@ -3,6 +3,7 @@ import {
   REST,
   Routes,
   APIInteractionGuildMember,
+  RESTPostAPIChannelMessageResult,
 } from "discord.js";
 import ShortUniqueId from "short-unique-id";
 import { Logger } from "winston";

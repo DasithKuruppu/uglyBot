@@ -15,8 +15,8 @@ import {
 import { Logger } from "winston";
 import { raidsTable } from "../../../../pulumi/persistantStore/tables/raids";
 import { raidConfigs } from "../../../embeds/templates/neverwinter/config";
+import { availableSlotValue } from "../../../embeds/templates/neverwinter/raid";
 import {
-  availableSlotValue,
   Category,
   determineActions,
   getEmbedFieldsSeperatedSections,

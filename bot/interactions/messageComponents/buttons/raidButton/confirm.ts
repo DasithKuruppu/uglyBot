@@ -93,7 +93,7 @@ export const confirmButtonInteract = async (
           (userRecord as EmbedField)?.name ||
           PersistedClassInfo.className ||
           (defaultClass?.value as string),
-        optionalClasses: optionalClasses.length ? optionalClasses : PersistedClassInfo.optionalClasses
+        optionalClasses: userExists ? optionalClasses : PersistedClassInfo?.optionalClasses
       },
       { classNamesList: getOptionsList() }
     ),

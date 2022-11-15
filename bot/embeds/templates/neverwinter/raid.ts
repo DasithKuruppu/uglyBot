@@ -18,17 +18,17 @@ export const generateAvailableFields = ({
 }) => ({
   DPS: Array(DPS).fill({
     name: `DPS`,
-    value: `-`,
+    value: availableSlotValue,
     inline: true,
   }),
   TANKS: Array(TANKS).fill({
     name: `Tank`,
-    value: `-`,
+    value: availableSlotValue,
     inline: true,
   }),
   HEALS: Array(HEALS).fill({
     name: `Heal`,
-    value: `-`,
+    value: availableSlotValue,
     inline: true,
   }),
   WAITLIST: Array(WAITLIST).fill({

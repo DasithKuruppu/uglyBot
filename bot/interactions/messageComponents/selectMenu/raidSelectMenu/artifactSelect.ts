@@ -18,7 +18,6 @@ import {
 import {
   createRaidContent,
   determineRaidTemplateType,
-  getRaidTitle,
 } from "../../utils/helper/raid";
 import { createEmbedArtifactSortContent } from "../../utils/helper/artifactsSorter";
 import {
@@ -39,7 +38,7 @@ export const raidArtifactSelect = async (
     interactionConfig: { application_id, token, guild_id, member, message },
   } = factoryInits;
   const currentFields = message.embeds[0].fields || [];
-  const raidTitle = getRaidTitle(message.embeds[0]?.title)?.raidTitle;
+  const [raidTitle] = (message.embeds[0]?.title || "").split("-");
   const selectedArtifactsList = data.values;
   const { templateId } = determineRaidTemplateType({
     embedFields: currentFields || [],

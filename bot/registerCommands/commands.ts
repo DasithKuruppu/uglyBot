@@ -7,17 +7,17 @@ export const info = {
 
 export const request_role = {
   name: "request",
-  description: "Choose a type of request to make",
+  description: "Choose a type of request to make.",
   options: [
     {
       type: 1,
       name: "role",
-      description: "request a role",
+      description: "Request a role.",
       options: [
         {
           type: 8,
           name: "name",
-          description: "A valid role name",
+          description: "Choose a valid role name.",
           required: true,
         },
       ],
@@ -25,18 +25,18 @@ export const request_role = {
     {
       type: 1,
       name: "build",
-      description: "request a build",
+      description: "Request a build.",
       options: [
         {
           type: 6,
           name: "user",
-          description: "The name of the user you want the builds of",
+          description: "The name of the user you want the builds of.",
           required: true,
         },
         {
           type: 3,
           name: "type",
-          description: "The type of build you want",
+          description: "The type of build you want.",
           required: true,
           choices: [
             {
@@ -51,65 +51,65 @@ export const request_role = {
     {
       type: 1,
       name: "invite_link",
-      description: "The number of people to invite using link between 1 - 100",
+      description: "Get an invite link to invite users.",
     },
   ],
 };
 
 export const remove_raidUser = {
     name: "remove",
-    description: "remove a user",
+    description: "Remove a user from an event or raid.",
     options: [
       {
         type: 1,
         name: "raid_user",
-        description: "remove a raid user",
+        description: "Remove a raid user.",
         options: [
           {
             type: 6,
             name: "user",
-            description: "The user you want to remove",
+            description: "The user you want to remove.",
             required: true,
           },
           {
             type: 3,
             name: "raid_id",
-            description: "The id of the raid you want the user removed from",
+            description: "The ID of the raid you want the user removed from.",
             required: true,
           },
           {
             type: 3,
             name: "reason",
-            description: "Reason for removing",
+            description: "Reason for removing.",
             required: false,
             choices: [
               {
-                name: "did not show up",
+                name: "Did not show up",
                 value: "did not show up",
               },
               {
-                name: "informed Unable to join",
-                value: "informed Unable to join",
+                name: "Were unable to join",
+                value: "were unable to join",
               },
               {
-                name: "did not meet requirements",
-                value: "did not meet requirements",
+                name: "Did not meet queue requirements",
+                value: "did not meet queue requirements",
               },
               {
-                name: "was wiping floor all day",
-                value: "was wiping floor all day",
+                name: "Were wiping floor all day",
+                value: "Were wiping floor all day",
               },
               {
-                name: "is too ugly",
-                value: "is too ugly",
+                name: "Are too ugly",
+                value: "are too ugly",
               },
               {
-                name: "coulden't hold aggro",
-                value: "coulden't hold aggro",
+                name: "Could not hold aggro",
+                value: "could not hold aggro",
               },
               {
-                name: "ignores mechanics",
-                value: "ignores mechanics",
+                name: "Ignored mechanics",
+                value: "ignored mechanics",
               },
             ],
           },
@@ -125,6 +125,7 @@ export enum trialNamesList {
   TM = "Tiamat(Master)",
   TOSM = "Temple of Spider(Master)",
   VOS = "Vault of Stars",
+  DEMO = "Demorgorgon (Master)",
   STANDARD_DUNGEON = "Standard Dungeon",
   STANDARD_TRIAL = "Standard Trial"
 }
@@ -159,6 +160,10 @@ export const createRaidNameChoicesList = [
     value: trialNamesList.VOS,
   },
   {
+    name: trialNamesList.DEMO,
+    value: trialNamesList.DEMO,
+  },
+  {
     name: trialNamesList.STANDARD_DUNGEON,
     value: trialNamesList.STANDARD_DUNGEON,
   },
@@ -170,17 +175,17 @@ export const createRaidNameChoicesList = [
 
 export const create_raid = {
   name: "create",
-  description: "create a raid or event",
+  description: "Create a raid or event",
   options: [
     {
       type: 1,
       name: "raid",
-      description: "Setup a raid for a trial or dungeon",
+      description: "Set-up a raid for a trial or dungeon",
       options: [
         {
           type: 3,
           name: "name",
-          description: "Name of the trial",
+          description: "Name of the trial.",
           choices: createRaidNameChoicesList,
           required: true,
         },
@@ -194,22 +199,22 @@ export const create_raid = {
         {
           type: 3,
           name: "type",
-          description: "Set type of run",
+          description: "Set type of run.",
           required: false,
           choices: [
             {
-              name: "Training run",
-              value: "Training run",
+              name: "Training",
+              value: "Training",
               // description: "Set type of raid to a training run",
             },
             {
-              name: "Farm run",
-              value: "Farm run",
+              name: "Farm",
+              value: "Farm",
               // description: "Set type of raid to a farm run",
             },
             {
-              name: "Wipe run",
-              value: "Wipe run",
+              name: "Wipe",
+              value: "Wipe",
               // description: "Set type of raid to a wipe with a mix of experienced and inexperienced players",
             },
           ],
@@ -217,7 +222,7 @@ export const create_raid = {
         {
           type: 3,
           name: "party",
-          description: "Team composition additional configurations",
+          description: "Team composition additional configurations.",
           required: false,
           choices: [
             {
@@ -225,15 +230,15 @@ export const create_raid = {
               value: "Standard",
             },
             {
-              name: "Solo tank",
+              name: "Solo Tank",
               value: "Solo_tank",
             },
             {
-              name: "Solo heal",
+              name: "Solo Heal",
               value: "Solo_heal",
             },
             {
-              name: "Solo tank & heal",
+              name: "Solo Tank & Solo Heal",
               value: "Solo_tank_heal",
             },
           ],
@@ -241,19 +246,19 @@ export const create_raid = {
         {
           type: 3,
           name: "description",
-          description: "Set a description",
+          description: "Set a description.",
           required: false,
         },
         {
           type: 5,
           name: "enable_event",
-          description: "Create a server event(defaults to true)",
+          description: "Create a Discord server event. (Default: True)",
           required: false,
         },
         {
           type: 4,
           name: "duration",
-          description: "Duration for event(defaults to 2 hours)",
+          description: "Duration for the Discord event. (Default: 1 Hour)",
           required: false,
         },
       ],
@@ -261,7 +266,7 @@ export const create_raid = {
     {
       type: 1,
       name: "profile",
-      description: "Setup your profile"
+      description: "Set-up your profile to make future sign-ups easier!"
     },
   ],
 };

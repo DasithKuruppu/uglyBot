@@ -1,4 +1,5 @@
 import { APIEmbedField } from "discord-api-types/payloads/v10/channel";
+import { previousAvailableSlotValue, availableSlotValue } from "../../../../embeds/templates/neverwinter/raid";
 import { IfactoryInitializations } from "../../../typeDefinitions/event";
 import { extractFieldName } from "../helper/embedFieldAttribute";
 import {
@@ -7,7 +8,7 @@ import {
   executeEmbedFieldsActions,
   Operation,
 } from "../helper/userActions";
-export const availableSlotValue = "available";
+
 export enum Category {
   DPS_TITLE = "DPS_TITLE",
   DPS = "DPS",
@@ -50,7 +51,7 @@ export const getSectionInfo = (
   const sectionRecords = seperatedSections[sectionName];
   const sectionUserOccupyCount =
     sectionRecords.filter(({ name, value }) => {
-      return value !== availableSlotValue;
+      return ![availableSlotValue, previousAvailableSlotValue].includes(value);
     }).length || 0;
   const sectionCapacity = sectionRecords.length || 0;
   const sectionFull = sectionUserOccupyCount >= sectionCapacity;

@@ -9,6 +9,9 @@ export const defaultRaidButtonInfo = {
   },
 };
 
+export const availableSlotValue = "-";
+export const previousAvailableSlotValue = "available"
+
 export const generateAvailableFields = ({
   DPS = 6,
   TANKS = 2,
@@ -17,22 +20,22 @@ export const generateAvailableFields = ({
 }) => ({
   DPS: Array(DPS).fill({
     name: `DPS`,
-    value: `available`,
+    value: availableSlotValue,
     inline: true,
   }),
   TANKS: Array(TANKS).fill({
     name: `Tank`,
-    value: `available`,
+    value: availableSlotValue,
     inline: true,
   }),
   HEALS: Array(HEALS).fill({
     name: `Heal`,
-    value: `available`,
+    value: availableSlotValue,
     inline: true,
   }),
   WAITLIST: Array(WAITLIST).fill({
     name: `WAITLIST`,
-    value: `available`,
+    value: availableSlotValue,
     inline: true,
   }),
 });
@@ -147,7 +150,7 @@ export const raidBuilder = ({
   embeds: [
     {
       type: "rich",
-      title: `${title}-${type}`,
+      title: `${title} [${type}]`,
       description: `\n🆔 ${raidId}\n⏱️ ${eventDateTime}\n⌛ ${relativeEventDateTime}\n\n${description}\n`,
       color: 0xffa200,
       // image: {

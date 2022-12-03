@@ -16,7 +16,7 @@ const discordEventsQueue = new aws.sqs.Queue(`${stack}_discordEvents`, {
   contentBasedDeduplication: true,
   redrivePolicy: pulumi.interpolate`{
     "deadLetterTargetArn": "${discordEventsDeadLetter.arn}",
-    "maxReceiveCount": "1"
+    "maxReceiveCount": "2"
   }
 `,
 });

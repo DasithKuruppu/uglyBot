@@ -15,8 +15,8 @@ import {
 import { Logger } from "winston";
 import { raidsTable } from "../../../../pulumi/persistantStore/tables/raids";
 import { raidConfigs } from "../../../embeds/templates/neverwinter/config";
+import { availableSlotValue } from "../../../embeds/templates/neverwinter/raid";
 import {
-  availableSlotValue,
   Category,
   determineActions,
   getEmbedFieldsSeperatedSections,
@@ -47,7 +47,7 @@ export const removeRaidUserCommand = async (
   const reason = subCommandOptions.find(({ name }) => name === "reason")?.value;
   const creatorId = interactionConfig.member?.user?.id;
   const raidRecord = await getRaid({ raidId, creatorId }, { documentClient });
-
+  logger.log("info", { raidRecord, creatorId, raidId });
   const raidChannelId = raidRecord?.channelId;
   const raidMessageId = raidRecord?.messageId;
   if (!raidChannelId || !raidMessageId) {
@@ -139,12 +139,12 @@ export const removeRaidUserCommand = async (
     findRaidMessage,
     raidEditResponse,
   });
-  const reasonText = reason ? `since he/she ${reason}` : `for no specified reason`;
+  const reasonText = reason
+    ? `since he/she ${reason}`
+    : `for no specified reason`;
   return {
     body: {
-      content: `<@${
-        interactionConfig.member?.user?.id
-      }> removed user <@${userId}> ${reasonText}
+      content: `<@${interactionConfig.member?.user?.id}> removed user <@${userId}> ${reasonText}
       *Please do note that there is a known limitation/bug on discord API which will cause the emojis to not show up once a user is removed.
       You could however do any interaction(like press confirm) on the embed after removing a user to make it show the emojis again*`,
       allowed_mentions: {

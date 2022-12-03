@@ -23,6 +23,7 @@ import {
 import {
   createRaidContent,
   determineRaidTemplateType,
+  getRaidTitle,
 } from "../../utils/helper/raid";
 import { isFivePersonDungeon } from "../../utils/helper/userActions";
 import { createEmbedArtifactSortContent } from "../../utils/helper/artifactsSorter";
@@ -44,11 +45,11 @@ export const raidClassSelect = async (
     documentClient,
     interactionConfig: { application_id, token, guild_id, member, message },
   } = factoryInits;
-  const [raidTitle] = (message.embeds[0]?.title || "").split("-");
+  const raidTitle = getRaidTitle(message.embeds[0]?.title);
   const currentFields = message.embeds[0].fields || [];
   const [requestedClass, ...optionalRequestedClasses] = data.values;
   const currentClassInfo = new Map(
-    NeverwinterClassesMap as [[string, { type: Category; emoji: string }]]
+    NeverwinterClassesMap as [[string, { type: Category; label: string }]]
   ).get(requestedClass);
   const { templateId } = determineRaidTemplateType({
     embedFields: currentFields || [],
@@ -131,7 +132,7 @@ export const raidClassSelect = async (
     body: {
       embeds: [{ ...message.embeds[0], fields: updatedFieldsList }],
       content: createRaidContent(message.content, {
-        userActionText: `<@${member.user.id}> joined raid as ${requestedClass} `,
+        userActionText: `<@${member.user.id}> joined raid as ${requestedClass}.`,
         userArtifacts: createEmbedArtifactSortContent(
           updatedSections,
           raidTitle

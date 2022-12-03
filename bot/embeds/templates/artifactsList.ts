@@ -18,7 +18,9 @@ export const enum ArtifactsNames {
   PALADIN_SIGIL = "Sigil",
   TIAMAT= "Tiamat",
   ERRATIC_DRIFT_GLOBE = "Globe",
-  TYMORAS_LUCKY_COIN = "Tymora_Coin"
+  TYMORAS_LUCKY_COIN = "Tymora_Coin",
+  ASSASSINS_DICE = "Dice",
+  TENTACLE_ROD = "Tentacle_Rod"
 }
 
 export const enum ArtifactTypes {
@@ -37,6 +39,28 @@ export const ArtifactsList = [
     emoji: {
       id: `999523830630461541`,
       name: `Demo`,
+      animated: false,
+    },
+  },
+  {
+    label: "Assassins's Dice",
+    shortName: ArtifactsNames.ASSASSINS_DICE,
+    priority: 3,
+    type: [ArtifactTypes.DEBUFF],
+    emoji: {
+      id: `1043356399587033088`,
+      name: `AssassinsDice`,
+      animated: false,
+    },
+  },
+  {
+    label: "Tentacle Rod",
+    shortName: ArtifactsNames.TENTACLE_ROD,
+    priority: 3,
+    type: [ArtifactTypes.DEBUFF],
+    emoji: {
+      id: `1043356048356036651`,
+      name: `TentacleRod`,
       animated: false,
     },
   },

@@ -3,8 +3,9 @@ import {
   REST,
   Routes,
   APIInteractionGuildMember,
+  RESTPostAPIChannelMessageResult,
 } from "discord.js";
-import ShortUniqueId from "short-unique-id";
+import ShortUniqueId from 'short-unique-id';
 import { Logger } from "winston";
 import { raidBuilder } from "../../../embeds/templates/neverwinter/raid";
 import { getOptionsList } from "../../../embeds/templates/neverwinter/classesList";
@@ -19,7 +20,7 @@ import { setUpdateValues } from "../../../store/utils";
 interface factoryInitializations {
   logger: Logger;
   rest: REST;
-  documentClient: any;
+  documentClient: any,
   interactionConfig: {
     application_id: string;
     token: string;
@@ -59,22 +60,15 @@ export const createRaidCommand = async (
       "https://cdn.player.one/sites/player.one/files/styles/full_large/public/2022/01/12/neverwinter-update.jpg",
     [trialNamesList.TM]:
       "https://db4sgowjqfwig.cloudfront.net/campaigns/68638/assets/330407/Tiamat_Mobile.jpg?1400812964",
-    [trialNamesList.VOS]:
-      "https://pwimages-a.akamaihd.net/arc/14/57/1457e07177cd42d03f8ef695335a88441613762258.jpg",
+    [trialNamesList.VOS]: "https://pwimages-a.akamaihd.net/arc/14/57/1457e07177cd42d03f8ef695335a88441613762258.jpg",
     [trialNamesList.TOSM]:
       "https://static.wikia.nocookie.net/forgottenrealms/images/f/fd/Spider_Temple_Concept.png/revision/latest/scale-to-width-down/350?cb=20210725190230",
   };
 
   const isFivePerson = isFivePersonDungeon(title);
   const requestedDate = convertToDiscordDate(dateTime);
-  const requestedRelativeDate = convertToDiscordDate(dateTime, {
-    relative: true,
-  });
-  logger.log("info", "create attributes", {
-    isFivePerson,
-    requestedDate,
-    dateTime,
-  });
+  const requestedRelativeDate = convertToDiscordDate(dateTime,{relative:true})
+  logger.log("info", "create attributes", {isFivePerson, requestedDate, dateTime});
   const partyOptionsToMap = {
     Standard: { DPS: 6, HEALS: 2, TANKS: 2, WAITLIST: 6 },
     Solo_tank: { DPS: 7, HEALS: 2, TANKS: 1, WAITLIST: 6 },
@@ -89,7 +83,7 @@ export const createRaidCommand = async (
     eventDateTime: requestedDate,
     relativeEventDateTime: requestedRelativeDate,
     coverImageUrl: nameToCoverUrl[title],
-    type: type || "Farm",
+    type: type || "Farm Run",
     author:
       (interactionConfig.member as any)?.nick ||
       interactionConfig.member.user.username,
@@ -101,33 +95,32 @@ export const createRaidCommand = async (
   });
   logger.log("info", "creating raid", {
     raidId: uniqueRaidId,
-    raidEmbed,
+    raidEmbed
   });
-  const raidCreateResponse = (await rest.patch(
+  const raidCreateResponse = await rest.patch(
     (Routes as any).webhookMessage(
       interactionConfig.application_id,
-      interactionConfig.token
+      interactionConfig.token,
     ),
     {
       body: {
-        content: `The Event/Raid will start on ${requestedDate}.`,
+        content: `Event/Raid will start on ${requestedDate}`,
         ...raidEmbed,
         allowed_mentions: {
           parse: [],
         },
       },
     }
-  )) as RESTPostAPIChannelMessageResult;
+  ) as RESTPostAPIChannelMessageResult;
   const updateValues = setUpdateValues({
     title,
     creatorId: interactionConfig.member?.user?.id,
-    autorName:
-      (interactionConfig.member as any)?.nick ||
-      interactionConfig.member?.user?.username,
+    autorName:(interactionConfig.member as any)?.nick ||
+    interactionConfig.member?.user?.username,
     eventDiscordDateTime: requestedDate,
     isFivePerson,
     description,
-    template: JSON.stringify(partyOptionsToMap[partyComposition] || {}),
+    template:JSON.stringify(partyOptionsToMap[partyComposition] || {}),
     coverImageUrl: nameToCoverUrl[title],
     type,
     raidEmbed: JSON.stringify(raidEmbed),
@@ -137,23 +130,23 @@ export const createRaidCommand = async (
     updatedAt: Date.now(),
   });
   const createdRaid = await documentClient
-    .update({
-      TableName: raidsTable.name.get(),
-      Key: {
-        raidId: uniqueRaidId,
-        createdAt: Date.now(),
-      },
-      ReturnValues: "UPDATED_NEW",
-      UpdateExpression: updateValues.updateExpression,
-      ExpressionAttributeNames: updateValues.updateExpressionAttributeNames,
-      ExpressionAttributeValues: updateValues.updateExpressionAttributeValues,
-    })
-    .promise();
-
+  .update({
+    TableName: raidsTable.name.get(),
+    Key: {
+      raidId: uniqueRaidId,
+      createdAt: Date.now(),
+    },
+    ReturnValues: "UPDATED_NEW",
+    UpdateExpression: updateValues.updateExpression,
+    ExpressionAttributeNames: updateValues.updateExpressionAttributeNames,
+    ExpressionAttributeValues: updateValues.updateExpressionAttributeValues,
+  })
+  .promise();
+  
   logger.log("info", "created raid", {
     createdRaid,
     updateValues,
-    raidCreateResponse,
+    raidCreateResponse
   });
   return false;
 };

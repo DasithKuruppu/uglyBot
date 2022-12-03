@@ -14,6 +14,7 @@ import { Category } from "../../categorizeEmbedFields/categorizeEmbedFields";
 import { APIEmbedField } from "discord-api-types/payloads/v10/channel";
 import { NeverwinterClassesMap } from "../../../../../embeds/templates/neverwinter/classesList";
 import { createFieldValue } from "../embedFieldAttribute";
+import { availableSlotValue } from "../../../../../embeds/templates/neverwinter/raid";
 
 describe("User Actions - executeEmbedFieldActions", () => {
   beforeEach(() => {
@@ -28,12 +29,12 @@ describe("User Actions - executeEmbedFieldActions", () => {
     [Category.DPS]: [
       {
         inline: true,
-        value: "available",
+        value: availableSlotValue,
         name: className,
       },
       {
         inline: true,
-        value: "available",
+        value: availableSlotValue,
         name: className,
       },
     ] as APIEmbedField[],
@@ -174,17 +175,7 @@ describe("User Actions - executeEmbedFieldActions", () => {
     });
     expect(indexOneResult).toStrictEqual({
       ...seperatedSections,
-      [Category.DPS]: [seperatedSections[Category.DPS][0],{...testField, value: "available", name: Category.DPS }] as APIEmbedField[],
+      [Category.DPS]: [seperatedSections[Category.DPS][0],{...testField, value: availableSlotValue, name: Category.DPS }] as APIEmbedField[],
     });
-
-    // expect(indexTwoResult).toStrictEqual({
-    //   ...seperatedSections,
-    //   [Category.DPS]: [...seperatedSections[Category.DPS]] as APIEmbedField[],
-    // });
-
-    // expect(indexZeroResult).toStrictEqual({
-    //   ...seperatedSections,
-    //   [Category.DPS]: [seperatedSections[Category.DPS][1]] as APIEmbedField[],
-    // });
   });
 });

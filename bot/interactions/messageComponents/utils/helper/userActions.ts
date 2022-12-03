@@ -1,7 +1,7 @@
 import { APIEmbedField } from "discord-api-types/payloads/v10/channel";
+import { availableSlotValue } from "../../../../embeds/templates/neverwinter/raid";
 import { trialNamesList } from "../../../../registerCommands/commands";
 import {
-  availableSlotValue,
   Category,
   getSectionInfo,
   ISectionInfo,

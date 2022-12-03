@@ -29,7 +29,7 @@ export const createEvent = async (
     ({ name }) => name === "enable_event"
   )?.value;
   const durationHours =
-    raidOptions.find(({ name }) => name === "duration")?.value || 2;
+    raidOptions.find(({ name }) => name === "duration")?.value || 1;
   const description =
     raidOptions.find(({ name }) => name === "description")?.value || "";
 

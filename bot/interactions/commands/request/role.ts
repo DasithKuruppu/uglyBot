@@ -76,14 +76,31 @@ export const requestRoleCommand = async (
       },
     };
   }
-  const patchResult = await rest.put(
-    (Routes as any).guildMemberRole(
-      guild_id as string,
-      interactionConfig.member.user.id,
-      currentRole.id
-    )
-  );
-  logger.log("info", "role assigned", { patchResult });
+  try {
+    const patchResult = await rest.put(
+      (Routes as any).guildMemberRole(
+        guild_id as string,
+        interactionConfig.member.user.id,
+        currentRole.id
+      )
+    );
+    logger.log("info", "role assigned", { patchResult });
+  } catch (error) {
+    logger.error("info", "error assigning role", { error });
+    return {
+      body: {
+        content: Object.keys(disallowedRolesMessages).includes(currentRole.name)
+          ? disallowedRolesMessages[currentRole?.name]({
+              roleId: currentRole.id,
+            })
+          : `Sorry I am not allowed to assign the role - <@&${currentRole.id}>`,
+        allowed_mentions: {
+          parse: [],
+        },
+      },
+    };
+  }
+
   return {
     body: {
       content: `Requested role - <@&${currentRole.id}> assigned`,

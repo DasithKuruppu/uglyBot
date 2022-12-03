@@ -1,6 +1,5 @@
 import { APIMessageSelectMenuInteractionData } from "discord-api-types/payloads/v10/interactions";
-import { EmbedField, Routes } from "discord.js";
-import { membersTable } from "../../../../../pulumi/persistantStore/tables/members";
+import { EmbedField } from "discord.js";
 import {
   getOptionsList,
   NeverwinterClassesMap,
@@ -14,14 +13,12 @@ import {
   getEmbedFieldsSeperatedSections,
   getExistingMemberRecordDetails,
 } from "../../utils/categorizeEmbedFields/categorizeEmbedFields";
-import { convertToDiscordDate } from "../../utils/date/dateToDiscordTimeStamp";
 import {
   extractShortArtifactNames,
   isEmoji,
 } from "../../utils/helper/artifactsRenderer";
 import {
   createEmbedArtifactSortContent,
-  fieldSorter,
 } from "../../utils/helper/artifactsSorter";
 import {
   createFieldValue,
@@ -32,6 +29,7 @@ import {
 import {
   createRaidContent,
   determineRaidTemplateType,
+  getRaidTitle,
 } from "../../utils/helper/raid";
 import { getLastUsersClass } from "../../utils/storeOps/fetchData";
 
@@ -46,7 +44,7 @@ export const waitlistButtonInteract = async (
     interactionConfig: { application_id, token, member, message },
   } = factoryInits;
   const currentFields = message.embeds[0].fields || [];
-  const [raidTitle] = (message.embeds[0]?.title || "").split("-");
+  const raidTitle = getRaidTitle(message.embeds[0]?.title);
   const { templateId } = determineRaidTemplateType({
     embedFields: currentFields || [],
   });
@@ -91,7 +89,7 @@ export const waitlistButtonInteract = async (
           (userRecord as EmbedField)?.name ||
           PersistedClassInfo.className ||
           (defaultClass?.value as string),
-        optionalClasses: optionalClasses.length ? optionalClasses : PersistedClassInfo.optionalClasses,
+        optionalClasses: userExists ? optionalClasses : PersistedClassInfo?.optionalClasses,
       },
       { classNamesList: getOptionsList() }
     ),

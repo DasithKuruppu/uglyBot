@@ -3,6 +3,7 @@ import { EmbedField, Routes } from "discord.js";
 import { NeverwinterClassesMap } from "../../../../embeds/templates/neverwinter/classesList";
 import { IfactoryInitializations } from "../../../typeDefinitions/event";
 import {
+  availableSlotValue,
   Category,
   determineActions,
   getEmbedFieldsSeperatedSections,
@@ -16,11 +17,9 @@ import {
 import {
   createRaidContent,
   determineRaidTemplateType,
-  getRaidTitle,
 } from "../../utils/helper/raid";
 import { raidConfigs } from "../../../../embeds/templates/neverwinter/config";
 import { createEmbedArtifactSortContent } from "../../utils/helper/artifactsSorter";
-import { availableSlotValue } from "../../../../embeds/templates/neverwinter/raid";
 
 export const wontJoinButtonInteract = async (
   data: APIMessageSelectMenuInteractionData,
@@ -32,7 +31,7 @@ export const wontJoinButtonInteract = async (
     interactionConfig: { application_id, token, member, message },
   } = factoryInits;
   const currentFields = message.embeds[0].fields || [];
-  const raidTitle = getRaidTitle(message.embeds[0]?.title)?.raidTitle;
+  const [raidTitle] = (message.embeds[0]?.title || "").split("-");
   const { templateId } = determineRaidTemplateType({
     embedFields: currentFields || [],
   });

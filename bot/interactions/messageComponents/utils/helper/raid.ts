@@ -1,8 +1,5 @@
 import { APIEmbedField } from "discord-api-types/payloads/v10/channel";
-import {
-  previousSectionTitleNames,
-  sectionTitleNames,
-} from "../../../../embeds/templates/neverwinter/raid";
+import { previousSectionTitleNames, sectionTitleNames } from "../../../../embeds/templates/neverwinter/raid";
 import { Category } from "../categorizeEmbedFields/categorizeEmbedFields";
 import { convertToDiscordDate } from "../date/dateToDiscordTimeStamp";
 import { TitleToCategorySectionMapper } from "./userActions";
@@ -28,7 +25,7 @@ export const createRaidContent = (
     : "";
   const processedUserArtifacts = userArtifacts
     ? userArtifacts
-    : artifactsTextList.join("\n");
+    : artifactsTextList.join('\n');
   return `${processedEventDate}\nLast activity(${convertToDiscordDate("now", {
     relative: true,
   })}) :\n${userActionText}\n${processedUserArtifacts}`;
@@ -53,13 +50,11 @@ export const determineRaidTemplateType = ({
           ([sectionName, sectionTitle]) => {
             return sectionTitle === name;
           }
-        ) ||
-        Object.entries(previousSectionTitleNames).find(
+        ) || Object.entries(previousSectionTitleNames).find(
           ([sectionName, sectionTitle]) => {
             return sectionTitle === name;
           }
-        ) ||
-        [];
+        ) || [];
       const isNewSection =
         newSectionTitle && currentSectionCategoryTitle !== newSectionTitle;
       const activeCategoryTitleSection = isNewSection
@@ -140,19 +135,4 @@ export const determineRaidTemplateType = ({
     ].join("U"),
   };
   return standardizedTemplateInfo;
-};
-
-export const getRaidTitle = (
-  embedTitle: string = "Temple of the Spider (Master) [Farm]"
-) => {
-  const isOldDelimiter = embedTitle.includes("-");
-  const embedTitleRegexp = /([\w()\s]+)\[(\w+)\]/gi;
-  const [capturedOriginalTitle, raidTitle, raidType] = isOldDelimiter
-    ? [embedTitle, ...(embedTitle.split("-"))]
-    : embedTitleRegexp.exec(embedTitle) || [];
-
-  return {
-    raidTitle: raidTitle.trim(),
-    raidType: raidType.trim(),
-  };
 };

@@ -1,13 +1,12 @@
 import { ArtifactsNames } from "../../../../embeds/templates/artifactsList";
 import { getOptionsList } from "../../../../embeds/templates/neverwinter/classesList";
-import { availableSlotValue } from "../../../../embeds/templates/neverwinter/raid";
 import {
   displayArtifactAsEmoji,
   extractShortArtifactNames,
   isEmoji,
 } from "./artifactsRenderer";
 
-export const memmberNotExist = availableSlotValue;
+export const memmberNotExist = "available";
 export enum userState {
   TENTATIVE = "Tentative",
   CONFIRMED = "Confirmed",

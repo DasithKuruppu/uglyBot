@@ -92,7 +92,7 @@ export const waitlistButtonInteract = async (
           (userRecord as EmbedField)?.name ||
           PersistedClassInfo.className ||
           (defaultClass?.value as string),
-        optionalClasses: userExists ? optionalClasses : PersistedClassInfo.optionalClasses,
+        optionalClasses: optionalClasses.length ? optionalClasses : PersistedClassInfo.optionalClasses,
       },
       { classNamesList: getOptionsList() }
     ),

@@ -8,8 +8,7 @@ export const defaultRaidButtonInfo = {
     wontJoinButton: { id: `btn_wont_join` },
   },
 };
-export const availableSlotValue = "-";
-export const previousAvailableSlotValue = "available"
+
 export const generateAvailableFields = ({
   DPS = 6,
   TANKS = 2,
@@ -33,7 +32,7 @@ export const generateAvailableFields = ({
   }),
   WAITLIST: Array(WAITLIST).fill({
     name: `WAITLIST`,
-    value: availableSlotValue,
+    value: `-`,
     inline: true,
   }),
 });
@@ -178,7 +177,7 @@ export const raidBuilder = ({
         },
         ...generateAvailableFields(template).WAITLIST,
       ],
-      timestamp,
+      timestamp: `${timestamp}.`,
       thumbnail: {
         url: coverImageUrl,
         height: 0,

@@ -32,7 +32,6 @@ import {
 import {
   createRaidContent,
   determineRaidTemplateType,
-  getRaidTitle,
 } from "../../utils/helper/raid";
 import { getLastUsersClass } from "../../utils/storeOps/fetchData";
 
@@ -47,7 +46,7 @@ export const waitlistButtonInteract = async (
     interactionConfig: { application_id, token, member, message },
   } = factoryInits;
   const currentFields = message.embeds[0].fields || [];
-  const raidTitle = getRaidTitle(message.embeds[0]?.title)?.raidTitle;
+  const [raidTitle] = (message.embeds[0]?.title || "").split("-");
   const { templateId } = determineRaidTemplateType({
     embedFields: currentFields || [],
   });

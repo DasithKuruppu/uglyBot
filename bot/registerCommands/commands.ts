@@ -286,12 +286,12 @@ export const create_raid = {
           description: "Set a description.",
           required: false,
         },
-        {
-          type: 5,
-          name: "enable_event",
-          description: "Create a Discord server event. (Default: True)",
-          required: false,
-        },
+        // {
+        //   type: 5,
+        //   name: "enable_event",
+        //   description: "Create a Discord server event. (Default: True)",
+        //   required: false,
+        // },
         {
           type: 4,
           name: "duration",

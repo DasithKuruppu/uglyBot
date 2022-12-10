@@ -16,6 +16,7 @@ import { Logger } from "winston";
 import { raidsTable } from "../../../../pulumi/persistantStore/tables/raids";
 import { raidConfigs } from "../../../embeds/templates/neverwinter/config";
 import { availableSlotValue } from "../../../embeds/templates/neverwinter/raid";
+import { setUpdateValues } from "../../../store/utils";
 import {
   Category,
   determineActions,
@@ -41,9 +42,8 @@ export const removeRaidUserCommand = async (
   const [{ type: subCommandType, options: subCommandOptions = [] }] =
     data.options as APIApplicationCommandInteractionDataSubcommandOption[];
   const userId = subCommandOptions.find(({ name }) => name === "user")?.value;
-  const raidId = subCommandOptions.find(
-    ({ name }) => name === "raid_id"
-  )?.value;
+  const raidId = subCommandOptions.find(({ name }) => name === "raid_id")
+    ?.value as string;
   const reason = subCommandOptions.find(({ name }) => name === "reason")?.value;
   const creatorId = interactionConfig.member?.user?.id;
   const raidRecord = await getRaid({ raidId, creatorId }, { documentClient });
@@ -76,8 +76,13 @@ export const removeRaidUserCommand = async (
       },
     };
   }
-  const { content, embeds } = findRaidMessage;
-  const [currentEmbed] = embeds;
+  const { content, embeds, components } = findRaidMessage;
+  const [previousPendingUpdate] = JSON.parse(
+    raidRecord?.pendingUpdates || "[]"
+  ).slice(-1);
+  const [currentEmbed] = raidRecord?.hasPendingUpdates
+    ? previousPendingUpdate?.embeds
+    : embeds;
   const { templateId } = determineRaidTemplateType({
     embedFields: currentEmbed?.fields || [],
   });
@@ -122,31 +127,63 @@ export const removeRaidUserCommand = async (
       userRemove: true,
     }
   );
+  const messageEmbedData = {
+    embeds: [{ ...currentEmbed, fields: updatedFieldsList }],
+    components,
+  };
+  const updateValues = setUpdateValues({
+    raidEmbed: JSON.stringify(messageEmbedData),
+    updatedAt: Date.now(),
+    hasPendingUpdates: true,
+    pendingUpdates: JSON.stringify([
+      ...JSON.parse(raidRecord?.pendingUpdates || "[]"),
+      messageEmbedData,
+    ]),
+  });
 
-  const raidEditResponse = (await rest.patch(
-    (Routes as any).channelMessage(raidChannelId, raidMessageId),
-    {
-      body: {
-        embeds: [{ ...currentEmbed, fields: updatedFieldsList }],
+  const updatedRaid = await documentClient
+    .update({
+      TableName: raidsTable.name.get(),
+      Key: {
+        raidId,
+        createdAt: raidRecord.createdAt,
       },
-    }
-  )) as RESTPostAPIChannelMessageResult;
+      ReturnValues: "UPDATED_NEW",
+      UpdateExpression: updateValues.updateExpression,
+      ExpressionAttributeNames: updateValues.updateExpressionAttributeNames,
+      ExpressionAttributeValues: updateValues.updateExpressionAttributeValues,
+    })
+    .promise();
+  // const raidEditResponse = (await rest.patch(
+  //   (Routes as any).channelMessage(raidChannelId, raidMessageId),
+  //   {
+  //     body: {
+  //       embeds: [{ ...currentEmbed, fields: updatedFieldsList }],
+  //     },
+  //   }
+  // )) as RESTPostAPIChannelMessageResult;
 
   logger.log("info", "removed user", {
     raidId,
     userId,
     data,
     findRaidMessage,
-    raidEditResponse,
+    updatedRaid,
+    messageEmbedData,
+    updateValues,
   });
+  const pendingUpdatesCount = JSON.parse(raidRecord?.pendingUpdates || '[]').length
   const reasonText = reason
-    ? `since he/she ${reason}`
+    ? `since they ${reason}`
     : `for no specified reason`;
   return {
     body: {
-      content: `<@${interactionConfig.member?.user?.id}> removed user <@${userId}> ${reasonText}
-      *Please do note that there is a known limitation/bug on discord API which will cause the emojis to not show up once a user is removed.
-      You could however do any interaction(like press confirm) on the embed after removing a user to make it show the emojis again*`,
+      content: `<@${
+        interactionConfig.member?.user?.id
+      }> removed user <@${userId}> from Raid(${raidId}) ${reasonText}
+      *Total pending updates: ${
+        (pendingUpdatesCount || 0) + 1
+      }*\n > Press \`Confirmed\` on the embeded raid to commit updates`,
       allowed_mentions: {
         parse: [],
       },

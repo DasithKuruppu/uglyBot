@@ -1,7 +1,13 @@
 import { Logger } from "winston";
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord.js";
-import { info, request_role, create_raid, remove_raidUser, ask } from "./commands";
+import {
+  info,
+  request_role,
+  create_raid,
+  remove_raidUser,
+  ask,
+} from "./commands";
 
 export const syncDiscordCommands = async (
   { discordBotToken, discordApplicationID, discordServerId },
@@ -9,11 +15,15 @@ export const syncDiscordCommands = async (
 ) => {
   const rest = new REST({ version: "10" }).setToken(discordBotToken);
   const registerableCommandsList = [
+    // {
+    //   name: "Remove",  // user message command example
+    //   type: 3,
+    // },
     remove_raidUser,
     info,
     request_role,
     create_raid,
-    ask
+    ask,
   ];
   try {
     const response = await rest.put(

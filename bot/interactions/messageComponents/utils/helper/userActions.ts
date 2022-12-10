@@ -37,6 +37,7 @@ export enum ActionConditions {
   REQUESTED_SECTION_FULL = "requestedSectionFull",
   WAIT_LIST_FULL = "waitListFull",
   USER_REMOVE = "userRemove",
+  //USER_EXIST_WAITLIST = "userExistWaitList"
 }
 
 export interface IActions {
@@ -53,7 +54,11 @@ export interface IEmbedFieldActionsArgs {
 
 export const isFivePersonDungeon = (title = "") => {
   const [name] = title.split("-");
-  return [trialNamesList.TOSM as string, trialNamesList.STANDARD_DUNGEON, trialNamesList.VOS].includes(name);
+  return [
+    trialNamesList.TOSM as string,
+    trialNamesList.STANDARD_DUNGEON,
+    trialNamesList.VOS,
+  ].includes(name);
 };
 
 export const executeEmbedFieldsActions = ({
@@ -469,18 +474,27 @@ export const conditionsToActionsMapper = (
           index: 0,
         },
         {
-          operation: Operation.INSERT,
+          operation:
+            currentUserSecInfo.sectionName !== Category.WAITLIST
+              ? Operation.INSERT
+              : Operation.REPLACE,
           sectionName: Category.WAITLIST,
           field: userField,
-          index: waitListSectioninfo.sectionUserOccupyCount,
+          index:
+            currentUserSecInfo.sectionName !== Category.WAITLIST
+              ? waitListSectioninfo.sectionUserOccupyCount
+              : userIndex,
         },
+
         {
           operation: Operation.REPLACE,
           sectionName: Category.WAITLIST_TITLE,
           field: {
             ...seperatedSections[Category.WAITLIST_TITLE][0],
             value: `\`Capacity: ${
-              waitListSectioninfo.sectionUserOccupyCount + 1
+              currentUserSecInfo.sectionName !== Category.WAITLIST
+                ? waitListSectioninfo.sectionUserOccupyCount + 1
+                : currentUserSecInfo.sectionUserOccupyCount
             } / ${waitListSectioninfo.sectionCapacity}\``,
           },
           index: 0,

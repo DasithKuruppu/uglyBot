@@ -1,7 +1,7 @@
 import { Logger } from "winston";
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord.js";
-import { info, request_role, create_raid, remove_raidUser } from "./commands";
+import { info, request_role, create_raid, remove_raidUser, ask } from "./commands";
 
 export const syncDiscordCommands = async (
   { discordBotToken, discordApplicationID, discordServerId },
@@ -13,6 +13,7 @@ export const syncDiscordCommands = async (
     info,
     request_role,
     create_raid,
+    ask
   ];
   try {
     const response = await rest.put(

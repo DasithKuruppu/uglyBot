@@ -10,7 +10,7 @@ export const defaultRaidButtonInfo = {
 };
 
 export const availableSlotValue = "-";
-export const previousAvailableSlotValue = "available"
+export const previousAvailableSlotValue = "available";
 
 export const generateAvailableFields = ({
   DPS = 6,
@@ -48,16 +48,25 @@ export const sectionTitleNames = {
 };
 
 export const previousSectionTitleNames = {
-  [Category.DPS_TITLE]: `__𒆜𒆜⚔️ DPS ⚔️𒆜𒆜__`,
-  [Category.TANK_TITLE]: `__𒆜𒆜🛡️ TANKS 🛡️𒆜𒆜__`,
-  [Category.HEALER_TITLE]: `__𒆜𒆜⚕️ HEALS ⚕️𒆜𒆜__`,
-  [Category.WAITLIST_TITLE]: `__𒆜𒆜⌛ WAITING LIST ⌛𒆜𒆜__`,
+  [Category.DPS_TITLE]: `───────── :dps: DPS :dps: ─────────`,
+  [Category.TANK_TITLE]: `──────── :tank: TANKS :tank: ────────`,
+  [Category.HEALER_TITLE]: `──────── :healer: HEALS :healer: ────────`,
+  [Category.WAITLIST_TITLE]: `────── ⌛ WAITING LIST ⌛ ──────`,
+};
+
+export const requirementsEmoji = {
+  None: "<:peepocross:939211954361356298>",
+  Masterworks: "<:pepebusiness:980874947608064030>",
+  "Power Raptors": "<:pepeOK:739862110414045246>",
+  Wizards: "<:PES_BuffClown:645569565824122880>",
+  "UHDPS 4K": "<:4k:1027984774452748289>",
 };
 
 export const raidBuilder = ({
   title,
   description,
   raidId = "defaultId",
+  requirements,
   type = "",
   eventDateTime = "",
   relativeEventDateTime = "",
@@ -151,7 +160,11 @@ export const raidBuilder = ({
     {
       type: "rich",
       title: `${title} [${type}]`,
-      description: `\n🆔 ${raidId}\n⏱️ ${eventDateTime}\n⌛ ${relativeEventDateTime}\n\n${description}\n`,
+      description: `\n🆔 ${raidId}\n⏱️ ${eventDateTime}\n⌛ ${relativeEventDateTime}\n\n **Special Requirements** ${requirements.map(
+        (value) => {
+          return `\n ${requirementsEmoji[value] || "✅"}  ${value}`;
+        }
+      ).join("")} \n${description}\n`,
       color: 0xffa200,
       // image: {
       //   url: coverImageUrl,

@@ -182,8 +182,11 @@ export const determineActions = (
     [ActionConditions.REQUESTED_SECTION_FULL]: requestedSectionInfo.sectionFull,
     [ActionConditions.WAIT_LIST_FULL]: waitListSectioninfo.sectionFull,
     [ActionConditions.USER_REMOVE]: userRemove,
+    // [ActionConditions.USER_EXIST_WAITLIST]: currentUserSecInfo.sectionName === Category.WAITLIST
   };
-
+  logger.log("info", "actions --> conditions", {
+    conditions,
+  });
   const actionsList = conditionsToActionsMapper(conditions, {
     currentUserSecInfo,
     requestedSectionInfo,

@@ -54,7 +54,7 @@ export const memberActionsTable = new aws.dynamodb.Table(`${stack}_memberActions
       type: "N", // number
     },
   ],
-  billingMode: "PROVISIONED",
+  billingMode: "PAY_PER_REQUEST",
   globalSecondaryIndexes: [
     {
       hashKey: "characterName",
@@ -67,16 +67,12 @@ export const memberActionsTable = new aws.dynamodb.Table(`${stack}_memberActions
       ],
       projectionType: "INCLUDE",
       rangeKey: "createdAt",
-      readCapacity: 5,
-      writeCapacity: 1,
     },
   ],
   hashKey: "inGameHandle",
   rangeKey: "createdAt",
-  readCapacity: 5,
   tags: {
     Environment: `${getEnvironmentFromStack(stack)}`,
     Name: `${stack}_memberActions`,
   },
-  writeCapacity: 2,
 });

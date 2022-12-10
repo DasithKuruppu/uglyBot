@@ -1,5 +1,6 @@
 import { startBot } from "../../bot/";
 import { REST } from "@discordjs/rest";
+import { Configuration, OpenAIApi } from "openai";
 import { InteractionType } from "discord.js";
 import { APIInteraction } from "discord-api-types/v10";
 import { getEnvironmentVariables } from "../../bot/configs";
@@ -10,7 +11,7 @@ import { modal } from "./modal";
 export const discordInteractionEventHandler = {
   [InteractionType.ApplicationCommand]: applicationCommands,
   [InteractionType.MessageComponent]: messageComponent,
-  [InteractionType.ModalSubmit]: modal
+  [InteractionType.ModalSubmit]: modal,
 };
 
 export const supportedInteractionTypes = Object.keys(
@@ -21,8 +22,13 @@ export const discordEventsInteractionFactoryHandler = () => {
   const { getLogger, getDocumentClient } = startBot();
   const logger = getLogger();
   const documentClient = getDocumentClient();
-  const { discordBotToken } = getEnvironmentVariables();
+  const { discordBotToken, openAPIKey } = getEnvironmentVariables();
   const rest = new REST({ version: "10" }).setToken(discordBotToken);
+
+  const configuration = new Configuration({
+    apiKey: openAPIKey,
+  });
+  const openAi = new OpenAIApi(configuration);
   return async (event) => {
     logger.log("info", "discord event recieved", event);
     const isWarmerEvent = await warmer(event);
@@ -34,13 +40,14 @@ export const discordEventsInteractionFactoryHandler = () => {
       logger,
       rest,
       documentClient,
+      openAi
     });
   };
 };
 
 export const discordEventsProcessingFunction = async (
   event: AWSLambda.SQSEvent,
-  { logger, rest, documentClient }
+  { logger, rest, documentClient, openAi }
 ) => {
   const { Records = [] } = event;
   const interactionData = Records.map(({ body }) =>
@@ -74,7 +81,7 @@ export const discordEventsProcessingFunction = async (
             guild_id,
             message,
           },
-          { logger, rest, documentClient }
+          { logger, rest, documentClient, openAi }
         );
         return responseResult;
       }

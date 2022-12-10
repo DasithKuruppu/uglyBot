@@ -4,6 +4,7 @@ export enum availableEnvVariables {
   DISCORD_SERVER_ID = "DISCORD_SERVER_ID",
   DISCORD_BOT_NAME = "DISCORD_BOT_NAME",
   DISCORD_BOT_ID = "DISCORD_BOT_ID",
+  OPENAPI_KEY = "OPENAPI_KEY"
 }
 
 export const getEnvironmentVariables = () => {
@@ -12,11 +13,13 @@ export const getEnvironmentVariables = () => {
   const discordServerId = process.env.DISCORD_SERVER_ID as string;
   const discordBotName = process.env.DISCORD_BOT_NAME as string;
   const discordBotId = process.env.DISCORD_BOT_ID as string;
+  const openAPIKey = process.env.OPENAPI_KEY as string;
   return {
     discordApplicationID,
     discordBotToken,
     discordServerId,
     discordBotName,
     discordBotId,
+    openAPIKey
   };
 };

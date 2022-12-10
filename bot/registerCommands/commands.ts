@@ -5,6 +5,19 @@ export const info = {
   options: [],
 };
 
+export const ask = {
+  name: "ask",
+  description: "Ask or say anything to the bot",
+  options: [
+    {
+      type: 3,
+      name: "message",
+      description: "Ask something from the bot",
+      required: true,
+    },
+  ],
+};
+
 export const request_role = {
   name: "request",
   description: "Choose a type of request to make.",
@@ -57,66 +70,66 @@ export const request_role = {
 };
 
 export const remove_raidUser = {
-    name: "remove",
-    description: "Remove a user from an event or raid.",
-    options: [
-      {
-        type: 1,
-        name: "raid_user",
-        description: "Remove a raid user.",
-        options: [
-          {
-            type: 6,
-            name: "user",
-            description: "The user you want to remove.",
-            required: true,
-          },
-          {
-            type: 3,
-            name: "raid_id",
-            description: "The ID of the raid you want the user removed from.",
-            required: true,
-          },
-          {
-            type: 3,
-            name: "reason",
-            description: "Reason for removing.",
-            required: false,
-            choices: [
-              {
-                name: "Did not show up",
-                value: "did not show up",
-              },
-              {
-                name: "Were unable to join",
-                value: "were unable to join",
-              },
-              {
-                name: "Did not meet queue requirements",
-                value: "did not meet queue requirements",
-              },
-              {
-                name: "Were wiping floor all day",
-                value: "Were wiping floor all day",
-              },
-              {
-                name: "Are too ugly",
-                value: "are too ugly",
-              },
-              {
-                name: "Could not hold aggro",
-                value: "could not hold aggro",
-              },
-              {
-                name: "Ignored mechanics",
-                value: "ignored mechanics",
-              },
-            ],
-          },
-        ],
-      },
-    ]
-  };
+  name: "remove",
+  description: "Remove a user from an event or raid.",
+  options: [
+    {
+      type: 1,
+      name: "raid_user",
+      description: "Remove a raid user.",
+      options: [
+        {
+          type: 6,
+          name: "user",
+          description: "The user you want to remove.",
+          required: true,
+        },
+        {
+          type: 3,
+          name: "raid_id",
+          description: "The ID of the raid you want the user removed from.",
+          required: true,
+        },
+        {
+          type: 3,
+          name: "reason",
+          description: "Reason for removing.",
+          required: false,
+          choices: [
+            {
+              name: "Did not show up",
+              value: "did not show up",
+            },
+            {
+              name: "Were unable to join",
+              value: "were unable to join",
+            },
+            {
+              name: "Did not meet queue requirements",
+              value: "did not meet queue requirements",
+            },
+            {
+              name: "Were wiping floor all day",
+              value: "Were wiping floor all day",
+            },
+            {
+              name: "Are too ugly",
+              value: "are too ugly",
+            },
+            {
+              name: "Could not hold aggro",
+              value: "could not hold aggro",
+            },
+            {
+              name: "Ignored mechanics",
+              value: "ignored mechanics",
+            },
+          ],
+        },
+      ],
+    },
+  ],
+};
 
 export enum trialNamesList {
   TOMM = "Tower of the mad mage",
@@ -127,7 +140,7 @@ export enum trialNamesList {
   VOS = "Vault of Stars",
   DEMO = "Demorgorgon (Master)",
   STANDARD_DUNGEON = "Standard Dungeon",
-  STANDARD_TRIAL = "Standard Trial"
+  STANDARD_TRIAL = "Standard Trial",
 }
 
 export const createRaidNameChoicesList = [
@@ -245,6 +258,30 @@ export const create_raid = {
         },
         {
           type: 3,
+          name: "requirements",
+          description: "Raid Requirements.",
+          required: false,
+          choices: [
+            {
+              name: "Masterworks & Power Raptors",
+              value: "Masterworks,Power Raptors",
+            },
+            {
+              name: "Masterworks",
+              value: "Masterworks",
+            },
+            {
+              name: "Wizards",
+              value: "Wizards",
+            },
+            {
+              name: "Masterworks, Power Raptors , Wizards & UHDPS 4K",
+              value: "Masterworks,Power Raptors,Wizards,UHDPS 4K",
+            },
+          ],
+        },
+        {
+          type: 3,
           name: "description",
           description: "Set a description.",
           required: false,
@@ -266,7 +303,7 @@ export const create_raid = {
     {
       type: 1,
       name: "profile",
-      description: "Set-up your profile to make future sign-ups easier!"
+      description: "Set-up your profile to make future sign-ups easier!",
     },
   ],
 };

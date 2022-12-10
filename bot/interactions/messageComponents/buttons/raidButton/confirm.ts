@@ -67,7 +67,7 @@ export const confirmButtonInteract = async (
   });
   const defaultSelectedClassType =
     (new Map(NeverwinterClassesMap).get(
-      PersistedClassInfo.className || defaultClass?.value
+      PersistedClassInfo?.className || defaultClass?.value
     )?.type as Category) || Category.WAITLIST;
   logger.log("info", "confirm button", {
     seperatedSections,
@@ -98,7 +98,7 @@ export const confirmButtonInteract = async (
       {
         fieldName:
           (userRecord as EmbedField)?.name ||
-          PersistedClassInfo.className ||
+          PersistedClassInfo?.className ||
           (defaultClass?.value as string),
         optionalClasses: userExists ? optionalClasses : PersistedClassInfo?.optionalClasses,
       },

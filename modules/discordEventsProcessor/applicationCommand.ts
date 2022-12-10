@@ -7,13 +7,14 @@ import {
 
 export const applicationCommands = async (
   { data, application_id, token, member, guild_id, channel_id },
-  { logger, rest, documentClient }
+  { logger, rest, documentClient, openAi }
 ) => {
   const commandResponse = recognizedCommands.includes(data.name)
     ? await commandActions[data.name](data, {
         logger,
         rest,
         documentClient,
+        openAi,
         interactionConfig: {
           application_id,
           token,

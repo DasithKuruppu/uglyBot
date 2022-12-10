@@ -6,7 +6,7 @@ export const raidsTable = new aws.dynamodb.Table(`${stack}_raids`, {
   attributes: [
     {
       name: "raidId",
-      type: "S"
+      type: "S",
     },
     {
       name: "creatorId",
@@ -25,57 +25,34 @@ export const raidsTable = new aws.dynamodb.Table(`${stack}_raids`, {
       type: "N", // number
     },
   ],
-  billingMode: "PROVISIONED",
+  billingMode: "PAY_PER_REQUEST",
   hashKey: "raidId",
   rangeKey: "createdAt",
-  readCapacity: 5,
   globalSecondaryIndexes: [
     {
       hashKey: "creatorId",
       name: "creatorIdIndex",
-      nonKeyAttributes: [
-        "raidId",
-        "serverId",
-        "updatedAt",
-        "createdAt"
-      ],
+      nonKeyAttributes: ["raidId", "serverId", "updatedAt", "createdAt"],
       projectionType: "INCLUDE",
       rangeKey: "serverId",
-      readCapacity: 5,
-      writeCapacity: 1,
     },
     {
       hashKey: "serverId",
       name: "serverIdIndex",
-      nonKeyAttributes: [
-        "raidId",
-        "serverId",
-        "updatedAt",
-        "createdAt"
-      ],
+      nonKeyAttributes: ["raidId", "serverId", "updatedAt", "createdAt"],
       projectionType: "INCLUDE",
       rangeKey: "creatorId",
-      readCapacity: 5,
-      writeCapacity: 1,
     },
     {
       hashKey: "serverId",
       name: "updatedLastIndex",
-      nonKeyAttributes: [
-        "raidId",
-        "creatorId",
-        "updatedAt",
-        "createdAt"
-      ],
+      nonKeyAttributes: ["raidId", "creatorId", "updatedAt", "createdAt"],
       projectionType: "INCLUDE",
       rangeKey: "updatedAt",
-      readCapacity: 5,
-      writeCapacity: 1,
     },
   ],
   tags: {
     Environment: `${getEnvironmentFromStack(stack)}`,
     Name: `${stack}_raid`,
   },
-  writeCapacity: 2,
 });

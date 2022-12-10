@@ -34,6 +34,7 @@ export const wontJoinButtonInteract = async (
   const { templateId } = determineRaidTemplateType({
     embedFields: currentFields || [],
   });
+  logger.log("info", "current fields", { currentFields });
   const sectionSeperation = raidConfigs[templateId];
   const seperatedSections = getEmbedFieldsSeperatedSections(
     currentFields,

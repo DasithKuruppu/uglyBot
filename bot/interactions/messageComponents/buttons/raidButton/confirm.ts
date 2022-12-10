@@ -38,7 +38,8 @@ import {
   createEmbedArtifactSortContent,
   fieldSorter,
 } from "../../utils/helper/artifactsSorter";
-import { getLastUsersClass } from "../../utils/storeOps/fetchData";
+import { getLastUsersClass, getRaid } from "../../utils/storeOps/fetchData";
+import { updateRaid } from "../../utils/storeOps/updateData";
 export const confirmButtonInteract = async (
   data: APIMessageSelectMenuInteractionData,
   factoryInits: IfactoryInitializations
@@ -49,8 +50,34 @@ export const confirmButtonInteract = async (
     documentClient,
     interactionConfig: { application_id, token, member, message },
   } = factoryInits;
-  const currentFields = message.embeds[0].fields || [];
-  const raidTitle = getRaidTitle(message.embeds[0]?.title);
+  const messageContent = message?.content;
+  const messageEmbed = message.embeds[0];
+  const [unprocessedRaidId] = messageEmbed.description?.split("\n") as string[];
+  const raidId = unprocessedRaidId.replace("🆔 ", "");
+  const [persistedClassInfo, persistedRaidInfo] = await Promise.all([
+    getLastUsersClass(member, {
+      documentClient,
+    }),
+    getRaid({ raidId }, { documentClient }),
+  ]);
+  const hasPendingUpdates = !!persistedRaidInfo?.hasPendingUpdates;
+  const [pendingUpdate] = JSON.parse(
+    persistedRaidInfo?.pendingUpdates || "[]"
+  ).slice(-1);
+  const processedEmbedFields = hasPendingUpdates
+    ? pendingUpdate?.embeds?.[0]?.fields
+    : messageEmbed.fields;
+  const processedMessageContent =
+    hasPendingUpdates && pendingUpdate.content
+      ? pendingUpdate.content
+      : messageContent;
+  const processedEmbedDescription =
+    hasPendingUpdates && pendingUpdate?.embeds?.[0]?.description
+      ? pendingUpdate?.embeds?.[0]?.description
+      : messageEmbed.description;
+  const currentFields = processedEmbedFields;
+  const raidTitle = getRaidTitle(messageEmbed?.title);
+
   const { templateId } = determineRaidTemplateType({
     embedFields: currentFields || [],
   });
@@ -62,16 +89,15 @@ export const confirmButtonInteract = async (
   const defaultClass = getOptionsList().find(
     ({ value }) => value === defaultClassName
   );
-  const PersistedClassInfo = await getLastUsersClass(member, {
-    documentClient,
-  });
+
   const defaultSelectedClassType =
     (new Map(NeverwinterClassesMap).get(
-      PersistedClassInfo?.className || defaultClass?.value
+      persistedClassInfo?.className || defaultClass?.value
     )?.type as Category) || Category.WAITLIST;
   logger.log("info", "confirm button", {
     seperatedSections,
     defaultClass,
+    persistedRaidInfo,
     defaultSelectedClassType,
   });
   const [
@@ -92,15 +118,17 @@ export const confirmButtonInteract = async (
   const emojiProcessedArtifactlist = isEmojiText
     ? extractShortArtifactNames(userArtifactsParse)
     : userArtifactsParse;
-  console.log({ userRecord, optionalClasses, PersistedClassInfo });
+
   const creatableField: EmbedField = {
     name: createFieldName(
       {
         fieldName:
           (userRecord as EmbedField)?.name ||
-          PersistedClassInfo?.className ||
+          persistedClassInfo?.className ||
           (defaultClass?.value as string),
-        optionalClasses: userExists ? optionalClasses : PersistedClassInfo?.optionalClasses,
+        optionalClasses: userExists
+          ? optionalClasses
+          : persistedClassInfo?.optionalClasses,
       },
       { classNamesList: getOptionsList() }
     ),
@@ -109,7 +137,7 @@ export const confirmButtonInteract = async (
       userStatus: userState.CONFIRMED,
       artifactsList: userArtifactsParse
         ? emojiProcessedArtifactlist
-        : PersistedClassInfo?.artifactsList,
+        : persistedClassInfo?.artifactsList,
     }),
     inline: true,
   };
@@ -124,15 +152,34 @@ export const confirmButtonInteract = async (
       defaultSeperation: sectionSeperation,
     }
   );
-
+  const updatedRaid = hasPendingUpdates
+    ? await updateRaid(
+        {
+          raidId,
+          createdAt: persistedRaidInfo.createdAt,
+          updates: {
+            pendingUpdates: JSON.stringify([]),
+            hasPendingUpdates: false,
+          },
+        },
+        { documentClient }
+      )
+    : [];
   logger.log("info", "updated fields list", {
     updatedFieldsList,
     creatableField,
+    updatedRaid,
   });
   return {
     body: {
-      embeds: [{ ...message.embeds[0], fields: updatedFieldsList }],
-      content: createRaidContent(message.content, {
+      embeds: [
+        {
+          ...message.embeds[0],
+          description: processedEmbedDescription,
+          fields: updatedFieldsList,
+        },
+      ],
+      content: createRaidContent(processedMessageContent, {
         userActionText: `<@${member.user.id}> confirmed to join raid!`,
         userArtifacts: createEmbedArtifactSortContent(
           updatedSections,

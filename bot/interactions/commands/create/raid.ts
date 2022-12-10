@@ -103,6 +103,7 @@ export const createRaidCommand = async (
       template: { DPS: 3, HEALS: 1, TANKS: 1, WAITLIST: 3 },
     }),
   });
+  
   logger.log("info", "creating raid", {
     raidId: uniqueRaidId,
     raidEmbed,

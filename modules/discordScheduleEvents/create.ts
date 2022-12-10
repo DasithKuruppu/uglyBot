@@ -38,7 +38,7 @@ export const createEvent = async (
   const eventStartDate = eventDate.toISOString();
   const eventEndDate = eventDate.add(durationHours, "hour").toISOString();
   const shouldCreateEvent =
-    (guildEventCreate == undefined ? true : guildEventCreate) &&
+    (guildEventCreate == undefined ? false : guildEventCreate) &&
     isAllowedCommand &&
     isAllowedSubCommand;
   logger.log("info", "Event schedule details", {

@@ -1,5 +1,5 @@
 import { APIMessageSelectMenuInteractionData } from "discord-api-types/payloads/v10/interactions";
-import { IfactoryInitializations } from "../typeDefinitions/event";
+import { IfactoryInitializations } from "../../typeDefinitions/event";
 import { confirmButtonInteract } from "./raidButton/confirm";
 import { defaultRaidButtonInfo } from "../../../embeds/templates/neverwinter/raid";
 import { waitlistButtonInteract } from "./raidButton/waitlist";

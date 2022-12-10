@@ -25,21 +25,26 @@ export const getLastUsersClass = async (
   return Item;
 };
 
-export const getRaid = async ({ raidId, creatorId }, { documentClient }) => {
+export const getRaid = async (
+  { raidId, creatorId }: { raidId: string; creatorId?: string },
+  { documentClient }
+) => {
   const dbResult = await documentClient
     .query({
       TableName: raidsTable.name.get(),
       KeyConditionExpression: "#DYNOBASE_raidId = :pkey",
       ExpressionAttributeValues: {
         ":pkey": raidId,
-        ":creatorId": creatorId,
+        ...(creatorId && { ":creatorId": creatorId }),
       },
       ExpressionAttributeNames: {
         "#DYNOBASE_raidId": "raidId",
-        "#DYNOBASE_creatorId": "creatorId",
+        ...(creatorId && { "#DYNOBASE_creatorId": "creatorId" }),
       },
       ScanIndexForward: true,
-      FilterExpression: "#DYNOBASE_creatorId = :creatorId",
+      ...(creatorId && {
+        FilterExpression: "#DYNOBASE_creatorId = :creatorId",
+      }),
     })
     .promise();
   const { Items = [] } = dbResult;

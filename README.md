@@ -19,7 +19,7 @@ This is a simple discord bot buit to interact with some discord users.
 
 ## Architecture
 
-![Architecture](./readmeResources/images/UglyBotArchitectureWhiteBg.png)
+![Architecture](./readmeResources/images/UglyBotArchitectureWhiteBgv1.png)
 
 ## Prerequisites
 

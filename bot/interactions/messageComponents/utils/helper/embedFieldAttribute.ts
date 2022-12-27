@@ -11,6 +11,7 @@ export const memmberNotExist = availableSlotValue;
 export enum userState {
   TENTATIVE = "Tentative",
   CONFIRMED = "Confirmed",
+  SPECIAL = "Special",
 }
 export const defaultJoinStatus = userState.CONFIRMED;
 
@@ -52,7 +53,7 @@ export const extractFieldName = (
         .map((optionalClassEmoji) => {
           const emojiIdCaptureRegexp = /<:.+:(.+)>/gi;
           const [capturedText = "unknown", captureEmojiId = "unknown"] =
-          emojiIdCaptureRegexp.exec(optionalClassEmoji) || [];
+            emojiIdCaptureRegexp.exec(optionalClassEmoji) || [];
           const classDetails =
             classNamesList.find(({ emoji: { id, name } }) => {
               const isValid = id === captureEmojiId;
@@ -72,12 +73,29 @@ export const createFieldValue = ({
   userStatus = defaultJoinStatus,
   artifactsList = ["Artifacts N/A"],
   classEmoji = "",
+  specialStatusMembers = [
+    "320419663349678101",
+    "730863721672343583",
+    "277713020267003904",
+    "1057304365276336158",
+    "1057291440587276339",
+    "292745178119143433",
+  ],
 }) => {
   if (!memberId) {
     return memmberNotExist;
   }
+  const isSpecialStatus = specialStatusMembers.includes(memberId);
+  const processedUserStatus = isSpecialStatus ? userState.SPECIAL : userStatus;
+  const statusSymbols = {
+    [userState.CONFIRMED]: "I just press W 🐒",
+    [userState.TENTATIVE]: "Primal 🦧",
+    [userState.SPECIAL]: "Boosted <a:bigmonke:806304972178063370>",
+  };
   const emojiList = displayArtifactAsEmoji(artifactsList);
-  return `<@${memberId}>\n[${userStatus}]\n${emojiList.join("|")}`;
+  return `<@${memberId}>\n${
+    statusSymbols[processedUserStatus]
+  }\n${emojiList.join("|")}`;
 };
 
 export const extractFieldValueAttributes = ({

@@ -95,7 +95,7 @@ export const waitlistButtonInteract = async (
     ),
     value: createFieldValue({
       memberId: member.user.id,
-      userStatus: userState.TENTATIVE,
+      userStatus: userState.CONFIRMED,
       artifactsList: userArtifactsParse
         ? emojiProcessedArtifactlist
         : PersistedClassInfo?.artifactsList,

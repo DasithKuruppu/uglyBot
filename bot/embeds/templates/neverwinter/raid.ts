@@ -119,7 +119,7 @@ export const raidBuilder = ({
       components: [
         {
           style: 3,
-          label: `Confirmed`,
+          label: `Join`,
           emoji: {
             id: `751348432093970443`,
             name: `yes`,

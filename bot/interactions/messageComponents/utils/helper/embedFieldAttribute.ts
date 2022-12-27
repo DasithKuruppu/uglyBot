@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 import { ArtifactsNames } from "../../../../embeds/templates/artifactsList";
+=======
+>>>>>>> 9a0789d (feat(#100 statusRework): Rework statuses to be more meaningful)
 import {
   getNewClassOptionsList,
   getOptionsList,

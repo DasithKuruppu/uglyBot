@@ -8,7 +8,14 @@ import {
 import ShortUniqueId from "short-unique-id";
 import { Logger } from "winston";
 import { raidBuilder } from "../../../embeds/templates/neverwinter/raid";
+<<<<<<< HEAD
 import { getNewClassOptionsList, getOptionsList } from "../../../embeds/templates/neverwinter/classesList";
+=======
+import {
+  getNewClassOptionsList,
+  getOptionsList,
+} from "../../../embeds/templates/neverwinter/classesList";
+>>>>>>> 9a0789d (feat(#100 statusRework): Rework statuses to be more meaningful)
 import { convertToDiscordDate } from "../../messageComponents/utils/date/dateToDiscordTimeStamp";
 import { raidsTable } from "../../../../pulumi/persistantStore/tables/raids";
 import {
@@ -52,6 +59,9 @@ export const createRaidCommand = async (
     raidOptions.find(({ name }) => name === "party")?.value || "Standard";
   const requirementsValue =
     raidOptions.find(({ name }) => name === "requirements")?.value || "None";
+  const commencedVoiceChatChannel = raidOptions.find(
+    ({ name }) => name === "voice"
+  )?.value;
   const nameToCoverUrl = {
     [trialNamesList.TOMM]:
       "https://pwimages-a.akamaihd.net/arc/8d/5d/8d5d88772e1edccad4f98cb882677a5e1564178653.jpg",
@@ -65,8 +75,14 @@ export const createRaidCommand = async (
       "https://pwimages-a.akamaihd.net/arc/14/57/1457e07177cd42d03f8ef695335a88441613762258.jpg",
     [trialNamesList.TOSM]:
       "https://static.wikia.nocookie.net/forgottenrealms/images/f/fd/Spider_Temple_Concept.png/revision/latest/scale-to-width-down/350?cb=20210725190230",
+    [trialNamesList.REAPERS_CHALLENGE]:
+      "https://mmorpg.gg/wp-content/uploads/2020/02/Neverwinter-Infernal-Descent-screenshot-3.jpg",
   };
-
+  const defaultCoverImage =
+    "https://mmorpg.gg/wp-content/uploads/2020/02/Neverwinter-Infernal-Descent-screenshot-3.jpg";
+  const processedCommenceChannel = commencedVoiceChatChannel
+    ? `<#${commencedVoiceChatChannel}>`
+    : `Not specified`;
   const isFivePerson = isFivePersonDungeon(title);
   const requestedDate = convertToDiscordDate(dateTime);
   const requestedRelativeDate = convertToDiscordDate(dateTime, {
@@ -88,10 +104,15 @@ export const createRaidCommand = async (
     title,
     description,
     requirements,
+    commencedVoiceChatChannel: processedCommenceChannel,
     raidId: uniqueRaidId,
     eventDateTime: requestedDate,
     relativeEventDateTime: requestedRelativeDate,
+<<<<<<< HEAD
     coverImageUrl: nameToCoverUrl[title],
+=======
+    coverImageUrl: nameToCoverUrl[title] || defaultCoverImage,
+>>>>>>> 9a0789d (feat(#100 statusRework): Rework statuses to be more meaningful)
     type: type || "Farm",
     author:
       (interactionConfig.member as any)?.nick ||
@@ -102,7 +123,7 @@ export const createRaidCommand = async (
       template: { DPS: 3, HEALS: 1, TANKS: 1, WAITLIST: 3 },
     }),
   });
-  
+
   logger.log("info", "creating raid", {
     raidId: uniqueRaidId,
     raidEmbed,
@@ -132,7 +153,7 @@ export const createRaidCommand = async (
     isFivePerson,
     description,
     template: JSON.stringify(partyOptionsToMap[partyComposition] || {}),
-    coverImageUrl: nameToCoverUrl[title],
+    coverImageUrl: nameToCoverUrl[title] || defaultCoverImage,
     type,
     raidEmbed: JSON.stringify(raidEmbed),
     serverId: interactionConfig?.guild_id,

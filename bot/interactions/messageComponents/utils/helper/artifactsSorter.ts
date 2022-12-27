@@ -3,13 +3,14 @@ import {
   ArtifactsList,
   ArtifactsNames,
   ArtifactTypes,
+  newArtifactsList,
 } from "../../../../embeds/templates/artifactsList";
 import { NeverwinterClassesMap } from "../../../../embeds/templates/neverwinter/classesList";
 import {
   availableSlotValue,
   previousAvailableSlotValue,
 } from "../../../../embeds/templates/neverwinter/raid";
-import { trialNamesList } from "../../../../registerCommands/commands";
+import { previousTrialNamesList, trialNamesList } from "../../../../registerCommands/commands";
 import { Category } from "../categorizeEmbedFields/categorizeEmbedFields";
 import {
   extractFieldName,
@@ -249,6 +250,11 @@ export const artifactsSort = (
     [trialNamesList.TOMM]: true,
     [trialNamesList.ZCM]: true,
     [trialNamesList.TOSM]: false,
+    [previousTrialNamesList.COKM]: false,
+    [previousTrialNamesList.TM]: true,
+    [previousTrialNamesList.TOMM]: true,
+    [previousTrialNamesList.ZCM]: true,
+    [previousTrialNamesList.TOSM]: false,
     default: false,
   };
   const deprioritizeMitigationArtifacts = !requiresMitigation[raidName];
@@ -297,7 +303,7 @@ export const createEmbedArtifactSortContent = (seperatedSections, raidName) => {
   console.log({ sortedArtifacts });
   const assignedArtifacts = Object.entries(sortedArtifacts)
     .map(([user, artifactName]) => {
-      const emojiDetails = ArtifactsList.find(
+      const emojiDetails = newArtifactsList.find(
         ({ shortName }) => artifactName === shortName
       )?.emoji;
       const emojiRender = emojiDetails

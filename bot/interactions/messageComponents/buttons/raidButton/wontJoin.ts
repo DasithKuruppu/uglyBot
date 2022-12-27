@@ -8,7 +8,6 @@ import {
 } from "../../utils/categorizeEmbedFields/categorizeEmbedFields";
 import {
   createFieldValue,
-  userState,
   defaultJoinStatus,
 } from "../../utils/helper/embedFieldAttribute";
 import {
@@ -145,7 +144,7 @@ export const wontJoinButtonInteract = async (
   return {
     body: {
       content: createRaidContent(message.content, {
-        userActionText: `<@${member.user.id}> rage quit the raid !`,
+        userActionText: `<@${member.user.id}> rage quit the raid!`,
         userArtifacts: createEmbedArtifactSortContent(
           updatedSections,
           raidTitle

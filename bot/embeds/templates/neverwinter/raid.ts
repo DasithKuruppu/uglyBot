@@ -1,5 +1,5 @@
 import { Category } from "../../../interactions/messageComponents/utils/categorizeEmbedFields/categorizeEmbedFields";
-import { ArtifactsList, ArtifactsNames } from "../artifactsList";
+import { ArtifactsList, newArtifactsList, ArtifactsNames } from "../artifactsList";
 // inside a command, event listener, etc.
 export const defaultRaidButtonInfo = {
   buttons: {
@@ -69,6 +69,7 @@ export const raidBuilder = ({
   requirements,
   type = "",
   eventDateTime = "",
+  commencedVoiceChatChannel ="",
   relativeEventDateTime = "",
   author = "",
   coverImageUrl = "https://pwimages-a.akamaihd.net/arc/a7/cb/a7cbd985065cee4cfa54e285dc6a948a1564178451.jpg",
@@ -102,7 +103,7 @@ export const raidBuilder = ({
         {
           custom_id: `select_Artifact`,
           placeholder: `Select Artifacts`,
-          options: ArtifactsList.map(({ label, shortName, emoji }) => ({
+          options: newArtifactsList.map(({ label, shortName, emoji }) => ({
             label,
             value: shortName,
             emoji,
@@ -160,7 +161,7 @@ export const raidBuilder = ({
     {
       type: "rich",
       title: `${title} [${type}]`,
-      description: `\n🆔 ${raidId}\n⏱️ ${eventDateTime}\n⌛ ${relativeEventDateTime}\n\n **Special Requirements** ${requirements.map(
+      description: `\n🆔 ${raidId}\n⏱️ ${eventDateTime}\n⌛ ${relativeEventDateTime}\n🔉 ${commencedVoiceChatChannel}\n\n **Special Requirements** ${requirements.map(
         (value) => {
           return `\n ${requirementsEmoji[value] || "✅"}  ${value}`;
         }

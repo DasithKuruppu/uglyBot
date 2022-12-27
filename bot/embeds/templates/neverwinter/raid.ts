@@ -56,7 +56,7 @@ export const previousSectionTitleNames = {
 
 export const requirementsEmoji = {
   None: "<:peepocross:939211954361356298>",
-  Masterworks: "<:pepebusiness:980874947608064030>",
+  Masterworks: "<:shadypepo:1027984747080720425>",
   "Power Raptors": "<:pepeOK:739862110414045246>",
   Wizards: "<:PES_BuffClown:645569565824122880>",
   "UHDPS 4K": "<:4k:1027984774452748289>",

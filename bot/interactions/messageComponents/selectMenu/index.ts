@@ -1,11 +1,13 @@
 import { APIMessageSelectMenuInteractionData } from "discord-api-types/payloads/v10/interactions";
-import { IfactoryInitializations } from "../typeDefinitions/event";
+import { IfactoryInitializations } from "../../typeDefinitions/event";
 import { raidArtifactSelectId, raidArtifactSelect } from "./raidSelectMenu/artifactSelect";
-import { raidClassSelectId, raidClassSelect} from "./raidSelectMenu/classSelect"
+import { raidClassSelectId, raidClassSelect} from "./raidSelectMenu/classSelect";
+import { profileStatusVoteId, profileStatusVote } from "./profileSelectMenu/statusVoteSelect";
 
 export const selectMenusInteractions = {
     [raidArtifactSelectId]:  raidArtifactSelect,
-    [raidClassSelectId]: raidClassSelect
+    [raidClassSelectId]: raidClassSelect,
+    [profileStatusVoteId]: profileStatusVote 
 };
 
 export const recognizedMenuInteractionComponentIds = Object.keys(

@@ -1,6 +1,7 @@
 import { APIMessageSelectMenuInteractionData } from "discord-api-types/payloads/v10/interactions";
 import { EmbedField, Routes } from "discord.js";
 import {
+  defaultClassName,
   getOptionsList,
   NeverwinterClassesMap,
 } from "../../../../embeds/templates/neverwinter/classesList";
@@ -18,19 +19,27 @@ import {
   createFieldName,
   createFieldValue,
   defaultJoinStatus,
-  userState,
 } from "../../utils/helper/embedFieldAttribute";
 import {
   createRaidContent,
   determineRaidTemplateType,
+  getRaidTime,
   getRaidTitle,
 } from "../../utils/helper/raid";
-import { isFivePersonDungeon } from "../../utils/helper/userActions";
 import { createEmbedArtifactSortContent } from "../../utils/helper/artifactsSorter";
 import {
   extractShortArtifactNames,
   isEmoji,
 } from "../../utils/helper/artifactsRenderer";
+import {
+  ACTIVITY_STATUS,
+  updateActions,
+} from "../../utils/storeOps/memberActions";
+import {
+  getLastUsersClass,
+  getUserByClass,
+} from "../../utils/storeOps/fetchData";
+import { userStatusCodes } from "../../utils/storeOps/userStatus";
 
 export const raidClassSelectId = "select_Class";
 export const defaultArtifactState = ``;
@@ -43,14 +52,28 @@ export const raidClassSelect = async (
     logger,
     rest,
     documentClient,
-    interactionConfig: { application_id, token, guild_id, member, message },
+    interactionConfig: {
+      application_id,
+      token,
+      channel_id,
+      guild_id,
+      member,
+      message,
+    },
   } = factoryInits;
-  const raidTitle = getRaidTitle(message.embeds[0]?.title);
+  const { raidTitle, raidType } = getRaidTitle(message.embeds[0]?.title);
   const currentFields = message.embeds[0].fields || [];
   const [requestedClass, ...optionalRequestedClasses] = data.values;
+  const messageContent = message?.content;
+  const messageEmbed = message.embeds[0];
+  const [unprocessedRaidId, unprocessedRaidTime] =
+    messageEmbed.description?.split("\n") as string[];
+  const raidId = unprocessedRaidId.replace("🆔 ", "");
+  const raidTime = getRaidTime(unprocessedRaidTime.replace("⏱️ ", ""));
   const currentClassInfo = new Map(
     NeverwinterClassesMap as [[string, { type: Category; label: string }]]
   ).get(requestedClass);
+
   const { templateId } = determineRaidTemplateType({
     embedFields: currentFields || [],
   });
@@ -59,11 +82,22 @@ export const raidClassSelect = async (
     currentFields,
     sectionSeperation
   );
+  const [persistedClassInfo /*, persistedRaidInfo*/] = await Promise.all([
+    getUserByClass(member, requestedClass, {
+      documentClient,
+    }),
+    // getRaid({ raidId }, { documentClient }),
+  ]);
+  const defaultSelectedClassType =
+    (currentClassInfo?.type as Category) || Category.WAITLIST;
   const [
     {
       userArtifacts = "",
       userExists = false,
       userStatus = defaultJoinStatus,
+      userRecord = {},
+      optionalClasses = [],
+      sectionName = defaultSelectedClassType,
     } = {},
   ] = getExistingMemberRecordDetails(seperatedSections, member.user.id);
   const userArtifactsParse = userExists
@@ -74,40 +108,36 @@ export const raidClassSelect = async (
   const emojiProcessedArtifactlist = isEmojiText
     ? extractShortArtifactNames(userArtifactsParse)
     : userArtifactsParse;
-  const userStatusParse = userStatus?.replace(/[\[\]]+/gi, "");
-  const { Item = {} } = await documentClient
-    .get({
-      TableName: membersTable.name.get(),
-      Key: {
-        discordMemberId: member.user.id,
-        className: requestedClass,
-      },
-    })
-    .promise();
+
   logger.log("info", "persisted Item", {
-    Item,
+    persistedClassInfo,
+    userStatus,
+    defaultJoinStatus,
     userArtifactsParse,
     emojiProcessedArtifactlist,
   });
+  const artifactsList =
+    persistedClassInfo?.artifactsList || emojiProcessedArtifactlist || [];
+  const primaryClassName = requestedClass;
+  const optionalClassesNames = optionalRequestedClasses || [];
   const creatableField: EmbedField = {
     name: createFieldName(
       {
         fieldName: requestedClass,
-        optionalClasses: optionalRequestedClasses
+        optionalClasses: optionalClassesNames,
       },
       { classNamesList: getOptionsList() }
     ),
     value: createFieldValue({
       memberId: member.user.id,
-      userStatus: userStatusParse as userState,
-      artifactsList: Item?.artifactsList || emojiProcessedArtifactlist,
+      userStatus: persistedClassInfo?.userStatus || userStatusCodes.RANK_I,
+      artifactsList,
     }),
     inline: true,
   };
 
   logger.log("info", "values to update", {
     requestedClass,
-    Item,
     creatableField,
     userArtifacts,
     seperatedSections,
@@ -124,7 +154,40 @@ export const raidClassSelect = async (
       defaultSeperation: sectionSeperation,
     }
   );
-
+  const status = ACTIVITY_STATUS.JOINED_CLASS_SELECT;
+  const createdAt = new Date().getTime();
+  const updatedActionsRecord = await updateActions(
+    {
+      discordMemberId: member?.user?.id,
+      compositeRaidStatusDate: `${createdAt}#${raidId}#${status}`,
+      updates: {
+        raidId,
+        status,
+        raidTitle,
+        raidType,
+        raidTime,
+        currentSection: sectionName,
+        requestedSectionName: defaultSelectedClassType,
+        artifactsList,
+        token,
+        primaryClassName,
+        optionalClassesNames: optionalClassesNames || [],
+        serverId: guild_id,
+        channelId: channel_id,
+        createdAt,
+        embed: JSON.stringify([
+          {
+            ...message.embeds[0],
+            description: messageEmbed.description,
+            fields: updatedFieldsList,
+          },
+        ]),
+        hasPendingUpdates: false,
+        pendingUpdate: [],
+      },
+    },
+    { documentClient }
+  );
   logger.log("info", "updated fields list", {
     updatedFieldsList,
   });

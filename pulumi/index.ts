@@ -4,7 +4,8 @@ import { warmHTTPEventsSchedule } from "./lambdas/httpEventsProcessor";
 import { discordEventsQueue } from "./sqs/discordEvents";
 import { membersTable } from "./persistantStore/tables/members";
 import { raidsTable } from "./persistantStore/tables/raids";
-//import { memberActionsTable } from "./persistantStore/tables/memberActions";
+import { memberActionsTable } from "./persistantStore/tables/memberActions"
+import { userStatusTable } from "./persistantStore/tables/userStatus";
 export default {
   apiGatewayEndpointUrl: apiEndpoint.url,
   cloudwatchSchedule: {
@@ -17,6 +18,8 @@ export default {
   persistantStore:{
     membersTable: membersTable.name,
     raidsTable: raidsTable.name,
+    memberActionsTable: memberActionsTable.name,
+    userStatusTable: userStatusTable.name,
     //memberActionsTable: memberActionsTable.name.get()
   }
 };

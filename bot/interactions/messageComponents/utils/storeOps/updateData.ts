@@ -1,5 +1,3 @@
-import { APIInteractionGuildMember } from "discord-api-types/v10";
-import { membersTable } from "../../../../../pulumi/persistantStore/tables/members";
 import { raidsTable } from "../../../../../pulumi/persistantStore/tables/raids";
 import { setUpdateValues } from "../../../../store/utils";
 

@@ -3,6 +3,22 @@ import { membersTable } from "../../../../../pulumi/persistantStore/tables/membe
 import { raidsTable } from "../../../../../pulumi/persistantStore/tables/raids";
 import { fieldSorter } from "../helper/artifactsSorter";
 
+export const getUserByClass = async (
+  member: APIInteractionGuildMember,
+  requestedClass: string,
+  { documentClient }
+) => {
+  const { Item = {} } = await documentClient
+    .get({
+      TableName: membersTable.name.get(),
+      Key: {
+        discordMemberId: member.user.id,
+        className: requestedClass,
+      },
+    })
+    .promise();
+  return Item;
+};
 export const getLastUsersClass = async (
   member: APIInteractionGuildMember,
   { documentClient }

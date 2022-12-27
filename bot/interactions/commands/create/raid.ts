@@ -8,7 +8,7 @@ import {
 import ShortUniqueId from "short-unique-id";
 import { Logger } from "winston";
 import { raidBuilder } from "../../../embeds/templates/neverwinter/raid";
-import { getOptionsList } from "../../../embeds/templates/neverwinter/classesList";
+import { getNewClassOptionsList, getOptionsList } from "../../../embeds/templates/neverwinter/classesList";
 import { convertToDiscordDate } from "../../messageComponents/utils/date/dateToDiscordTimeStamp";
 import { raidsTable } from "../../../../pulumi/persistantStore/tables/raids";
 import {
@@ -39,12 +39,12 @@ export const createRaidCommand = async (
     data,
     interactionConfig,
   });
-  const classOptionsList = getOptionsList();
+  const classOptionsList = getNewClassOptionsList();
   const createOptions = data?.options?.[0] as any;
   const raidOptions = createOptions?.options || [];
   const title =
     raidOptions.find(({ name }) => name === "name")?.value || "Untitled";
-  const type = raidOptions.find(({ name }) => name === "type")?.value || "";
+  const type = raidOptions.find(({ name }) => name === "type")?.value || "Farm";
   const description =
     raidOptions.find(({ name }) => name === "description")?.value || "";
   const dateTime = raidOptions.find(({ name }) => name === "date")?.value || "";
@@ -74,7 +74,6 @@ export const createRaidCommand = async (
   });
   const requirements: string[] = requirementsValue.split(",");
   logger.log("info", "create attributes", {
-    isFivePerson,
     requestedDate,
     dateTime,
   });
@@ -93,7 +92,7 @@ export const createRaidCommand = async (
     eventDateTime: requestedDate,
     relativeEventDateTime: requestedRelativeDate,
     coverImageUrl: nameToCoverUrl[title],
-    type: type || "Farm Run",
+    type: type || "Farm",
     author:
       (interactionConfig.member as any)?.nick ||
       interactionConfig.member.user.username,

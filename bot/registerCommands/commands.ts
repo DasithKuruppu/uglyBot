@@ -63,6 +63,19 @@ export const request_role = {
     },
     {
       type: 1,
+      name: "profile",
+      description: "Request profile",
+      options: [
+        {
+          type: 6,
+          name: "user",
+          description: "The name of the user you want the profile of",
+          required: false,
+        }
+      ],
+    },
+    {
+      type: 1,
       name: "invite_link",
       description: "Get an invite link to invite users.",
     },
@@ -300,10 +313,10 @@ export const create_raid = {
         },
       ],
     },
-    {
-      type: 1,
-      name: "profile",
-      description: "Set-up your profile to make future sign-ups easier!",
-    },
+    // {
+    //   type: 1,
+    //   name: "profile",
+    //   description: "Set-up your profile to make future sign-ups easier!",
+    // },
   ],
 };

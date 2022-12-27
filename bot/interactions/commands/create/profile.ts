@@ -7,7 +7,6 @@ import {
   } from "discord.js";
   
   import { Logger } from "winston";
-  import { userProfile } from "../../../modals/profile";
   
   interface factoryInitializations {
     logger: Logger;

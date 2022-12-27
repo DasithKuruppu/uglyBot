@@ -8,6 +8,7 @@ import { Logger } from "winston";
 import { requestRoleCommand } from "./role";
 import { inviteLinkCommand} from "./inviteLink"
 import { buildCommand } from "./builds";
+import { profileCommand } from "./profile";
 import { unrecognizedCommand } from "..";
 interface factoryInitializations {
   logger: Logger;
@@ -24,6 +25,7 @@ export const availableSubCommands = {
   role: requestRoleCommand,
   invite_link: inviteLinkCommand,
   build: buildCommand,
+  profile: profileCommand,
 };
 export const recognizedSubCommands = Object.keys(availableSubCommands);
 export const requestCommand = async (

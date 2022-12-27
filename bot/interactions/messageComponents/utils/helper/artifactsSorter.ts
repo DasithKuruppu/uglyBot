@@ -11,7 +11,10 @@ import {
 } from "../../../../embeds/templates/neverwinter/raid";
 import { trialNamesList } from "../../../../registerCommands/commands";
 import { Category } from "../categorizeEmbedFields/categorizeEmbedFields";
-import { extractFieldValueAttributes } from "./embedFieldAttribute";
+import {
+  extractFieldName,
+  extractFieldValueAttributes,
+} from "./embedFieldAttribute";
 
 export const fieldSorter = (fields) => (a, b) =>
   fields
@@ -125,6 +128,14 @@ export const getPriorityLevel = (
     return deprioritizeLevel;
   }
   const priorityLevel = artifactDetails?.priority || 0;
+  console.log({
+    userType,
+    priorityLevel,
+    artifactShortName,
+    deprioritizeLevel,
+    deprioritizeMitigationArtifacts,
+    deprioritizeUtilityArtifacts,
+  });
   return Category.DPS === userType
     ? priorityLevel + dpsReducePriorityLevel
     : priorityLevel;
@@ -142,6 +153,7 @@ export const decompressArtifacts = (
     priorityOptions?: IpriorityOptions;
   } = {}
 ) => {
+  console.log({ priorityOptions });
   return availableArtifactsList.reduce(
     (prev: any[], { name, category, artifacts }) => {
       const artifactDecompressData = artifacts.map((artifactShortName) => {
@@ -183,6 +195,7 @@ export const sortArtifactPriority = (
     priority = [
       "artifactsCount",
       "processedPriority",
+
       "usersWithArtifactCount",
     ],
   } = {}
@@ -249,6 +262,7 @@ export const artifactsSort = (
   });
   const sortResult = sortArtifactPriority(decompressedArtifacts);
   const groupedArtifacts = groupDecompressedArtifacts(sortResult);
+  console.log({ groupedArtifacts, sortResult, decompressedArtifacts });
   const pickedArtifacts = artifactPicker(groupedArtifacts);
   return pickedArtifacts;
 };
@@ -260,21 +274,27 @@ export const createEmbedArtifactSortContent = (seperatedSections, raidName) => {
     ...seperatedSections[Category.HEALER],
   ];
   const classNamesMap = new Map(NeverwinterClassesMap);
+  // issue here is that the member name needs to be translated as it is an emoji considerd
   const artifactMemberlist = artifactDetails
     .filter(({ name, value }) => {
       return ![availableSlotValue, previousAvailableSlotValue].includes(value);
     })
     .map(({ name, value }) => {
+      const { fieldName, optionalClasses } = extractFieldName({
+        fieldNameText: name,
+      });
       const { memberId, userStatus, artifactsList } =
         extractFieldValueAttributes({ fieldValueText: value });
 
       return {
         name: memberId,
-        category: (classNamesMap.get(name)?.type as Category) || Category.DPS,
+        category:
+          (classNamesMap.get(fieldName)?.type as Category) || Category.DPS,
         artifacts: artifactsList,
       };
     });
   const sortedArtifacts = artifactsSort(artifactMemberlist, raidName);
+  console.log({ sortedArtifacts });
   const assignedArtifacts = Object.entries(sortedArtifacts)
     .map(([user, artifactName]) => {
       const emojiDetails = ArtifactsList.find(

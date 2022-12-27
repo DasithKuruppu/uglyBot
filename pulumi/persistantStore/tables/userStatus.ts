@@ -3,22 +3,22 @@ import * as aws from "@pulumi/aws";
 import { getEnvironmentFromStack } from "../../utils/stackEnvMap";
 const stack = pulumi.getStack();
 
-export const memberActionsTable = new aws.dynamodb.Table(`${stack}_memberActions`, {
+export const userStatusTable = new aws.dynamodb.Table(`${stack}_userStatus`, {
   attributes: [
     {
       name: "discordMemberId",
       type: "S",
     },
     {
-      name: "compositeRaidStatusDate",
+      name: "userStatusInteraction",
       type: "S",
     },
   ],
   billingMode: "PAY_PER_REQUEST",
   hashKey: "discordMemberId",
-  rangeKey: "compositeRaidStatusDate",
+  rangeKey: "userStatusInteraction",
   tags: {
     Environment: `${getEnvironmentFromStack(stack)}`,
-    Name: `${stack}_memberActions`,
+    Name: `${stack}userStatus`,
   },
 });

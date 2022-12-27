@@ -9,9 +9,6 @@ import {
   test,
   vi,
 } from "vitest";
-import { ArtifactsNames } from "../../../../../embeds/templates/artifactsList";
-import { trialNamesList } from "../../../../../registerCommands/commands";
-import { Category } from "../../categorizeEmbedFields/categorizeEmbedFields";
 import { extractFieldName } from "../embedFieldAttribute";
 
 describe.only("embedFieldAttribute - extractFieldName", () => {

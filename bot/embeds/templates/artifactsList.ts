@@ -29,7 +29,252 @@ export const enum ArtifactTypes {
   UTILITY = "Utility",
   MITIGATION = "Mitigation",
 }
-
+export const newArtifactsList = [
+  {
+    label: "Demogorgon's Reach",
+    shortName: ArtifactsNames.DEMO,
+    priority: 1,
+    type: [ArtifactTypes.DEBUFF],
+    emoji: {
+      id: `1060809813581377636`,
+      name: `Demo`,
+      animated: false,
+    },
+  },
+  {
+    label: "Assassins's Dice",
+    shortName: ArtifactsNames.ASSASSINS_DICE,
+    priority: 3,
+    type: [ArtifactTypes.DEBUFF],
+    emoji: {
+      id: `1043356399587033088`,
+      name: `AssassinsDice`,
+      animated: false,
+    },
+  },
+  {
+    label: "Tentacle Rod",
+    shortName: ArtifactsNames.TENTACLE_ROD,
+    priority: 3,
+    type: [ArtifactTypes.DEBUFF],
+    emoji: {
+      id: `1043356048356036651`,
+      name: `TentacleRod`,
+      animated: false,
+    },
+  },
+  {
+    label: "Mythallar Fragment",
+    shortName: ArtifactsNames.MYTHALLAR,
+    priority: 2,
+    type: [ArtifactTypes.DEBUFF],
+    emoji: {
+      id: `1068867889291071538`,
+      name: `Mythallar`,
+      animated: false,
+    },
+  },
+  {
+    label: "Halaster's Blast Scepter",
+    shortName: ArtifactsNames.HALASTERS,
+    priority: 2,
+    type: [ArtifactTypes.DEBUFF],
+    emoji: {
+      id: `1068867884673159279`,
+      name: `Halasters`,
+      animated: false,
+    },
+  },
+  {
+    label: "Wyvern-Venom Coated Knives",
+    shortName: ArtifactsNames.WYVERN,
+    priority: 4,
+    type: [ArtifactTypes.DEBUFF, ArtifactTypes.MITIGATION],
+    nonStackingArtifact: [ArtifactsNames.BLADES],
+    emoji: {
+      id: `1068867247529013268`,
+      name: `Wyvern`,
+      animated: false,
+    },
+  },
+  {
+    label: "Lantern of Revelation",
+    shortName: ArtifactsNames.LANTERN,
+    priority: 4,
+    type: [ArtifactTypes.DEBUFF],
+    emoji: {
+      id: `1068867303996936243`,
+      name: `Lantern`,
+      animated: false,
+    },
+  },
+  {
+    label: "Heart of the Black Dragon",
+    shortName: ArtifactsNames.BLACK_DRAGON,
+    priority: 4,
+    type: [ArtifactTypes.DEBUFF],
+    emoji: {
+      id: `1068867881611300884`,
+      name: `Black_Dragon`,
+      animated: false,
+    },
+  },
+  {
+    label: "Charm of the Serpent",
+    shortName: ArtifactsNames.CHARM,
+    priority: 4,
+    type: [ArtifactTypes.DEBUFF],
+    emoji: {
+      id: `1068867297957134356`,
+      name: `Charm`,
+      animated: false,
+    },
+  },
+  {
+    label: "Token of Chromatic Storm",
+    shortName: ArtifactsNames.TOKEN,
+    priority: 4,
+    type: [ArtifactTypes.DEBUFF],
+    emoji: {
+      id: `1068867288637395044`,
+      name: `Token`,
+      animated: false,
+    },
+  },
+  {
+    label: "Thirst",
+    shortName: ArtifactsNames.THIRST,
+    priority: 4,
+    type: [ArtifactTypes.DEBUFF],
+    emoji: {
+      id: `1068867266466287656`,
+      name: `Thirst`,
+      animated: false,
+    },
+  },
+  {
+    label: "Vanguard's Banner",
+    shortName: ArtifactsNames.VANGUARDS,
+    priority: 5,
+    type: [ArtifactTypes.DEBUFF, ArtifactTypes.MITIGATION],
+    emoji: {
+      id: `1068867261173088306`,
+      name: `Vanguards`,
+      animated: false,
+    },
+  },
+  {
+    label: "Neverwinter's Standard",
+    shortName: ArtifactsNames.STANDARD,
+    priority: 5,
+    type: [ArtifactTypes.DEBUFF],
+    emoji: {
+      id: `1068867282471755806`,
+      name: `Standard`,
+      animated: false,
+    },
+  },
+  {
+    label: "Sparkling Fey Emblem",
+    shortName: ArtifactsNames.FEY_EMBLEM,
+    priority: 5,
+    type: [ArtifactTypes.DEBUFF, ArtifactTypes.MITIGATION],
+    emoji: {
+      id: `1068867250976739429`,
+      name: `Fey_Emblem`,
+      animated: false,
+    },
+  },
+  {
+    label: "Frozen Storyteller's Journal",
+    shortName: ArtifactsNames.FROZEN,
+    priority: 5,
+    type: [ArtifactTypes.BUFF],
+    emoji: {
+      id: `1068867271537201222`,
+      name: `Frozen`,
+      animated: false,
+    },
+  },
+  {
+    label: "Tymora's Lucky Coin",
+    shortName: ArtifactsNames.TYMORAS_LUCKY_COIN,
+    priority: 5,
+    type: [ArtifactTypes.MITIGATION,ArtifactTypes.DEBUFF],
+    emoji: {
+      id: `1038015923715584060`,
+      name: `Tymora_Coin`,
+      animated: false,
+    },
+  },
+  {
+    label: "Erratic Drift Globe",
+    shortName: ArtifactsNames.ERRATIC_DRIFT_GLOBE,
+    priority: 5,
+    type: [ArtifactTypes.DEBUFF],
+    emoji: {
+      id: `1038015915268263976`,
+      name: `Globe`,
+      animated: false,
+    },
+  },
+  {
+    label: "Dragonbone Blades",
+    shortName: ArtifactsNames.BLADES,
+    priority: 3,
+    type: [ArtifactTypes.DEBUFF, ArtifactTypes.MITIGATION],
+    nonStackingArtifact: [ArtifactsNames.WYVERN],
+    emoji: {
+      id: `1068867293381136515`,
+      name: `Blades`,
+      animated: false,
+    },
+  },
+  {
+    label: "Black Dragon's Mark",
+    shortName: ArtifactsNames.MARK,
+    priority: 4,
+    type: [ArtifactTypes.DEBUFF],
+    emoji: {
+      id: `1068867255795982336`,
+      name: `Mark`,
+      animated: false,
+    },
+  },
+  {
+    label: "Horn of Valhalla",
+    shortName: ArtifactsNames.HORN,
+    priority: 0,
+    type: [ArtifactTypes.UTILITY],
+    emoji: {
+      id: `1038015917386383370`,
+      name: `Horn`,
+      animated: false,
+    },
+  },
+  {
+    label: "Sigil of the Paladin",
+    shortName: ArtifactsNames.PALADIN_SIGIL,
+    priority: 1,
+    type: [ArtifactTypes.MITIGATION],
+    emoji: {
+      id: `1038015919131205654`,
+      name: `Sigil`,
+      animated: false,
+    },
+  },
+  {
+    label: "Tiamat's Orb",
+    shortName: ArtifactsNames.TIAMAT,
+    priority: 1,
+    type: [ArtifactTypes.MITIGATION],
+    emoji: {
+      id: `1038015921714909205`,
+      name: `Tiamat`,
+      animated: false,
+    },
+  }
+];
 export const ArtifactsList = [
   {
     label: "Demogorgon's Reach",

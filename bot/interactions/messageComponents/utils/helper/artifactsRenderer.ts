@@ -1,5 +1,6 @@
 import {
   ArtifactsList,
+  newArtifactsList,
   ArtifactsNames,
 } from "../../../../embeds/templates/artifactsList";
 
@@ -8,7 +9,7 @@ export const displayArtifactAsEmoji = (
   { seperator = /[,|\s]+/ } = {}
 ) => {
   return artifactShortNamesList.map((artifactName) => {
-    const foundArtifact = ArtifactsList.find(
+    const foundArtifact = newArtifactsList.find(
       ({ shortName }) => shortName === artifactName
     );
     const { emoji: { id = "unknown", name = "unknown" } = {} } =
@@ -24,6 +25,8 @@ export const extractShortArtifactNames = (emojiList) => {
       myRegexp.exec(emoji) || [];
     return (
       ArtifactsList.find(({ emoji }) => {
+        return emoji.id === id;
+      })?.shortName ||  newArtifactsList.find(({ emoji }) => {
         return emoji.id === id;
       })?.shortName || "unknown"
     );

@@ -71,7 +71,7 @@ export const request_role = {
           name: "user",
           description: "The name of the user you want the profile of",
           required: false,
-        }
+        },
       ],
     },
     {
@@ -144,7 +144,7 @@ export const remove_raidUser = {
   ],
 };
 
-export enum trialNamesList {
+export enum previousTrialNamesList {
   TOMM = "Tower of the mad mage",
   ZCM = "Zariel's Challenge(Master)",
   COKM = "Crown of Keldegonn(Master)",
@@ -152,6 +152,16 @@ export enum trialNamesList {
   TOSM = "Temple of Spider(Master)",
   VOS = "Vault of Stars",
   DEMO = "Demorgorgon (Master)",
+}
+export enum trialNamesList {
+  TOMM = "Tower Of The Mad Mage",
+  ZCM = "Zariel's Challenge (Master)",
+  COKM = "Crown Of Keldegonn (Master)",
+  TM = "Tiamat (Master)",
+  TOSM = "Temple Of The Spider (Master)",
+  VOS = "Vault Of Stars",
+  DEMO = "Demorgorgon (Master)",
+  REAPERS_CHALLENGE = "Reapers Challenge",
   STANDARD_DUNGEON = "Standard Dungeon",
   STANDARD_TRIAL = "Standard Trial",
 }
@@ -188,6 +198,10 @@ export const createRaidNameChoicesList = [
   {
     name: trialNamesList.DEMO,
     value: trialNamesList.DEMO,
+  },
+  {
+    name: trialNamesList.REAPERS_CHALLENGE,
+    value: trialNamesList.REAPERS_CHALLENGE,
   },
   {
     name: trialNamesList.STANDARD_DUNGEON,
@@ -309,6 +323,12 @@ export const create_raid = {
           type: 4,
           name: "duration",
           description: "Duration for the Discord event. (Default: 1 Hour)",
+          required: false,
+        },
+        {
+          type: 7,
+          name: "voice",
+          description: "The voice channel this raid takes place in",
           required: false,
         },
       ],

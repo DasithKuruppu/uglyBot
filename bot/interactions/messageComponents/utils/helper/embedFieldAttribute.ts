@@ -9,11 +9,22 @@ import {
 
 export const memmberNotExist = availableSlotValue;
 export enum userState {
-  TENTATIVE = "Tentative",
-  CONFIRMED = "Confirmed",
+  TRAINEE = "Trainee",
+  EXPERIENCED = "Experienced",
+  SEMIEXPERIENCED = "Semi_Experienced",
+  MASTERED = "Mastered",
   SPECIAL = "Special",
 }
-export const defaultJoinStatus = userState.CONFIRMED;
+
+const statusSymbols = {
+  [userState.TRAINEE]: "I just press W 🐒",
+  [userState.EXPERIENCED]: "Experienced 🦧",
+  [userState.MASTERED]: "King Kong <a:bigmonke:806304972178063370>",
+  [userState.SEMIEXPERIENCED]: "Ooga Booga 🦧",
+  [userState.SPECIAL]: "Boosted <a:bigmonke:806304972178063370>",
+};
+
+export const defaultJoinStatus = userState.TRAINEE;
 
 export const createFieldName = (
   {
@@ -87,11 +98,6 @@ export const createFieldValue = ({
   }
   const isSpecialStatus = specialStatusMembers.includes(memberId);
   const processedUserStatus = isSpecialStatus ? userState.SPECIAL : userStatus;
-  const statusSymbols = {
-    [userState.CONFIRMED]: "I just press W 🐒",
-    [userState.TENTATIVE]: "Primal 🦧",
-    [userState.SPECIAL]: "Boosted <a:bigmonke:806304972178063370>",
-  };
   const emojiList = displayArtifactAsEmoji(artifactsList);
   return `<@${memberId}>\n${
     statusSymbols[processedUserStatus]
@@ -105,7 +111,10 @@ export const extractFieldValueAttributes = ({
   const [memberIdValue = "", userStatusValue = "", artifactsValue = ""] =
     fieldValueText.split("\n");
   const memberId = memberIdValue.substring(2, memberIdValue.length - 1);
-  const userStatus = userStatusValue.substring(1, userStatusValue.length - 1);
+  const [userStatus = userState.TRAINEE] =
+    Object.entries(statusSymbols).find(
+      ([key, value]) => value === userStatusValue
+    ) || [];
   const artifactsList = artifactsValue
     .replace(/[\{\}]+/gi, "")
     .split(seperator);

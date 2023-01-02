@@ -18,7 +18,7 @@ export const displayArtifactAsEmoji = (
 };
 
 export const extractShortArtifactNames = (emojiList) => {
-  return emojiList.map((emoji) => {
+  return (emojiList || []).map((emoji) => {
     const myRegexp = /<:.+:(.+)>/gi;
     const [capturedText = "unknown", id = "unknown"] =
       myRegexp.exec(emoji) || [];

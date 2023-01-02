@@ -145,14 +145,18 @@ export const determineRaidTemplateType = ({
 export const getRaidTitle = (
   embedTitle: string = "Temple of the Spider (Master) [Farm]"
 ) => {
-  const isOldDelimiter = embedTitle.includes("-");
-  const embedTitleRegexp = /([\w()\s]+)\[(\w+)\]/gi;
-  const [capturedOriginalTitle, raidTitle = "", raidType = ""] = isOldDelimiter
-    ? [embedTitle, ...embedTitle.split("-")]
-    : embedTitleRegexp.exec(embedTitle) || [];
-
+  const embedTitleRegexp = /([\w()'\s]+)\[([\w\s]+)\]/gi;
+  const [capturedOriginalTitle, raidTitle = "", raidType = ""] =
+    embedTitleRegexp.exec(embedTitle) || [];
   return {
     raidTitle: raidTitle.trim(),
     raidType: raidType.trim(),
   };
 };
+
+export const getRaidTime = (unprocessedRelativeTime: string)=>{
+    const extractTimeRegexp = /<t:([0-9]+):F>/gi;
+    const [capturedOriginalTime, time] =
+    extractTimeRegexp.exec(unprocessedRelativeTime) || [];
+    return Number(time);
+}

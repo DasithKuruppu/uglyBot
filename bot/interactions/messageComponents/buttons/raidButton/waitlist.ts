@@ -17,9 +17,7 @@ import {
   extractShortArtifactNames,
   isEmoji,
 } from "../../utils/helper/artifactsRenderer";
-import {
-  createEmbedArtifactSortContent,
-} from "../../utils/helper/artifactsSorter";
+import { createEmbedArtifactSortContent } from "../../utils/helper/artifactsSorter";
 import {
   createFieldValue,
   userState,
@@ -29,9 +27,14 @@ import {
 import {
   createRaidContent,
   determineRaidTemplateType,
+  getRaidTime,
   getRaidTitle,
 } from "../../utils/helper/raid";
 import { getLastUsersClass } from "../../utils/storeOps/fetchData";
+import {
+  ACTIVITY_STATUS,
+  updateActions,
+} from "../../utils/storeOps/memberActions";
 
 export const waitlistButtonInteract = async (
   data: APIMessageSelectMenuInteractionData,
@@ -41,10 +44,22 @@ export const waitlistButtonInteract = async (
     logger,
     rest,
     documentClient,
-    interactionConfig: { application_id, token, member, message },
+    interactionConfig: {
+      application_id,
+      guild_id,
+      channel_id,
+      token,
+      member,
+      message,
+    },
   } = factoryInits;
   const currentFields = message.embeds[0].fields || [];
-  const raidTitle = getRaidTitle(message.embeds[0]?.title);
+  const messageContent = message?.content;
+  const messageEmbed = message.embeds[0];
+  const [unprocessedRaidId, unprocessedRaidTime] = messageEmbed.description?.split("\n") as string[];
+  const raidTime = getRaidTime(unprocessedRaidTime.replace("⏱️ ", ""));
+  const raidId = unprocessedRaidId.replace("🆔 ", "");
+  const { raidTitle, raidType } = getRaidTitle(message.embeds[0]?.title);
   const { templateId } = determineRaidTemplateType({
     embedFields: currentFields || [],
   });
@@ -56,12 +71,12 @@ export const waitlistButtonInteract = async (
   const defaultClass = getOptionsList().find(
     ({ value }) => value === defaultClassName
   );
-  const PersistedClassInfo = await getLastUsersClass(member, {
+  const persistedClassInfo = await getLastUsersClass(member, {
     documentClient,
   });
   const defaultSelectedClassType =
     (new Map(NeverwinterClassesMap).get(
-      PersistedClassInfo?.className || defaultClass?.value
+      persistedClassInfo?.className || defaultClass?.value
     )?.type as Category) || Category.WAITLIST;
   logger.log("info", "waitlist button", { seperatedSections });
   const [
@@ -77,28 +92,41 @@ export const waitlistButtonInteract = async (
   const userArtifactsParse = userExists
     ? userArtifacts.replace(/[\{\}]+/gi, "").split(/[,|\s]+/)
     : undefined;
+
   const [firstArtifact = "unknown"] = userArtifactsParse || [];
   const isEmojiText = isEmoji(firstArtifact);
   const emojiProcessedArtifactlist = isEmojiText
     ? extractShortArtifactNames(userArtifactsParse)
     : userArtifactsParse;
+  const artifactsList = userArtifactsParse
+    ? emojiProcessedArtifactlist
+    : persistedClassInfo?.artifactsList;
+  const primaryClassName =
+    (userRecord as EmbedField)?.name ||
+    persistedClassInfo?.className ||
+    (defaultClass?.value as string);
+  const optionalClassesNames = userExists
+    ? optionalClasses
+    : persistedClassInfo?.optionalClasses;
   const creatableField: EmbedField = {
     name: createFieldName(
       {
         fieldName:
           (userRecord as EmbedField)?.name ||
-          PersistedClassInfo?.className ||
+          persistedClassInfo?.className ||
           (defaultClass?.value as string),
-        optionalClasses: userExists ? optionalClasses : PersistedClassInfo?.optionalClasses,
+        optionalClasses: userExists
+          ? optionalClasses
+          : persistedClassInfo?.optionalClasses,
       },
       { classNamesList: getOptionsList() }
     ),
     value: createFieldValue({
       memberId: member.user.id,
-      userStatus: userState.CONFIRMED,
+      userStatus: userState.TRAINEE,
       artifactsList: userArtifactsParse
         ? emojiProcessedArtifactlist
-        : PersistedClassInfo?.artifactsList,
+        : persistedClassInfo?.artifactsList,
     }),
     inline: true,
   };
@@ -113,10 +141,44 @@ export const waitlistButtonInteract = async (
       defaultSeperation: sectionSeperation,
     }
   );
-
+  const status = ACTIVITY_STATUS.JOINED_WAITLIST;
+  const createdAt = new Date().getTime();
+  const updatedActions = await updateActions(
+    {
+      discordMemberId: member?.user?.id,
+      compositeRaidStatusDate: `${createdAt}#${raidId}#${status}`,
+      updates: {
+        raidId,
+        status,
+        raidTitle,
+        raidType,
+        raidTime,
+        currentSection: sectionName,
+        requestedSectionName: Category.WAITLIST,
+        artifactsList,
+        token,
+        primaryClassName,
+        optionalClassesNames: optionalClassesNames || [],
+        serverId: guild_id,
+        channelId: channel_id,
+        createdAt: new Date().getTime(),
+        embed: JSON.stringify([
+          {
+            ...message.embeds[0],
+            description: messageEmbed.description,
+            fields: updatedFieldsList,
+          },
+        ]),
+        hasPendingUpdates: false,
+        pendingUpdate: [],
+      },
+    },
+    { documentClient }
+  );
   logger.log("info", "updated fields list", {
     updatedFieldsList,
     creatableField,
+    updatedActions,
     userRecord,
   });
   return {

@@ -1,7 +1,14 @@
 import { APIEmbedField } from "discord-api-types/payloads/v10/channel";
-import { previousAvailableSlotValue, availableSlotValue } from "../../../../embeds/templates/neverwinter/raid";
+import {
+  previousAvailableSlotValue,
+  availableSlotValue,
+} from "../../../../embeds/templates/neverwinter/raid";
 import { IfactoryInitializations } from "../../../typeDefinitions/event";
-import { extractFieldName } from "../helper/embedFieldAttribute";
+import {
+  defaultJoinStatus,
+  extractFieldName,
+  extractFieldValueAttributes,
+} from "../helper/embedFieldAttribute";
 import {
   ActionConditions,
   conditionsToActionsMapper,
@@ -85,6 +92,11 @@ export const getExistingMemberRecordDetails = (
           return currentMemberId === `<@${memberId}>`;
         });
         const userExists: boolean = foundUserIndex >= 0 ? true : false;
+        const parsedUserStatus = userExists
+          ? extractFieldValueAttributes({
+              fieldValueText: sectionRecords[foundUserIndex].value,
+            })?.userStatus
+          : defaultJoinStatus;
         const [userId, userStatus, userArtifacts] = userExists
           ? sectionRecords[foundUserIndex].value.split(seperator)
           : [];
@@ -104,7 +116,7 @@ export const getExistingMemberRecordDetails = (
                   name: fieldName,
                 },
                 optionalClasses,
-                userStatus,
+                userStatus: parsedUserStatus,
                 userArtifacts,
                 sectionName: currentSectionName,
                 sectionUserOccupyCount:

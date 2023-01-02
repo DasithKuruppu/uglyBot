@@ -93,7 +93,7 @@ export const createRaidCommand = async (
     eventDateTime: requestedDate,
     relativeEventDateTime: requestedRelativeDate,
     coverImageUrl: nameToCoverUrl[title],
-    type: type || "Farm Run",
+    type: type || "Farm",
     author:
       (interactionConfig.member as any)?.nick ||
       interactionConfig.member.user.username,

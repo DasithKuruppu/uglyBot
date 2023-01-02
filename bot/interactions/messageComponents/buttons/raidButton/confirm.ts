@@ -31,15 +31,19 @@ import {
 import {
   createRaidContent,
   determineRaidTemplateType,
+  getRaidTime,
   getRaidTitle,
 } from "../../utils/helper/raid";
-import { membersTable } from "../../../../../pulumi/persistantStore/tables/members";
 import {
   createEmbedArtifactSortContent,
   fieldSorter,
 } from "../../utils/helper/artifactsSorter";
 import { getLastUsersClass, getRaid } from "../../utils/storeOps/fetchData";
 import { updateRaid } from "../../utils/storeOps/updateData";
+import {
+  ACTIVITY_STATUS,
+  updateActions,
+} from "../../utils/storeOps/memberActions";
 export const confirmButtonInteract = async (
   data: APIMessageSelectMenuInteractionData,
   factoryInits: IfactoryInitializations
@@ -48,12 +52,21 @@ export const confirmButtonInteract = async (
     logger,
     rest,
     documentClient,
-    interactionConfig: { application_id, token, member, message },
+    interactionConfig: {
+      application_id,
+      guild_id,
+      channel_id,
+      token,
+      member,
+      message,
+    },
   } = factoryInits;
   const messageContent = message?.content;
   const messageEmbed = message.embeds[0];
-  const [unprocessedRaidId] = messageEmbed.description?.split("\n") as string[];
+
+  const [unprocessedRaidId, unprocessedRaidTime] = messageEmbed.description?.split("\n") as string[];
   const raidId = unprocessedRaidId.replace("🆔 ", "");
+  const raidTime = getRaidTime(unprocessedRaidTime.replace("⏱️ ", ""));
   const [persistedClassInfo, persistedRaidInfo] = await Promise.all([
     getLastUsersClass(member, {
       documentClient,
@@ -76,7 +89,7 @@ export const confirmButtonInteract = async (
       ? pendingUpdate?.embeds?.[0]?.description
       : messageEmbed.description;
   const currentFields = processedEmbedFields;
-  const raidTitle = getRaidTitle(messageEmbed?.title);
+  const { raidTitle, raidType } = getRaidTitle(messageEmbed?.title);
 
   const { templateId } = determineRaidTemplateType({
     embedFields: currentFields || [],
@@ -119,25 +132,28 @@ export const confirmButtonInteract = async (
     ? extractShortArtifactNames(userArtifactsParse)
     : userArtifactsParse;
 
+  const artifactsList = userArtifactsParse
+    ? emojiProcessedArtifactlist
+    : persistedClassInfo?.artifactsList;
+  const primaryClassName =
+    (userRecord as EmbedField)?.name ||
+    persistedClassInfo?.className ||
+    (defaultClass?.value as string);
+  const optionalClassesNames = userExists
+    ? optionalClasses
+    : persistedClassInfo?.optionalClasses;
   const creatableField: EmbedField = {
     name: createFieldName(
       {
-        fieldName:
-          (userRecord as EmbedField)?.name ||
-          persistedClassInfo?.className ||
-          (defaultClass?.value as string),
-        optionalClasses: userExists
-          ? optionalClasses
-          : persistedClassInfo?.optionalClasses,
+        fieldName: primaryClassName,
+        optionalClasses: optionalClassesNames,
       },
       { classNamesList: getOptionsList() }
     ),
     value: createFieldValue({
       memberId: member.user.id,
-      userStatus: userState.CONFIRMED,
-      artifactsList: userArtifactsParse
-        ? emojiProcessedArtifactlist
-        : persistedClassInfo?.artifactsList,
+      userStatus: userState.TRAINEE,
+      artifactsList,
     }),
     inline: true,
   };
@@ -152,19 +168,61 @@ export const confirmButtonInteract = async (
       defaultSeperation: sectionSeperation,
     }
   );
-  const updatedRaid = hasPendingUpdates
-    ? await updateRaid(
-        {
+  const status = ACTIVITY_STATUS.JOINED;
+  const createdAt = new Date().getTime();
+  const actionsList = [
+    updateActions(
+      {
+        discordMemberId: member?.user?.id,
+        compositeRaidStatusDate: `${createdAt}#${raidId}#${status}`,
+        updates: {
           raidId,
-          createdAt: persistedRaidInfo.createdAt,
-          updates: {
-            pendingUpdates: JSON.stringify([]),
-            hasPendingUpdates: false,
-          },
+          status,
+          raidTitle,
+          raidType,
+          raidTime,
+          currentSection: sectionName,
+          requestedSectionName: sectionName,
+          artifactsList,
+          token,
+          primaryClassName,
+          optionalClassesNames: optionalClassesNames || [],
+          serverId: guild_id,
+          channelId: channel_id,
+          createdAt,
+          embed: JSON.stringify([
+            {
+              ...message.embeds[0],
+              description: processedEmbedDescription,
+              fields: updatedFieldsList,
+            },
+          ]),
+          hasPendingUpdates,
+          pendingUpdate: hasPendingUpdates
+            ? persistedRaidInfo.pendingUpdate
+            : [],
         },
-        { documentClient }
-      )
-    : [];
+      },
+      { documentClient }
+    ),
+    ...(hasPendingUpdates
+      ? [
+          updateRaid(
+            {
+              raidId,
+              createdAt: persistedRaidInfo.createdAt,
+              updates: {
+                pendingUpdates: JSON.stringify([]),
+                hasPendingUpdates: false,
+              },
+            },
+            { documentClient }
+          ),
+        ]
+      : []),
+  ];
+
+  const [updatedActions, updatedRaid] = await Promise.all(actionsList);
   logger.log("info", "updated fields list", {
     updatedFieldsList,
     creatableField,
@@ -180,7 +238,7 @@ export const confirmButtonInteract = async (
         },
       ],
       content: createRaidContent(processedMessageContent, {
-        userActionText: `<@${member.user.id}> confirmed to join raid!`,
+        userActionText: `<@${member.user.id}> joined the raid!`,
         userArtifacts: createEmbedArtifactSortContent(
           updatedSections,
           raidTitle

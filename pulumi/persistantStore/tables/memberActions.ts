@@ -10,67 +10,13 @@ export const memberActionsTable = new aws.dynamodb.Table(`${stack}_memberActions
       type: "S",
     },
     {
-      name: "serverId",
+      name: "compositeRaidStatusDate",
       type: "S",
-    },
-    {
-      name: "memberName",
-      type: "S",
-    },
-    {
-      name: "className",
-      type: "S",
-    },
-    {
-      name: "characterName",
-      type: "S",
-    },
-    {
-      name: "inGameHandle",
-      type: "S",
-    },
-    {
-      name: "action",
-      type: "S",
-    },
-    {
-      name: "raidName",
-      type: "S",
-    },
-    {
-      name: "interactionType",
-      type: "S",
-    },
-    {
-      name: "interactedAgaintMember",
-      type: "S",
-    },
-    {
-      name: "interactionDescription",
-      type: "S",
-    },
-    {
-      name: "createdAt",
-      type: "N", // number
     },
   ],
   billingMode: "PAY_PER_REQUEST",
-  globalSecondaryIndexes: [
-    {
-      hashKey: "characterName",
-      name: "characterNameIndex",
-      nonKeyAttributes: [
-        "serverId",
-        "characterName",
-        "inGameHandle",
-        "discordMemberId",
-      ],
-      projectionType: "INCLUDE",
-      rangeKey: "createdAt",
-    },
-  ],
-  hashKey: "inGameHandle",
-  rangeKey: "createdAt",
+  hashKey: "discordMemberId",
+  rangeKey: "compositeRaidStatusDate",
   tags: {
     Environment: `${getEnvironmentFromStack(stack)}`,
     Name: `${stack}_memberActions`,

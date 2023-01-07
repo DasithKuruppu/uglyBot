@@ -183,7 +183,7 @@ export const removeRaidUserCommand = async (
       }> removed user <@${userId}> from Raid(${raidId}) ${reasonText}
       *Total pending updates: ${
         (pendingUpdatesCount || 0) + 1
-      }*\n > Press \`Confirmed\` on the embeded raid to commit updates`,
+      }*\n > Press \`Join\` on the embeded raid to commit updates`,
       allowed_mentions: {
         parse: [],
       },

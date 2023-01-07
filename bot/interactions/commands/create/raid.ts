@@ -8,7 +8,7 @@ import {
 import ShortUniqueId from "short-unique-id";
 import { Logger } from "winston";
 import { raidBuilder } from "../../../embeds/templates/neverwinter/raid";
-import { getOptionsList } from "../../../embeds/templates/neverwinter/classesList";
+import { getNewClassOptionsList, getOptionsList } from "../../../embeds/templates/neverwinter/classesList";
 import { convertToDiscordDate } from "../../messageComponents/utils/date/dateToDiscordTimeStamp";
 import { raidsTable } from "../../../../pulumi/persistantStore/tables/raids";
 import {
@@ -39,7 +39,7 @@ export const createRaidCommand = async (
     data,
     interactionConfig,
   });
-  const classOptionsList = getOptionsList();
+  const classOptionsList = getNewClassOptionsList();
   const createOptions = data?.options?.[0] as any;
   const raidOptions = createOptions?.options || [];
   const title =

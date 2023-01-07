@@ -1,5 +1,8 @@
 import { ArtifactsNames } from "../../../../embeds/templates/artifactsList";
-import { getOptionsList } from "../../../../embeds/templates/neverwinter/classesList";
+import {
+  getNewClassOptionsList,
+  getOptionsList,
+} from "../../../../embeds/templates/neverwinter/classesList";
 import { availableSlotValue } from "../../../../embeds/templates/neverwinter/raid";
 import {
   displayArtifactAsEmoji,
@@ -31,15 +34,20 @@ export const createFieldName = (
     fieldName = "",
     optionalClasses = [],
   }: { fieldName: string; optionalClasses?: string[] },
-  { classNamesList = [] }: { classNamesList: any[] }
+  {
+    classNamesList = [],
+    newClassNamesList = getNewClassOptionsList(),
+  }: { classNamesList: any[]; newClassNamesList?: any[] }
 ) => {
   const foundClassName: { emoji?: any } =
-    classNamesList.find(({ value }) => value === fieldName) || {};
+    newClassNamesList.find(({ value }) => value === fieldName) ||
+    classNamesList.find(({ value }) => value === fieldName) ||
+    {};
   const { emoji: { id = "unknown", name = "unknown" } = {} } = foundClassName;
   const optionalClassesEmoji = optionalClasses.map((optionalClassName) => {
-    const classDetails = classNamesList.find(
-      ({ value }) => value === optionalClassName
-    );
+    const classDetails =
+      newClassNamesList.find(({ value }) => value === optionalClassName) ||
+      classNamesList.find(({ value }) => value === optionalClassName);
     const { emoji: { id = "unknown", name = "unknown" } = {} } = classDetails;
     return `<:${name}:${id}>`;
   });
@@ -53,7 +61,12 @@ export const extractFieldName = (
   {
     seperator = " ",
     classNamesList = getOptionsList(),
-  }: { classNamesList?: any[]; seperator?: string } = {}
+    newClassNamesList = getNewClassOptionsList(),
+  }: {
+    classNamesList?: any[];
+    newClassNamesList?: any[];
+    seperator?: string;
+  } = {}
 ) => {
   const splitFieldName = fieldNameText.split(seperator);
   const [emojis, fieldName] = splitFieldName;
@@ -66,10 +79,15 @@ export const extractFieldName = (
           const [capturedText = "unknown", captureEmojiId = "unknown"] =
             emojiIdCaptureRegexp.exec(optionalClassEmoji) || [];
           const classDetails =
+            newClassNamesList.find(({ emoji: { id, name } }) => {
+              const isValid = id === captureEmojiId;
+              return isValid;
+            }) ||
             classNamesList.find(({ emoji: { id, name } }) => {
               const isValid = id === captureEmojiId;
               return isValid;
-            }) || {};
+            }) ||
+            {};
           const { value } = classDetails;
           return value;
         })

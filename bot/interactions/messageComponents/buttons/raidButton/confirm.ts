@@ -199,7 +199,7 @@ export const confirmButtonInteract = async (
           ]),
           hasPendingUpdates,
           pendingUpdate: hasPendingUpdates
-            ? persistedRaidInfo.pendingUpdate
+            ? persistedRaidInfo.pendingUpdates
             : [],
         },
       },

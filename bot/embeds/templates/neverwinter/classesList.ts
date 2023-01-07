@@ -195,3 +195,159 @@ export const getOptionsList = () => {
     },
   ]);
 };
+
+export const getNewClassOptionsList = () => {
+  const classMap = new Map(NeverwinterClassesMap);
+  return ([
+    {
+      label: classMap.get(ClassNames.RANGER_DPS)?.label,
+      value: ClassNames.RANGER_DPS,
+      emoji: {
+        id: `1059273297453387776`,
+        name: `Ranger`,
+        animated: false,
+      },
+      default: false,
+    },
+    {
+      label: classMap.get(ClassNames.WIZARD_DPS)?.label,
+      value: ClassNames.WIZARD_DPS,
+      emoji: {
+        id: `1059284505715810314`,
+        name: `Wizard`,
+        animated: false,
+      },
+      default: false,
+    },
+    {
+      label: classMap.get(ClassNames.PALADIN_TANK)?.label,
+      value: ClassNames.PALADIN_TANK,
+      emoji: {
+        id: `1059274489327796264`,
+        name: `Paladin_Tank`,
+        animated: false,
+      },
+      default: false,
+    },
+    {
+      label: classMap.get(ClassNames.PALADIN_HEAL)?.label,
+      value: ClassNames.PALADIN_HEAL,
+      emoji: {
+        id: `1059284687069138964`,
+        name: `Paladin_Heal`,
+        animated: false,
+      },
+      default: false,
+    },
+    {
+      label: classMap.get(ClassNames.BARB_TANK)?.label,
+      value: ClassNames.BARB_TANK,
+      emoji: {
+        id: `1059285714879119371`,
+        name: `Barb_Tank`,
+        animated: false,
+      },
+      default: false,
+    },
+    {
+      label: classMap.get(ClassNames.BARB_DPS)?.label,
+      value: ClassNames.BARB_DPS,
+      emoji: {
+        id: `1060807651497365504`,
+        name: `Barb_DPS`,
+        animated: false,
+      },
+      default: false,
+    },
+    {
+      label: classMap.get(ClassNames.ROUGE_DPS)?.label,
+      value: ClassNames.ROUGE_DPS,
+      emoji: {
+        id: `1060808103723020338`,
+        name: `Rouge_DPS`,
+        animated: false,
+      },
+      default: false,
+    },
+    {
+      label: classMap.get(ClassNames.CLERIC_HEAL)?.label,
+      value: ClassNames.CLERIC_HEAL,
+      emoji: {
+        id: `1060808411991777370`,
+        name: `Cleric_Heal`,
+        animated: false,
+      },
+      default: false,
+    },
+    {
+      label: classMap.get(ClassNames.CLERIC_DPS)?.label,
+      value: ClassNames.CLERIC_DPS,
+      emoji: {
+        id: `1060808573594112050`,
+        name: `Cleric_DPS`,
+        animated: false,
+      },
+      default: false,
+    },
+    {
+      label: classMap.get(ClassNames.BARD_DPS)?.label,
+      value: ClassNames.BARD_DPS,
+      emoji: {
+        id: `1059274119067209729`,
+        name: `Bard_DPS`,
+        animated: false,
+      },
+      default: false,
+    },
+    {
+      label: classMap.get(ClassNames.BARD_HEAL)?.label,
+      value: ClassNames.BARD_HEAL,
+      emoji: {
+        id: `1059273817421271070`,
+        name: `Bard_Heal`,
+        animated: false,
+      },
+      default: false,
+    },
+    {
+      label: classMap.get(ClassNames.WARLOCK_DPS)?.label,
+      value: ClassNames.WARLOCK_DPS,
+      emoji: {
+        id: `1060808852565671997`,
+        name: `Warlock_DPS`,
+        animated: false,
+      },
+      default: false,
+    },
+    {
+      label: classMap.get(ClassNames.WARLOCK_HEAL)?.label,
+      value: ClassNames.WARLOCK_HEAL,
+      emoji: {
+        id: `1060809019398311946`,
+        name: `Warlock_Heal`,
+        animated: false,
+      },
+      default: false,
+    },
+    {
+      label: classMap.get(ClassNames.FIGHTER_DPS)?.label,
+      value: ClassNames.FIGHTER_DPS,
+      emoji: {
+        id: `1060809205054980118`,
+        name: `Fighter_DPS`,
+        animated: false,
+      },
+      default: false,
+    },
+    {
+      label: classMap.get(ClassNames.FIGHTER_TANK)?.label,
+      value: ClassNames.FIGHTER_TANK,
+      emoji: {
+        id: `1060809412949843978`,
+        name: `Fighter_Tank`,
+        animated: false,
+      },
+      default: false,
+    },
+  ]);
+};

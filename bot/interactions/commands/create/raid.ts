@@ -8,14 +8,10 @@ import {
 import ShortUniqueId from "short-unique-id";
 import { Logger } from "winston";
 import { raidBuilder } from "../../../embeds/templates/neverwinter/raid";
-<<<<<<< HEAD
-import { getNewClassOptionsList, getOptionsList } from "../../../embeds/templates/neverwinter/classesList";
-=======
 import {
   getNewClassOptionsList,
   getOptionsList,
 } from "../../../embeds/templates/neverwinter/classesList";
->>>>>>> 9a0789d (feat(#100 statusRework): Rework statuses to be more meaningful)
 import { convertToDiscordDate } from "../../messageComponents/utils/date/dateToDiscordTimeStamp";
 import { raidsTable } from "../../../../pulumi/persistantStore/tables/raids";
 import {
@@ -108,11 +104,7 @@ export const createRaidCommand = async (
     raidId: uniqueRaidId,
     eventDateTime: requestedDate,
     relativeEventDateTime: requestedRelativeDate,
-<<<<<<< HEAD
-    coverImageUrl: nameToCoverUrl[title],
-=======
     coverImageUrl: nameToCoverUrl[title] || defaultCoverImage,
->>>>>>> 9a0789d (feat(#100 statusRework): Rework statuses to be more meaningful)
     type: type || "Farm",
     author:
       (interactionConfig.member as any)?.nick ||

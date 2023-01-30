@@ -76,7 +76,7 @@ export const getMemberActions = async (
         "#DYNOBASE_discordMemberId": "discordMemberId",
       },
       ScanIndexForward: false,
-      Limit: 5
+      Limit: 3
     })
     .promise();
   const { Items = [] } = dbResult;

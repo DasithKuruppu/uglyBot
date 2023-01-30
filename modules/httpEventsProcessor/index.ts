@@ -37,7 +37,9 @@ export const httpEventsHandler = async (
         sqsClient.sendMessage({
           QueueUrl: config.DISCORD_EVENTS_SQS,
           MessageBody: strBody,
-          MessageGroupId: parsedEventBody?.guild_id || "other",
+          MessageGroupId: `${parsedEventBody?.guild_id || "other"}${
+            parsedEventBody?.member?.user?.id || "unknownuser"
+          }`,
         }),
         sqsClient.sendMessage({
           QueueUrl: config.DISCORD_SCHEDULE_EVENTS_SQS,

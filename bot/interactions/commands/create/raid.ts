@@ -12,7 +12,10 @@ import {
   getNewClassOptionsList,
   getOptionsList,
 } from "../../../embeds/templates/neverwinter/classesList";
-import { convertToDiscordDate } from "../../messageComponents/utils/date/dateToDiscordTimeStamp";
+import {
+  convertToDiscordDate,
+  normalizeTime,
+} from "../../messageComponents/utils/date/dateToDiscordTimeStamp";
 import { raidsTable } from "../../../../pulumi/persistantStore/tables/raids";
 import {
   createRaidNameChoicesList,
@@ -20,6 +23,7 @@ import {
 } from "../../../registerCommands/commands";
 import { isFivePersonDungeon } from "../../messageComponents/utils/helper/userActions";
 import { setUpdateValues } from "../../../store/utils";
+import { getServerProfile } from "../../messageComponents/utils/storeOps/serverProfile";
 interface factoryInitializations {
   logger: Logger;
   rest: REST;
@@ -79,14 +83,21 @@ export const createRaidCommand = async (
   const processedCommenceChannel = commencedVoiceChatChannel
     ? `<#${commencedVoiceChatChannel}>`
     : `Not specified`;
+  const serverProfile = await getServerProfile(
+    { discordServerId: interactionConfig.guild_id },
+    { documentClient }
+  );
+  const processedTime = normalizeTime(dateTime, { offSet: serverProfile?.timezoneOffset });
   const isFivePerson = isFivePersonDungeon(title);
-  const requestedDate = convertToDiscordDate(dateTime);
-  const requestedRelativeDate = convertToDiscordDate(dateTime, {
+  const requestedDate = convertToDiscordDate(processedTime);
+  const requestedRelativeDate = convertToDiscordDate(processedTime, {
     relative: true,
   });
   const requirements: string[] = requirementsValue.split(",");
   logger.log("info", "create attributes", {
     requestedDate,
+    processedTime,
+    serverProfile,
     dateTime,
   });
   const partyOptionsToMap = {

@@ -76,6 +76,11 @@ export const request_role = {
     },
     {
       type: 1,
+      name: "server_profile",
+      description: "Request server profile",
+    },
+    {
+      type: 1,
       name: "invite_link",
       description: "Get an invite link to invite users.",
     },

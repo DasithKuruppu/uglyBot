@@ -1,4 +1,3 @@
-import dayjs from "dayjs-parser/dayjs";
 import {
   APIChatInputApplicationCommandInteractionData,
   APIApplicationCommandInteractionDataRoleOption,

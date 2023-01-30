@@ -19,7 +19,7 @@ const discordEventsQueue = new aws.sqs.Queue(`${stack}_discordEvents`, {
     "maxReceiveCount": "2"
   }
 `,
-});
+},{ customTimeouts: { create: "5m" } });
 
 discordEventsQueue.onEvent("discordInteraction", discordEventsLambdaCallback, {
   batchSize: 1,

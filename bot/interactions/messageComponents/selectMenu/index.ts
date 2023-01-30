@@ -3,11 +3,13 @@ import { IfactoryInitializations } from "../../typeDefinitions/event";
 import { raidArtifactSelectId, raidArtifactSelect } from "./raidSelectMenu/artifactSelect";
 import { raidClassSelectId, raidClassSelect} from "./raidSelectMenu/classSelect";
 import { profileStatusVoteId, profileStatusVote } from "./profileSelectMenu/statusVoteSelect";
+import { serverProfileTZSelect, timezoneSelect } from "./serverProfileSelectMenu/serverProfileSelectTimezone"
 
 export const selectMenusInteractions = {
     [raidArtifactSelectId]:  raidArtifactSelect,
     [raidClassSelectId]: raidClassSelect,
-    [profileStatusVoteId]: profileStatusVote 
+    [profileStatusVoteId]: profileStatusVote,
+    [serverProfileTZSelect]: timezoneSelect
 };
 
 export const recognizedMenuInteractionComponentIds = Object.keys(

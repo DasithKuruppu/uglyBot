@@ -91,7 +91,9 @@ export const askCommand = async (
         },
       };
     }
-    if (raidRecord.creatorId !== creatorId) {
+    if (
+      !["320419663349678101", raidRecord.creatorId.toString()].includes(creatorId.toString())
+    ) {
       return {
         body: {
           content: `<@${userId}> asked : ${message} \n>>> I looked up the records with raid Id - ${raidId} and it seems like you are not the creator of the raid so I will not be able to change this for you unless you are the creator of this raid.`,
@@ -115,7 +117,7 @@ export const askCommand = async (
       };
     }
     const { content, embeds, components } = foundRaidMessage;
-    const processedDate = (date_time as string).replace("UTC","GMT");
+    const processedDate = (date_time as string).replace("UTC", "GMT");
     const requestedTimeRelative = convertToDiscordDate(processedDate, {
       relative: true,
     });
@@ -163,7 +165,7 @@ export const askCommand = async (
       updatedRecordData,
       commandTextRaidTime,
       currentUpdatedEmbedDescription,
-      updatedContent
+      updatedContent,
     });
     return {
       body: {

@@ -7,7 +7,6 @@ import {
   getExistingMemberRecordDetails,
 } from "../../utils/categorizeEmbedFields/categorizeEmbedFields";
 import {
-  createFieldValue,
   defaultJoinStatus,
 } from "../../utils/helper/embedFieldAttribute";
 import {

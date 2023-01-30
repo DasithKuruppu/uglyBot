@@ -76,7 +76,7 @@ export const confirmButtonInteract = async (
   ]);
   const hasPendingUpdates = !!persistedRaidInfo?.hasPendingUpdates;
   const [pendingUpdate] = JSON.parse(
-    persistedRaidInfo?.pendingUpdates || "[]"
+    hasPendingUpdates ? persistedRaidInfo?.pendingUpdates : "[]"
   ).slice(-1);
   const processedEmbedFields = hasPendingUpdates
     ? pendingUpdate?.embeds?.[0]?.fields

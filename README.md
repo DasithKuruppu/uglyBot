@@ -11,7 +11,7 @@ This is a simple discord bot buit to interact with some discord users.
 [![Node][node.js]][node-url]
 [![Typescript][typescript]][typescript-url]
 [![Pulumi][pulumi]][pulumi-url]
-[![AWS][aws]][pulumi-url]
+[![AWS][aws]][aws-url]
 
 ## Test coverage
 

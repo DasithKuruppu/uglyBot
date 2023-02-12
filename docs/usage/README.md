@@ -3,7 +3,7 @@
 Currently the bot supports the below mentioned commands.
 # Commands
 
-## info
+## /info
 
 ### Description
 
@@ -13,7 +13,7 @@ List some info about the bot
 
 None
 
-## ask
+## /ask
 
 ### Description
 
@@ -23,7 +23,7 @@ Ask or say anything to the bot
 
 - `message`: Ask something from the bot (required)
 
-## request_role
+## /request
 
 ### Description
 
@@ -42,7 +42,7 @@ Choose a type of request to make.
 - `raid_summary`: Request summary of the upcoming raids
 - `invite_link`: Get an invite link to invite users.
 
-## remove_raidUser
+## /remove_raidUser
 
 ### Description
 
@@ -54,15 +54,15 @@ Remove a user from an event or raid.
   - `user`: The user you want to remove. (required)
   - `raid_id`: The ID of the raid you want the user removed from. (required)
   - `reason`: Reason for removing (optional)
-    - `Did not show up`: Did not show up (value: "did not show up")
-    - `Were unable to join`: Were unable to join (value: "were unable to join")
-    - `Did not meet queue requirements`: Did not meet queue requirements (value: "did not meet queue requirements")
-    - `Were wiping floor all day`: Were wiping floor all day (value: "Were wiping floor all day")
-    - `Are too ugly`: Are too ugly (value: "are too ugly")
-    - `Could not hold aggro`: Could not hold aggro (value: "could not hold aggro")
-    - `Ignored mechanics`: Ignored mechanics (value: "ignored mechanics")
+    - `Did not show up`
+    - `Were unable to join`
+    - `Did not meet queue requirements`
+    - `Were wiping floor all day`
+    - `Are too ugly`
+    - `Could not hold aggro`
+    - `Ignored mechanics`
 
-## create_raid
+## /create_raid
 
 ### Description
 

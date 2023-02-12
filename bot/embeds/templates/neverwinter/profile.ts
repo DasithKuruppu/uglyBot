@@ -1,8 +1,12 @@
+import { displayMountsAsEmoji } from "../../../interactions/messageComponents/utils/helper/artifactsRenderer";
+import { MountsList } from "../mountsList";
+
 const userProfile = ({
   userId,
   userName,
   userStatus,
   activityList,
+  mountsList = [],
   rankList,
   classesPlayed,
   trialsParticipatedOn,
@@ -30,6 +34,13 @@ const userProfile = ({
       {
         name: `Default Class setup and Artifacts`,
         value: classesPlayed.length ? classesPlayed.join("\n") : "-",
+        inline: false,
+      },
+      {
+        name: `Account wide mounts`,
+        value: mountsList.length
+          ? displayMountsAsEmoji(mountsList).join("|")
+          : "-",
         inline: false,
       },
       {
@@ -108,6 +119,7 @@ export const profileBuilder = ({
   userId,
   userName,
   activityList,
+  mountsList,
   rankList,
   userStatus,
   classesPlayed,
@@ -117,6 +129,7 @@ export const profileBuilder = ({
     userId,
     userName,
     activityList,
+    mountsList,
     userStatus,
     rankList,
     classesPlayed,
@@ -138,6 +151,24 @@ export const profileBuilder = ({
               default: false,
             })),
             min_values: 1,
+            type: 3,
+          },
+        ],
+      },
+      {
+        type: 1,
+        components: [
+          {
+            custom_id: `select_profile_mounts`,
+            placeholder: `Select mounts`,
+            options: MountsList.map(({ label, shortName, emoji }) => ({
+              label,
+              value: shortName,
+              emoji,
+              default: false,
+            })),
+            min_values: 1,
+            max_values: 5,
             type: 3,
           },
         ],

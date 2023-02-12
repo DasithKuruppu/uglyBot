@@ -6,8 +6,9 @@ import {
   Routes,
 } from "discord.js";
 import keywordExtractor from "keyword-extractor";
-import { convertToDiscordDate } from "../../messageComponents/utils/date/dateToDiscordTimeStamp";
+import { convertToDiscordDate, normalizeTime } from "../../messageComponents/utils/date/dateToDiscordTimeStamp";
 import { getRaid } from "../../messageComponents/utils/storeOps/fetchData";
+import { getServerProfile } from "../../messageComponents/utils/storeOps/serverProfile";
 import { updateRaid } from "../../messageComponents/utils/storeOps/updateData";
 export const commandName_ask = "ask";
 
@@ -92,7 +93,9 @@ export const askCommand = async (
       };
     }
     if (
-      !["320419663349678101", raidRecord.creatorId.toString()].includes(creatorId.toString())
+      !["320419663349678101", raidRecord.creatorId.toString()].includes(
+        creatorId.toString()
+      )
     ) {
       return {
         body: {
@@ -117,17 +120,22 @@ export const askCommand = async (
       };
     }
     const { content, embeds, components } = foundRaidMessage;
+    const serverProfile = await getServerProfile(
+      { discordServerId: interactionConfig.guild_id },
+      { documentClient }
+    );
     const processedDate = (date_time as string).replace("UTC", "GMT");
-    const requestedTimeRelative = convertToDiscordDate(processedDate, {
+    const processedNormalizedTime = normalizeTime(processedDate, { offSet: serverProfile?.timezoneOffset });
+    const requestedTimeRelative = convertToDiscordDate(processedNormalizedTime, {
       relative: true,
     });
-    const requestedDateTime = convertToDiscordDate(processedDate, {
+    const requestedDateTime = convertToDiscordDate(processedNormalizedTime, {
       relative: false,
     });
 
-    const allPreviousPendingUpdates: any[] = JSON.parse(
-      raidRecord?.pendingUpdates || "[]"
-    );
+    const allPreviousPendingUpdates: any[] = raidRecord.hasPendingUpdates
+      ? JSON.parse(raidRecord?.pendingUpdates || "[]")
+      : [];
     const [previousPendingUpdate] = allPreviousPendingUpdates.slice(-1);
     const [currentEmbed] = raidRecord?.hasPendingUpdates
       ? previousPendingUpdate?.embeds

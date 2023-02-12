@@ -56,7 +56,8 @@ export const waitlistButtonInteract = async (
   const currentFields = message.embeds[0].fields || [];
   const messageContent = message?.content;
   const messageEmbed = message.embeds[0];
-  const [unprocessedRaidId, unprocessedRaidTime] = messageEmbed.description?.split("\n") as string[];
+  const [unprocessedRaidId, unprocessedRaidTime] =
+    messageEmbed.description?.split("\n") as string[];
   const raidTime = getRaidTime(unprocessedRaidTime.replace("⏱️ ", ""));
   const raidId = unprocessedRaidId.replace("🆔 ", "");
   const { raidTitle, raidType } = getRaidTitle(message.embeds[0]?.title);
@@ -108,6 +109,8 @@ export const waitlistButtonInteract = async (
   const optionalClassesNames = userExists
     ? optionalClasses
     : persistedClassInfo?.optionalClasses;
+
+  const mountList = persistedClassInfo?.mountsList || [];
   const creatableField: EmbedField = {
     name: createFieldName(
       {
@@ -125,6 +128,7 @@ export const waitlistButtonInteract = async (
       memberId: member.user.id,
       userStatus: persistedClassInfo?.userStatus || userStatusCodes.RANK_I,
       artifactsList,
+      mountList
     }),
     inline: true,
   };
@@ -153,7 +157,7 @@ export const waitlistButtonInteract = async (
         raidTime,
         currentSection: sectionName,
         requestedSectionName: Category.WAITLIST,
-        artifactsList:artifactsList || [],
+        artifactsList: artifactsList || [],
         token,
         primaryClassName,
         optionalClassesNames: optionalClassesNames || [],

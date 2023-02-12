@@ -4,12 +4,14 @@ import { raidArtifactSelectId, raidArtifactSelect } from "./raidSelectMenu/artif
 import { raidClassSelectId, raidClassSelect} from "./raidSelectMenu/classSelect";
 import { profileStatusVoteId, profileStatusVote } from "./profileSelectMenu/statusVoteSelect";
 import { serverProfileTZSelect, timezoneSelect } from "./serverProfileSelectMenu/serverProfileSelectTimezone"
+import { profileMountSelect, profileMountsSelectId } from "./profileSelectMenu/selectMounts";
 
 export const selectMenusInteractions = {
     [raidArtifactSelectId]:  raidArtifactSelect,
     [raidClassSelectId]: raidClassSelect,
     [profileStatusVoteId]: profileStatusVote,
-    [serverProfileTZSelect]: timezoneSelect
+    [serverProfileTZSelect]: timezoneSelect,
+    [profileMountsSelectId]: profileMountSelect,
 };
 
 export const recognizedMenuInteractionComponentIds = Object.keys(

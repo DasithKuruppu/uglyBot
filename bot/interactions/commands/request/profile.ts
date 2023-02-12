@@ -102,24 +102,24 @@ export const profileCommand = async (
     { classNamesList: classOptionsList }
   );
   const artifactsEmoji = displayArtifactAsEmoji(artifactsList).join("|");
-  const statusUpvotes = await listUserStatusChanges(userId, {
+  const userStatusChanges = await listUserStatusChanges(userId, {
     documentClient,
   });
 
 
-  const RankIList = statusUpvotes.filter(
+  const RankIList = userStatusChanges.filter(
     ({ statusCode }) => statusCode === userStatusCodes.RANK_I
   );
-  const RankIIList = statusUpvotes.filter(
+  const RankIIList = userStatusChanges.filter(
     ({ statusCode }) => statusCode === userStatusCodes.RANK_II
   );
-  const RankIIIList = statusUpvotes.filter(
+  const RankIIIList = userStatusChanges.filter(
     ({ statusCode }) => statusCode === userStatusCodes.RANK_III
   );
-  const RankIVList = statusUpvotes.filter(
+  const RankIVList = userStatusChanges.filter(
     ({ statusCode }) => statusCode === userStatusCodes.RANK_IV
   );
-  const RankVList = statusUpvotes.filter(
+  const RankVList = userStatusChanges.filter(
     ({ statusCode }) => statusCode === userStatusCodes.RANK_V
   );
 
@@ -165,6 +165,7 @@ export const profileCommand = async (
         return `> ${statusSymbols[userStatusCode]} - ${upvotesCount} votes`;
       }
     ),
+    mountsList: lastUserClassActivity.mountsList,
     userStatus: statusSymbols[firstRankStatusCode],
     trialsParticipatedOn: [],
     classesPlayed: [`Class (Main and Optional): ${defaultClassesSelected} \n\u200b\n Artifacts: ${artifactsEmoji}`],

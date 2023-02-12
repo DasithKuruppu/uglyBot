@@ -62,7 +62,6 @@ export const updateuserStatus = async (
           "#DYNOBASE_discordMemberId": "discordMemberId",
         },
         ScanIndexForward: false,
-        Limit: 5
       })
       .promise();
     const { Items = [] } = dbResult;

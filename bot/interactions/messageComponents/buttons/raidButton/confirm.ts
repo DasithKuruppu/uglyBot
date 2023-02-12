@@ -104,9 +104,10 @@ export const confirmButtonInteract = async (
   const defaultClass = getOptionsList().find(
     ({ value }) => value === defaultClassName
   );
+  const classMap = new Map(NeverwinterClassesMap);
 
   const defaultSelectedClassType =
-    (new Map(NeverwinterClassesMap).get(
+    (classMap.get(
       persistedClassInfo?.className || defaultClass?.value
     )?.type as Category) || Category.WAITLIST;
   logger.log("info", "confirm button", {
@@ -137,6 +138,7 @@ export const confirmButtonInteract = async (
   const artifactsList = userArtifactsParse
     ? emojiProcessedArtifactlist
     : persistedClassInfo?.artifactsList;
+  const mountList = persistedClassInfo?.mountsList || [];
   const primaryClassName =
     (userRecord as EmbedField)?.name ||
     persistedClassInfo?.className ||
@@ -156,6 +158,7 @@ export const confirmButtonInteract = async (
       memberId: member.user.id,
       userStatus: persistedClassInfo?.userStatus || userStatusCodes.RANK_I,
       artifactsList,
+      mountList
     }),
     inline: true,
   };
@@ -164,12 +167,13 @@ export const confirmButtonInteract = async (
     seperatedSections,
     {
       memberId: member.user.id,
-      requestedUserSection: sectionName,
+      requestedUserSection: classMap.get(primaryClassName)?.type as Category,
       userField: creatableField,
       factoryInits,
       defaultSeperation: sectionSeperation,
     }
   );
+
   const status = ACTIVITY_STATUS.JOINED;
   const createdAt = new Date().getTime();
   const actionsList = [

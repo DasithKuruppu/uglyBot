@@ -55,7 +55,8 @@ export const raidArtifactSelect = async (
   const { raidTitle, raidType } = getRaidTitle(message.embeds[0]?.title);
   const messageContent = message?.content;
   const messageEmbed = message.embeds[0];
-  const [unprocessedRaidId, unprocessedRaidTime] = messageEmbed.description?.split("\n") as string[];
+  const [unprocessedRaidId, unprocessedRaidTime] =
+    messageEmbed.description?.split("\n") as string[];
   const raidId = unprocessedRaidId.replace("🆔 ", "");
   const raidTime = getRaidTime(unprocessedRaidTime.replace("⏱️ ", ""));
   const selectedArtifactsList = data.values;
@@ -87,7 +88,8 @@ export const raidArtifactSelect = async (
       userIndex = 0,
     } = {},
   ] = getExistingMemberRecordDetails(seperatedSections, member.user.id);
-  const existingUserClassType = userRecord?.name  || defaultClass?.value as string;
+  const existingUserClassType =
+    userRecord?.name || (defaultClass?.value as string);
   const primaryClassName =
     (userRecord as EmbedField)?.name ||
     persistedClassInfo?.className ||
@@ -95,6 +97,7 @@ export const raidArtifactSelect = async (
   const optionalClassesNames = userExists
     ? optionalClasses
     : persistedClassInfo?.optionalClasses;
+  const mountList = persistedClassInfo?.mountsList || [];
   const creatableField: EmbedField = {
     name: createFieldName(
       {
@@ -110,6 +113,7 @@ export const raidArtifactSelect = async (
       memberId: member.user.id,
       userStatus: persistedClassInfo?.userStatus || userStatusCodes.RANK_I,
       artifactsList: selectedArtifactsList,
+      mountList
     }),
     inline: true,
   };

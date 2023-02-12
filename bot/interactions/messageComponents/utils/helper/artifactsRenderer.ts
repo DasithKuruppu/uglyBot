@@ -3,7 +3,22 @@ import {
   newArtifactsList,
   ArtifactsNames,
 } from "../../../../embeds/templates/artifactsList";
+import { MountsList } from "../../../../embeds/templates/mountsList";
 
+
+export const displayMountsAsEmoji = (
+  mountShortNamesList: string[] = [],
+  { seperator = /[,|\s]+/ } = {}
+) => {
+  return mountShortNamesList.map((mountName) => {
+    const foundMount = MountsList.find(
+      ({ shortName }) => shortName === mountName
+    );
+    const { emoji: { id = "unknown", name = "unknown" } = {} } =
+      foundMount || {};
+    return foundMount ? `<:${name}:${id}>` : "❔";
+  });
+};
 export const displayArtifactAsEmoji = (
   artifactShortNamesList: string[] = [],
   { seperator = /[,|\s]+/ } = {}
@@ -25,6 +40,22 @@ export const extractShortArtifactNames = (emojiList) => {
       myRegexp.exec(emoji) || [];
     return (
       ArtifactsList.find(({ emoji }) => {
+        return emoji.id === id;
+      })?.shortName ||  newArtifactsList.find(({ emoji }) => {
+        return emoji.id === id;
+      })?.shortName || "unknown"
+    );
+  });
+};
+
+
+export const extractShortMountNames = (emojiList) => {
+  return (emojiList || []).map((emoji) => {
+    const myRegexp = /<:.+:(.+)>/gi;
+    const [capturedText = "unknown", id = "unknown"] =
+      myRegexp.exec(emoji) || [];
+    return (
+      MountsList.find(({ emoji }) => {
         return emoji.id === id;
       })?.shortName ||  newArtifactsList.find(({ emoji }) => {
         return emoji.id === id;

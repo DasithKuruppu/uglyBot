@@ -19,15 +19,36 @@ export const getAllUsersClass = async (userId, { documentClient }) => {
   return Items;
 };
 
-export const updateMemberStatus = async (
+export const batchGetUsersList = async(
+  userList: { discordMemberId: string; className: string }[],
+  { documentClient }
+) => {
+  var params = {
+    RequestItems: {
+      [membersTable.name.get()]: {
+        Keys: userList.map(({ discordMemberId, className }) => {
+          return {
+            discordMemberId,
+            className,
+          };
+        }),
+      },
+    },
+  };
+  const result = await documentClient.batchGet(params).promise();
+  return result[membersTable.name.get()];
+
+};
+
+export const updateMemberDetails = async (
   userId,
-  { userStatus },
+  updateObj: { userStatus?: string; mountsList?: string[] },
   { documentClient }
 ) => {
   const allUserClasses = await getAllUsersClass(userId, { documentClient });
-  
-  const updateValues = setUpdateValues({ userStatus });
-  console.log({allUserClasses, updateValues});
+
+  const updateValues = setUpdateValues(updateObj);
+  console.log({ allUserClasses, updateValues });
   await Promise.all(
     allUserClasses.map(({ className }) => {
       return documentClient

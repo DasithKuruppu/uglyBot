@@ -7,18 +7,22 @@ import { availableSlotValue } from "../../../../embeds/templates/neverwinter/rai
 import { userStatusCodes } from "../storeOps/userStatus";
 import {
   displayArtifactAsEmoji,
+  displayMountsAsEmoji,
   extractShortArtifactNames,
+  extractShortMountNames,
   isEmoji,
 } from "./artifactsRenderer";
 
 export const memmberNotExist = availableSlotValue;
 
-
 export const statusSymbols = {
-  [userStatusCodes.RANK_I]: "Monki Press W <a:MonkeyPressW:1066222667180539975>",
-  [userStatusCodes.RANK_II]: "Awkward Monki <a:awkward_monkey_look:881685228207374416>",
+  [userStatusCodes.RANK_I]:
+    "Monki Press W <a:MonkeyPressW:1066222667180539975>",
+  [userStatusCodes.RANK_II]:
+    "Awkward Monki <a:awkward_monkey_look:881685228207374416>",
   [userStatusCodes.RANK_III]: "Boosted Monki <a:bigmonke:806304972178063370>",
-  [userStatusCodes.RANK_IV]: "Slap Monki <a:MonkeySpecialSlap:1066225238754459659>",
+  [userStatusCodes.RANK_IV]:
+    "Slap Monki <a:MonkeySpecialSlap:1066225238754459659>",
   [userStatusCodes.RANK_V]: "Monki King <:MonkeyKing:1066215123762565151>",
 };
 
@@ -96,24 +100,30 @@ export const createFieldValue = ({
   memberId,
   userStatus = defaultJoinStatus,
   artifactsList = ["Artifacts N/A"],
+  mountList = ["Mounts N/A"],
   classEmoji = "",
-  userStatusCode = defaultJoinStatus
+  userStatusCode = defaultJoinStatus,
 }) => {
   if (!memberId) {
     return memmberNotExist;
   }
   const emojiList = displayArtifactAsEmoji(artifactsList);
-  return `<@${memberId}>\n${
-    statusSymbols[userStatus]
-  }\n${emojiList.join("|")}`;
+  const mountEmojiList = displayMountsAsEmoji(mountList);
+  return `<@${memberId}>\n${statusSymbols[userStatus]}\n${emojiList.join(
+    "|"
+  )}\n${mountEmojiList.join("|")}`;
 };
 
 export const extractFieldValueAttributes = ({
   fieldValueText = "",
   seperator = /[,|\s]+/,
 }) => {
-  const [memberIdValue = "", userStatusValue = "", artifactsValue = ""] =
-    fieldValueText.split("\n");
+  const [
+    memberIdValue = "",
+    userStatusValue = "",
+    artifactsValue = "",
+    mountsValue = "",
+  ] = fieldValueText.split("\n");
   const memberId = memberIdValue.substring(2, memberIdValue.length - 1);
   const [userStatus = defaultJoinStatus] =
     Object.entries(statusSymbols).find(
@@ -122,14 +132,20 @@ export const extractFieldValueAttributes = ({
   const artifactsList = artifactsValue
     .replace(/[\{\}]+/gi, "")
     .split(seperator);
+  const mountList = mountsValue.replace(/[\{\}]+/gi, "").split(seperator);
+  const [firstMount = "unknown"] = mountList;
   const [firstArtifact = "unknown"] = artifactsList;
-  const isEmojiText = isEmoji(firstArtifact);
+  const isEmojiTextArtifact = isEmoji(firstArtifact);
+  const isEmojiTextMount = isEmoji(firstMount);
 
   return {
     memberId,
     userStatus,
-    artifactsList: isEmojiText
+    artifactsList: isEmojiTextArtifact
       ? extractShortArtifactNames(artifactsList)
       : artifactsList,
+    mountsList: isEmojiTextMount
+      ? extractShortMountNames(mountList)
+      : mountList,
   };
 };

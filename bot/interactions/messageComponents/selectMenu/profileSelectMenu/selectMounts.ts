@@ -8,7 +8,7 @@ import {
   listUserStatusChanges,
   updateuserStatus,
   userStatusCodes,
-} from "../../../../interactions/messageComponents/utils/storeOps/userStatus";
+} from "../../utils/storeOps/userStatus";
 import { updateMemberDetails } from "../../../../interactions/messageComponents/utils/storeOps/members";
 import {
   createFieldName,
@@ -33,9 +33,9 @@ import {
 } from "../../utils/storeOps/memberActions";
 import { displayArtifactAsEmoji } from "../../utils/helper/artifactsRenderer";
 import { fieldSorter } from "../../utils/helper/artifactsSorter";
-export const profileStatusVoteId = "select_profile_status";
+export const profileMountsSelectId = "select_profile_mounts";
 
-export const profileStatusVote = async (
+export const profileMountSelect = async (
   data: APIMessageSelectMenuInteractionData,
   factoryInits: IfactoryInitializations
 ) => {
@@ -60,34 +60,59 @@ export const profileStatusVote = async (
     .trim()
     .split(" ");
   const userId = userDiscordId.substring(2, userDiscordId.length - 1);
-  const [selectedStatusValue] = data.values;
-  const mappedStatusCodes = {
-    [UserStatusValues.RANKI]: userStatusCodes.RANK_I,
-    [UserStatusValues.RANKII]: userStatusCodes.RANK_II,
-    [UserStatusValues.RANKIII]: userStatusCodes.RANK_III,
-    [UserStatusValues.RANKIV]: userStatusCodes.RANK_IV,
-    [UserStatusValues.RANKV]: userStatusCodes.RANK_V,
-  };
-  const selectedStatusCode = mappedStatusCodes[selectedStatusValue];
-  const updatedUserStatus = await updateuserStatus(
-    {
-      discordMemberId: userId,
-      updates: {
-        interactingDiscordMemberId: member.user.id,
-        statusCode: selectedStatusCode,
-        voted: true,
-        createdAt: new Date().toUTCString(),
-        updatedAt: new Date().toUTCString(),
-        statusName: selectedStatusValue,
-      },
-    },
-    { documentClient: documentClient }
-  );
+  const selectedMountsValues = data.values;
   const statusUpvotes = await listUserStatusChanges(userId, {
     documentClient,
   });
 
-  logger.log("info", {selectedStatusCode, statusUpvotes, updatedUserStatus});
+  const memberActivity = await getMemberActions(
+    { user: { id: userId } } as APIInteractionGuildMember,
+    {
+      documentClient,
+    }
+  );
+
+  const isUserAllowed = userId === member.user.id;
+  
+  isUserAllowed && await updateMemberDetails(
+    userId,
+    { mountsList: selectedMountsValues },
+    { documentClient }
+  );
+  const lastUserClassActivity = await getLastUsersClass(
+    { user: { id: userId } } as APIInteractionGuildMember,
+    {
+      documentClient,
+    }
+  );
+  const classOptionsList = getOptionsList();
+  const processedMemberActivity = memberActivity.map(
+    ({
+      metaData,
+      createdAt,
+      status,
+      raidId,
+      raidTitle,
+      raidType,
+      requestedSectionName,
+      primaryClassName,
+      optionalClassesNames,
+    }) => {
+      const classesEmojis = createFieldName(
+        { fieldName: primaryClassName, optionalClasses: optionalClassesNames },
+        { classNamesList: classOptionsList }
+      );
+      const activityTime = Math.round(Number(createdAt) / 1000);
+      const timestamp = `<t:${activityTime}:R>`;
+      const activityText = {
+        [ACTIVITY_STATUS.REMOVED]: `> ${timestamp}: <@${metaData?.removedBy}> (Admin) removed your ${classesEmojis} from ${raidTitle}[${raidType}] (Raid ID:${raidId}) ${metaData?.removedReason}`,
+      };
+      const customMessage = activityText[status];
+      const defaultMessage = `> ${timestamp}: ${status} ${raidTitle}[${raidType}] (Raid ID: **${raidId}**) with ${classesEmojis}`;
+      return customMessage ? customMessage : defaultMessage;
+    }
+  );
+
   const RankIList = statusUpvotes.filter(
     ({ statusCode }) => statusCode === userStatusCodes.RANK_I
   );
@@ -136,77 +161,19 @@ export const profileStatusVote = async (
 
   const [firstRank] = rankList;
 
-  const memberActivity = await getMemberActions(
-    { user: { id: userId } } as APIInteractionGuildMember,
-    {
-      documentClient,
-    }
-  );
-  const lastUserClassActivity = await getLastUsersClass(
-    { user: { id: userId } } as APIInteractionGuildMember,
-    {
-      documentClient,
-    }
-  );
-  logger.log("info", { rankList, firstRank, memberActivity, lastUserClassActivity });
-  const updatedMember = await updateMemberDetails(
-    userId,
-    { userStatus: firstRank?.userStatusCode },
-    { documentClient }
-  );
-  logger.log("info", {
-    updatedMember,
-    statusUpvotes,
-    updatedUserStatus,
-    userId,
-    content,
-    member,
-    selectedStatusCode,
-    selectedStatusValue,
-  });
-
-  const classOptionsList = getOptionsList();
-  const processedMemberActivity = memberActivity.map(
-    ({
-      metaData,
-      createdAt,
-      status,
-      raidId,
-      raidTitle,
-      raidType,
-      requestedSectionName,
-      primaryClassName,
-      optionalClassesNames,
-    }) => {
-      const classesEmojis = createFieldName(
-        { fieldName: primaryClassName, optionalClasses: optionalClassesNames },
-        { classNamesList: classOptionsList }
-      );
-      const activityTime = Math.round(Number(createdAt) / 1000);
-      const timestamp = `<t:${activityTime}:R>`;
-      const activityText = {
-        [ACTIVITY_STATUS.REMOVED]: `> ${timestamp}: <@${metaData?.removedBy}> (Admin) removed your ${classesEmojis} from ${raidTitle}[${raidType}] (Raid ID:${raidId}) ${metaData?.removedReason}`,
-      };
-      const customMessage = activityText[status];
-      const defaultMessage = `> ${timestamp}: ${status} ${raidTitle}[${raidType}] (Raid ID: **${raidId}**) with ${classesEmojis}`;
-      return customMessage ? customMessage : defaultMessage;
-    }
-  );
-
-
-  const { className, optionalClasses, updatedAt, artifactsList } =
+  const { className, optionalClasses, updatedAt, artifactsList, mountsList } =
     lastUserClassActivity;
   const defaultClassesSelected = createFieldName(
     { fieldName: className, optionalClasses: optionalClasses },
     { classNamesList: classOptionsList }
   );
   const artifactsEmoji = displayArtifactAsEmoji(artifactsList).join("|");
-  const firstRankStatusCode = firstRank?.userStatusCode || userStatusCodes.RANK_I;
+  const firstRankStatusCode =
+    firstRank?.userStatusCode || userStatusCodes.RANK_I;
   const buildData = profileBuilder({
     userId,
     userName: processedProfileUserName,
     activityList: processedMemberActivity,
-    mountsList: lastUserClassActivity?.mountsList,
     trialsParticipatedOn: [],
     userStatus: statusSymbols[firstRankStatusCode],
     rankList: rankList.map(
@@ -214,6 +181,7 @@ export const profileStatusVote = async (
         return `> ${statusSymbols[userStatusCode]} - ${upvotesCount} votes`;
       }
     ),
+    mountsList: mountsList,
     classesPlayed: [
       `Class (Main and Optional): ${defaultClassesSelected} \n\u200b\n Artifacts: ${artifactsEmoji}`,
     ],

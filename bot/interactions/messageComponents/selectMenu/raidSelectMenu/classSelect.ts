@@ -120,6 +120,7 @@ export const raidClassSelect = async (
     persistedClassInfo?.artifactsList || emojiProcessedArtifactlist || [];
   const primaryClassName = requestedClass;
   const optionalClassesNames = optionalRequestedClasses || [];
+  const mountList = persistedClassInfo?.mountsList || [];
   const creatableField: EmbedField = {
     name: createFieldName(
       {
@@ -132,6 +133,7 @@ export const raidClassSelect = async (
       memberId: member.user.id,
       userStatus: persistedClassInfo?.userStatus || userStatusCodes.RANK_I,
       artifactsList,
+      mountList
     }),
     inline: true,
   };

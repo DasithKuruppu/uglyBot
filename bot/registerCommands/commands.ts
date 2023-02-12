@@ -1,4 +1,75 @@
 // https://autocode.com/tools/discord/command-builder/
+
+
+export enum previousTrialNamesList {
+  TOMM = "Tower of the mad mage",
+  ZCM = "Zariel's Challenge(Master)",
+  COKM = "Crown of Keldegonn(Master)",
+  TM = "Tiamat(Master)",
+  TOSM = "Temple of Spider(Master)",
+  VOS = "Vault of Stars",
+  DEMO = "Demorgorgon (Master)",
+}
+export enum trialNamesList {
+  TOMM = "Tower Of The Mad Mage",
+  ZCM = "Zariel's Challenge (Master)",
+  COKM = "Crown Of Keldegonn (Master)",
+  TM = "Tiamat (Master)",
+  TOSM = "Temple Of The Spider (Master)",
+  VOS = "Vault Of Stars",
+  DEMO = "Demorgorgon (Master)",
+  REAPERS_CHALLENGE = "Reapers Challenge",
+  STANDARD_DUNGEON = "Standard Dungeon",
+  STANDARD_TRIAL = "Standard Trial",
+}
+
+export const createRaidNameChoicesList = [
+  {
+    name: trialNamesList.TOMM,
+    value: trialNamesList.TOMM,
+    // description: "Setup a raid for TOMM",
+  },
+  {
+    name: trialNamesList.ZCM,
+    value: trialNamesList.ZCM,
+    // description: "Setup a raid for ZCM",
+  },
+  {
+    name: trialNamesList.COKM,
+    value: trialNamesList.COKM,
+    // description: "Setup a raid for COKM",
+  },
+  {
+    name: trialNamesList.TM,
+    value: trialNamesList.TM,
+    // description: "Setup a raid for TM",
+  },
+  {
+    name: trialNamesList.TOSM,
+    value: trialNamesList.TOSM,
+  },
+  {
+    name: trialNamesList.VOS,
+    value: trialNamesList.VOS,
+  },
+  {
+    name: trialNamesList.DEMO,
+    value: trialNamesList.DEMO,
+  },
+  {
+    name: trialNamesList.REAPERS_CHALLENGE,
+    value: trialNamesList.REAPERS_CHALLENGE,
+  },
+  {
+    name: trialNamesList.STANDARD_DUNGEON,
+    value: trialNamesList.STANDARD_DUNGEON,
+  },
+  {
+    name: trialNamesList.STANDARD_TRIAL,
+    value: trialNamesList.STANDARD_TRIAL,
+  },
+];
+
 export const info = {
   name: "info",
   description: "List some info about the bot",
@@ -74,10 +145,11 @@ export const request_role = {
         },
       ],
     },
+   
     {
       type: 1,
-      name: "server_profile",
-      description: "Request server profile",
+      name: "raid_summary",
+      description: "Request summary of the upcoming raids",
     },
     {
       type: 1,
@@ -149,74 +221,6 @@ export const remove_raidUser = {
   ],
 };
 
-export enum previousTrialNamesList {
-  TOMM = "Tower of the mad mage",
-  ZCM = "Zariel's Challenge(Master)",
-  COKM = "Crown of Keldegonn(Master)",
-  TM = "Tiamat(Master)",
-  TOSM = "Temple of Spider(Master)",
-  VOS = "Vault of Stars",
-  DEMO = "Demorgorgon (Master)",
-}
-export enum trialNamesList {
-  TOMM = "Tower Of The Mad Mage",
-  ZCM = "Zariel's Challenge (Master)",
-  COKM = "Crown Of Keldegonn (Master)",
-  TM = "Tiamat (Master)",
-  TOSM = "Temple Of The Spider (Master)",
-  VOS = "Vault Of Stars",
-  DEMO = "Demorgorgon (Master)",
-  REAPERS_CHALLENGE = "Reapers Challenge",
-  STANDARD_DUNGEON = "Standard Dungeon",
-  STANDARD_TRIAL = "Standard Trial",
-}
-
-export const createRaidNameChoicesList = [
-  {
-    name: trialNamesList.TOMM,
-    value: trialNamesList.TOMM,
-    // description: "Setup a raid for TOMM",
-  },
-  {
-    name: trialNamesList.ZCM,
-    value: trialNamesList.ZCM,
-    // description: "Setup a raid for ZCM",
-  },
-  {
-    name: trialNamesList.COKM,
-    value: trialNamesList.COKM,
-    // description: "Setup a raid for COKM",
-  },
-  {
-    name: trialNamesList.TM,
-    value: trialNamesList.TM,
-    // description: "Setup a raid for TM",
-  },
-  {
-    name: trialNamesList.TOSM,
-    value: trialNamesList.TOSM,
-  },
-  {
-    name: trialNamesList.VOS,
-    value: trialNamesList.VOS,
-  },
-  {
-    name: trialNamesList.DEMO,
-    value: trialNamesList.DEMO,
-  },
-  {
-    name: trialNamesList.REAPERS_CHALLENGE,
-    value: trialNamesList.REAPERS_CHALLENGE,
-  },
-  {
-    name: trialNamesList.STANDARD_DUNGEON,
-    value: trialNamesList.STANDARD_DUNGEON,
-  },
-  {
-    name: trialNamesList.STANDARD_TRIAL,
-    value: trialNamesList.STANDARD_TRIAL,
-  },
-];
 
 export const create_raid = {
   name: "create",

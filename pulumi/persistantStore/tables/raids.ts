@@ -17,6 +17,10 @@ export const raidsTable = new aws.dynamodb.Table(`${stack}_raids`, {
       type: "S",
     },
     {
+      name: "eventDiscordDateTime",
+      type: "S",
+    },
+    {
       name: "updatedAt",
       type: "N", // number
     },
@@ -46,9 +50,14 @@ export const raidsTable = new aws.dynamodb.Table(`${stack}_raids`, {
     {
       hashKey: "serverId",
       name: "updatedLastIndex",
-      nonKeyAttributes: ["raidId", "creatorId", "updatedAt", "createdAt"],
-      projectionType: "INCLUDE",
+      projectionType: "ALL",
       rangeKey: "updatedAt",
+    },
+    {
+      hashKey: "serverId",
+      name: "eventTimeIndex",
+      projectionType: "ALL",
+      rangeKey: "eventDiscordDateTime",
     },
   ],
   tags: {

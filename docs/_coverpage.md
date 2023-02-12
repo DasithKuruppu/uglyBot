@@ -1,6 +1,6 @@
 # UglyBot
 
-> A simple discord bot for managing user roles and creating events(raids) for neverwinter.
+> UglyBot is a highly versatile discord bot that leverages AI to interact with users and aid in the creation of raids.
 ![](_media/uglyBot.png)
 
 [How to use](/usage/)

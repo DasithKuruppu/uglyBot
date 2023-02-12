@@ -3,10 +3,8 @@
 
 <img alt="uglyBee" src="./_media/uglyBot.png" width="250px">
 
-This is a simple discord bot buit to interact with some discord users.
+UglyBot is a highly versatile discord bot that leverages AI to interact with users and aid in the creation of raids.
 
-
-[![forthebadge](https://forthebadge.com/images/badges/it-works-why.svg)](https://forthebadge.com)
 
 ## Contact
 

@@ -67,3 +67,31 @@ export const getRaid = async (
   const [Item] = Items;
   return Item;
 };
+
+export const getUpcomingWeekRaids = async (
+  { serverId, today = Date.now() }: { serverId: string; today?: number },
+  { documentClient }
+) => {
+  const currentDay = new Date(today);
+  const weekAhead = currentDay.setDate(currentDay.getDate() + 7);
+  const dbResult = await documentClient
+    .query({
+      TableName: raidsTable.name.get(),
+      IndexName: "eventTimeIndex",
+      KeyConditionExpression: "#serverId = :pkey AND #eventDiscordDateTime BETWEEN :today AND :weekAhead",
+      ExpressionAttributeValues: {
+        ":pkey": serverId,
+        ":weekAhead": `<t:${weekAhead}:F>`,
+        ":today": `<t:${today}:F>`,
+      },
+      ExpressionAttributeNames: {
+        "#serverId": "serverId",
+        "#eventDiscordDateTime": "eventDiscordDateTime",
+      },
+      ScanIndexForward: true,
+      Limit: 10,
+    })
+    .promise();
+  const { Items = [] } = dbResult;
+  return Items;
+};

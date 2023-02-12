@@ -144,7 +144,7 @@ export const askCommand = async (
     const currentUpdatedEmbedDescription = currentEmbed.description
       .replace(/<t:.+:F>/gi, requestedDateTime)
       .replace(/<t:.+:R>/gi, requestedTimeRelative);
-    const updatedRecordData = updateRaid(
+    const updatedRecordData = await updateRaid(
       {
         raidId: raidRecord.raidId,
         createdAt: raidRecord.createdAt,

@@ -246,12 +246,14 @@ export const artifactsSort = (
 ) => {
   const requiresMitigation = {
     [trialNamesList.COKM]: false,
-    [trialNamesList.TM]: true,
+    [trialNamesList.TM]: false,
     [trialNamesList.TOMM]: true,
     [trialNamesList.ZCM]: true,
     [trialNamesList.TOSM]: false,
+    [trialNamesList.GAZEMNIDS_RELIQUARY_M]: true,
+    [previousTrialNamesList.GAZEMNIDS_RELIQUARY_M]: true,
     [previousTrialNamesList.COKM]: false,
-    [previousTrialNamesList.TM]: true,
+    [previousTrialNamesList.TM]: false,
     [previousTrialNamesList.TOMM]: true,
     [previousTrialNamesList.ZCM]: true,
     [previousTrialNamesList.TOSM]: false,

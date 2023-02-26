@@ -1,6 +1,5 @@
 // https://autocode.com/tools/discord/command-builder/
 
-
 export enum previousTrialNamesList {
   TOMM = "Tower of the mad mage",
   ZCM = "Zariel's Challenge(Master)",
@@ -9,8 +8,10 @@ export enum previousTrialNamesList {
   TOSM = "Temple of Spider(Master)",
   VOS = "Vault of Stars",
   DEMO = "Demorgorgon (Master)",
+  GAZEMNIDS_RELIQUARY_M = "Gazemnid's Reliquary (Master)",
 }
 export enum trialNamesList {
+  GAZEMNIDS_RELIQUARY_M = "Gzemnid's Reliquary (Master)",
   TOMM = "Tower Of The Mad Mage",
   ZCM = "Zariel's Challenge (Master)",
   COKM = "Crown Of Keldegonn (Master)",
@@ -24,6 +25,10 @@ export enum trialNamesList {
 }
 
 export const createRaidNameChoicesList = [
+  {
+    name: trialNamesList.GAZEMNIDS_RELIQUARY_M,
+    value: trialNamesList.GAZEMNIDS_RELIQUARY_M,
+  },
   {
     name: trialNamesList.TOMM,
     value: trialNamesList.TOMM,
@@ -145,7 +150,7 @@ export const request_role = {
         },
       ],
     },
-   
+
     {
       type: 1,
       name: "raid_summary",
@@ -220,7 +225,6 @@ export const remove_raidUser = {
     },
   ],
 };
-
 
 export const create_raid = {
   name: "create",

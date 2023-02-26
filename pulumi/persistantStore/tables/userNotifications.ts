@@ -1,11 +1,11 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
 import { getEnvironmentFromStack } from "../../utils/stackEnvMap";
-import { userActionsProcessor } from "../../lambdas/userActionsProcessor";
+import { userrNotifcationsProcessor } from "../../lambdas/userNotificationsProcessor";
 const stack = pulumi.getStack();
 
-export const memberActionsTable = new aws.dynamodb.Table(
-  `${stack}_memberActions`,
+export const userNotifcations = new aws.dynamodb.Table(
+  `${stack}_userNotifcations`,
   {
     attributes: [
       {
@@ -13,24 +13,28 @@ export const memberActionsTable = new aws.dynamodb.Table(
         type: "S",
       },
       {
-        name: "compositeRaidStatusDate",
+        name: "raidId",
         type: "S",
       },
     ],
     billingMode: "PAY_PER_REQUEST",
     hashKey: "discordMemberId",
-    rangeKey: "compositeRaidStatusDate",
-    streamViewType: "NEW_AND_OLD_IMAGES",
+    rangeKey: "raidId",
     streamEnabled: true,
+    streamViewType: "NEW_AND_OLD_IMAGES",
+    ttl: {
+      attributeName: "notifyTime",
+      enabled: true,
+    },
     tags: {
       Environment: `${getEnvironmentFromStack(stack)}`,
-      Name: `${stack}_memberActions`,
+      Name: `${stack}_userNotifcations`,
     },
   }
 );
 
-memberActionsTable.onEvent("userActionsTrigger", userActionsProcessor, {
+userNotifcations.onEvent("userNotifcationTrigger", userrNotifcationsProcessor, {
   startingPosition: "TRIM_HORIZON",
-  batchSize: 5,
+  batchSize: 1,
   maximumRetryAttempts: 2,
 });

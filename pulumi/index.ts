@@ -6,6 +6,7 @@ import { membersTable } from "./persistantStore/tables/members";
 import { raidsTable } from "./persistantStore/tables/raids";
 import { memberActionsTable } from "./persistantStore/tables/memberActions"
 import { userStatusTable } from "./persistantStore/tables/userStatus";
+import { userNotifcations } from "./persistantStore/tables/userNotifications";
 export default {
   apiGatewayEndpointUrl: apiEndpoint.url,
   cloudwatchSchedule: {
@@ -20,6 +21,7 @@ export default {
     raidsTable: raidsTable.name,
     memberActionsTable: memberActionsTable.name,
     userStatusTable: userStatusTable.name,
+    userNotifications: userNotifcations.name
     //memberActionsTable: memberActionsTable.name.get()
   }
 };

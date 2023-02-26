@@ -8,6 +8,7 @@ export const enum MountNames {
   PEGASUS = "Pegasus",
   REX = "Rex",
   RIMFIRE = "Rimfire",
+  Griffon = "Griffon"
 }
 export const enum MountTypes {
   DAMAGE = "Damage",
@@ -81,6 +82,28 @@ export const MountsList = [
     emoji: {
       id: `1071712128647561236`,
       name: `Pegasus`,
+      animated: false,
+    },
+  },
+  {
+    label: "Salamander",
+    shortName: MountNames.RIMFIRE,
+    priority: 3,
+    type: [MountTypes.DEBUFF, MountTypes.BUFF],
+    emoji: {
+      id: `1076831970627162132`,
+      name: `Rimfire_Retribution`,
+      animated: false,
+    },
+  },
+  {
+    label: "Griffon",
+    shortName: MountNames.Griffon,
+    priority: 3,
+    type: [MountTypes.DEBUFF],
+    emoji: {
+      id: `1076831968420970576`,
+      name: `Griffon`,
       animated: false,
     },
   },

@@ -1,14 +1,14 @@
 import * as aws from "@pulumi/aws";
 import * as pulumi from "@pulumi/pulumi";
 import { getEnvironmentFromStack } from '../utils/stackEnvMap';
-import { userActionsFactoryHandler } from "../../modules/userActionsProcessor";
+import { userNotificationsFactoryHandler } from "../../modules/userNotifications";
 const stack = pulumi.getStack();
-export const userActionsProcessor = new aws.lambda.CallbackFunction(
-  `${stack}_userActionsProcess`,
+export const userrNotifcationsProcessor = new aws.lambda.CallbackFunction(
+  `${stack}_userNotificationsProcessor`,
   {
-    callbackFactory: userActionsFactoryHandler,
-    timeout: 30,
+    callbackFactory: userNotificationsFactoryHandler,
     runtime: aws.lambda.Runtime.NodeJS16dX,
+    timeout: 30,
     environment: {
       variables: {
         environment: getEnvironmentFromStack(stack),
@@ -21,3 +21,4 @@ export const userActionsProcessor = new aws.lambda.CallbackFunction(
     memorySize: 256
   }
 );
+

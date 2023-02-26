@@ -17,13 +17,13 @@ export const memmberNotExist = availableSlotValue;
 
 export const statusSymbols = {
   [userStatusCodes.RANK_I]:
-    "Monki Press W <a:MonkeyPressW:1066222667180539975>",
+    "Monke Press W <a:MonkeyPressW:1066222667180539975>",
   [userStatusCodes.RANK_II]:
-    "Awkward Monki <a:awkward_monkey_look:881685228207374416>",
-  [userStatusCodes.RANK_III]: "Boosted Monki <a:bigmonke:806304972178063370>",
+    "Awkward Monke <a:awkward_monkey_look:881685228207374416>",
+  [userStatusCodes.RANK_III]: "Boosted Monke <a:bigmonke:806304972178063370>",
   [userStatusCodes.RANK_IV]:
-    "Slap Monki <a:MonkeySpecialSlap:1066225238754459659>",
-  [userStatusCodes.RANK_V]: "Monki King <:MonkeyKing:1066215123762565151>",
+    "Slap Monke <a:MonkeySpecialSlap:1066225238754459659>",
+  [userStatusCodes.RANK_V]: "Monke King <:MonkeyKing:1066215123762565151>",
 };
 
 export const defaultJoinStatus = userStatusCodes.RANK_I;

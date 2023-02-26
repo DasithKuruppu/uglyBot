@@ -61,11 +61,11 @@ const userProfile = ({
 };
 
 export enum UserStatusValues {
-  RANKI = "Monki Press W",
-  RANKII = "Awkward Monki",
-  RANKIII = "Boosted Monki",
-  RANKIV = "Slap Monki",
-  RANKV = "Monki King",
+  RANKI = "Monke Press W",
+  RANKII = "Awkward Monke",
+  RANKIII = "Boosted Monke",
+  RANKIV = "Slap Monke",
+  RANKV = "Monke King",
 }
 
 export const getProfileStatusesList = () => [

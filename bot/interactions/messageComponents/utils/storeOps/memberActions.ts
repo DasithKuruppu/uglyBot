@@ -12,7 +12,7 @@ export enum ACTIVITY_STATUS {
   REMOVED = "Removed",
 }
 
-interface IMemberActionsUpdates {
+export interface IMemberActionsUpdates {
   status: ACTIVITY_STATUS;
   raidId: string;
   currentSection: string;

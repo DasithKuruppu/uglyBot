@@ -5,7 +5,7 @@
   }) => {
     return {
       type: "rich",
-      title: `Heloo ! , hope you didnt forget...`,
+      title: `Hello! Just a heads up...`,
       description,
       color: 0xffa200,
       timestamp,

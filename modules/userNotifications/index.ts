@@ -67,7 +67,7 @@ export const userNotificationsHandler = async (
     const raidInfo = await getRaid({ raidId }, { documentClient });
     const raidUrl = `https://discord.com/channels/${serverId}/${channelId}/${raidInfo.messageId}`;
     const userEmbedMsg = userReminderEmbed({
-      description: `You signed up for a raid - [${raidTitle}](${raidUrl}) which is about to start <t:${raidTime}:R>`,
+      description: `You signed up for a raid - [${raidTitle}](${raidUrl}) which is about to start <t:${raidTime}:R>.`,
     });
     const sentMessage = await rest.post((Routes as any).channelMessages(id), {
       body: {

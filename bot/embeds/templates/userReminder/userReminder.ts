@@ -1,15 +1,16 @@
 
  export const userReminderEmbed = ({
+    title,
     description,
     timestamp = new Date(),
+    url,
   }) => {
     return {
       type: "rich",
-      title: `Hello! Just a heads up...`,
+      title,
       description,
       color: 0xffa200,
       timestamp,
+      url,
     };
   };
-  
-  

@@ -4,9 +4,11 @@ import { setUpdateValues } from "../../../../store/utils";
 
 
 interface IServerProfileUpdates {
-  timezoneOffset: string;
+  timezoneOffset?: string;
   serverOwnerId: string;
   updatedAt: string;
+  serverName: string;
+  serverRoles?: string[]
 }
 
 export const updateServerProfile = async (

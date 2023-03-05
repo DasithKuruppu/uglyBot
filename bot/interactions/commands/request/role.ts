@@ -8,17 +8,9 @@ import {
   APIApplicationCommandInteractionDataSubcommandOption,
 } from "discord.js";
 import { Logger } from "winston";
+import { getServerProfile } from "../../messageComponents/utils/storeOps/serverProfile";
+import { IfactoryInitializations } from "../../typeDefinitions/event";
 
-interface factoryInitializations {
-  logger: Logger;
-  rest: REST;
-  interactionConfig: {
-    guild_id: string;
-    application_id: string;
-    token: string;
-    member: APIInteractionGuildMember;
-  };
-}
 
 export const allowedRoles = [
   "Master Wiper",
@@ -40,9 +32,9 @@ export const disallowedRolesMessages = {
 
 export const requestRoleCommand = async (
   data: APIChatInputApplicationCommandInteractionData,
-  factoryInits: factoryInitializations
+  factoryInits: IfactoryInitializations
 ) => {
-  const { rest, logger, interactionConfig } = factoryInits;
+  const { rest, logger, documentClient, interactionConfig } = factoryInits;
   const { guild_id } = interactionConfig;
   const resolvedRoles = data.resolved?.roles || {};
   const [{ type: commandType, options: subCommandOptions = [] }] =
@@ -60,8 +52,13 @@ export const requestRoleCommand = async (
     };
   }
 
+  const serverProfile = await getServerProfile(
+    { discordServerId: interactionConfig.guild_id },
+    { documentClient }
+  );
+  const serverRoles = serverProfile?.serverRoles || [];
   const currentRole = resolvedRoles[roleName];
-  const isAllowedRole = allowedRoles.includes(currentRole?.name);
+  const isAllowedRole = serverRoles.includes(currentRole?.id);
   if (!isAllowedRole) {
     return {
       body: {

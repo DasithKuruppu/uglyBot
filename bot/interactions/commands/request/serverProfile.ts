@@ -6,6 +6,7 @@ import {
   APIInteractionGuildMember,
   APIApplicationCommandInteractionDataSubcommandOption,
   RESTGetAPIGuildResult,
+  RESTGetAPIGuildRolesResult,
 } from "discord.js";
 
 import { Logger } from "winston";
@@ -31,16 +32,19 @@ export const serverProfileCommand = async (
   )) as RESTGetAPIGuildResult;
   const serverName = serverInfo.name;
   const ownerId = serverInfo.owner_id;
-  const serverRoles = serverInfo.roles;
+
   const serverProfile = await getServerProfile(
     { discordServerId: interactionConfig.guild_id },
     { documentClient }
   );
+  const serverRoles = serverProfile?.serverRoles || [];
   const timeZone = getTimeZones().find(({value})=>{
     return value === serverProfile?.timezoneOffset;
   });
   logger.log("info", { serverInfo, serverName, ownerId });
-
+  const guildRoles = await rest.get(
+    (Routes as any).guildRoles(interactionConfig.guild_id)
+  ) as RESTGetAPIGuildRolesResult;
   const buildData = serverProfileBuilder({
     userId: member.user.id,
     timeZone: timeZone?.label,
@@ -49,6 +53,8 @@ export const serverProfileCommand = async (
     serverRoles,
     serverName,
     activityList: [],
+    guildRoles,
+    thumbnailUrl: `https://cdn.discordapp.com/${interactionConfig.guild_id}/icons/guild_id/guild_icon.png?size=512`,
   });
 
   return {

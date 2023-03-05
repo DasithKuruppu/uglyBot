@@ -20,8 +20,8 @@ import {
   getServerProfile,
   updateServerProfile,
 } from "../../utils/storeOps/serverProfile";
-export const serverProfileTZSelect = "select_timezone";
-export const timezoneSelect = async (
+export const serverProfileRoles = "select_serverroles";
+export const serverProfileRoleSelect = async (
   data: APIMessageSelectMenuInteractionData,
   factoryInits: IfactoryInitializations
 ) => {
@@ -44,14 +44,12 @@ export const timezoneSelect = async (
   const [requestedText, profileText, ofText, userDiscordId] = content
     .trim()
     .split(" ");
-  const userId = "something";
-  const [selectedTimezoneOffset] = data.values;
+  const selectedRoles = data?.values;
   const serverInfo = (await rest.get(
     (Routes as any).guild(guild_id)
   )) as RESTGetAPIGuildResult;
   const serverName = serverInfo.name;
   const ownerId = serverInfo.owner_id;
-  const serverRoles = serverInfo.roles;
   if (member?.user?.id !== serverInfo.owner_id) {
     return {
       body: {
@@ -68,21 +66,21 @@ export const timezoneSelect = async (
     {
       discordServerId: serverInfo.id,
       updates: {
-        timezoneOffset: selectedTimezoneOffset,
+        serverName,
         serverOwnerId: ownerId,
         updatedAt: new Date().getTime().toString(),
-        serverName,
+        serverRoles: selectedRoles,
       },
     },
     { documentClient }
   );
+  logger.log("info", { updateServerProfile });
   const serverProfile = await getServerProfile(
     { discordServerId: guild_id },
     { documentClient }
   );
-  logger.log("info", { updateServerProfile });
   const timeZone = getTimeZones().find(({ value }) => {
-    return value === selectedTimezoneOffset;
+    return value === serverProfile?.timezoneOffset;
   });
   const guildRoles = (await rest.get(
     (Routes as any).guildRoles(guild_id)
@@ -92,7 +90,7 @@ export const timezoneSelect = async (
     timeZone: timeZone?.label,
     userName,
     ownerId,
-    serverRoles: serverProfile.serverRoles || [],
+    serverRoles: serverProfile?.serverRoles || [],
     serverName,
     guildRoles,
     thumbnailUrl: `https://cdn.discordapp.com/${guild_id}/icons/guild_id/guild_icon.png?size=512`,

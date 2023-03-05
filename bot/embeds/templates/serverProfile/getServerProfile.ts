@@ -1,4 +1,4 @@
-export const getTimeZones =()=> [
+export const getTimeZones = () => [
   {
     label: "Central Standard Time (NA) [GMT-6]",
     value: "GMT-06:00",
@@ -55,9 +55,12 @@ const getServerProfile = ({
   timeZone = "Eastern Standard Time (NA) [GMT-5]",
   userName,
   activityList,
+  thumbnailUrl,
+  serverRoles,
+  guildRoles,
   timestamp = new Date(),
 }) => {
-  const hasActivityList = activityList?.length;
+  const hasServerRoles = serverRoles?.length;
   const processedActivityList = activityList.reduce((prev, cur) => {
     return [...prev, cur, "\n\u200B"];
   }, []);
@@ -67,18 +70,20 @@ const getServerProfile = ({
     description: `> Owner - <@${ownerId}>\n > Time Zone : ${timeZone}\n *Only the owner can make changes to this profile* `,
     color: 0xffa200,
     timestamp,
-    // thumbnail: {
-    //   url: `https://www.dasithsblog.com/images/Ranger-Hunter-Build.png`,
-    //   height: 0,
-    //   width: 0,
-    // },
+    thumbnail: {
+      url: thumbnailUrl,
+      height: 0,
+      width: 0,
+    },
     // author: {
     //   name: `${userName}`,
     // },
     fields: [
       {
-        name: `Recent Activity`,
-        value: hasActivityList ? processedActivityList.join("\n") : "-",
+        name: `Requestable Roles`,
+        value: hasServerRoles
+          ? serverRoles.map((id) => `<@&${id}>`).join("\n")
+          : "-",
         inline: false,
       },
     ],
@@ -94,6 +99,8 @@ export const serverProfileBuilder = ({
   userName,
   timeZone,
   serverRoles,
+  guildRoles,
+  thumbnailUrl,
   ownerId,
   activityList,
 }) => {
@@ -103,8 +110,13 @@ export const serverProfileBuilder = ({
     timeZone,
     userName,
     ownerId,
+    thumbnailUrl,
+    guildRoles,
+    serverRoles,
     activityList,
   });
+  const filteredRoles = guildRoles.filter(({ name }) => name !== "@everyone");
+  const maxRoles = filteredRoles?.length > 10 ? 10 : filteredRoles?.length;
   return {
     components: [
       {
@@ -123,6 +135,27 @@ export const serverProfileBuilder = ({
           },
         ],
       },
+      ...(maxRoles > 0
+        ? [
+            {
+              type: 1,
+              components: [
+                {
+                  custom_id: `select_serverroles`,
+                  placeholder: `Select roles to make available`,
+                  options: filteredRoles.map(({ name, id }) => ({
+                    label: name,
+                    value: id,
+                    default: false,
+                  })),
+                  min_values: 0,
+                  max_values: maxRoles,
+                  type: 3,
+                },
+              ],
+            },
+          ]
+        : []),
     ],
     embeds: [serverProfileEmbed],
   };

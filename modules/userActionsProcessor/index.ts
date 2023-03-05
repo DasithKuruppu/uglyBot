@@ -15,6 +15,7 @@ import {
 } from "../../bot/interactions/messageComponents/utils/storeOps/memberActions";
 import { userNotifcations } from "../../pulumi/persistantStore/tables/userNotifications";
 import { setUpdateValues } from "../../bot/store/utils";
+import { NotificationType } from "../userNotifications/types";
 /**
  * A simple function that returns the request.
  *
@@ -85,6 +86,18 @@ export const userActionsHandler = async (
     const updateValues = setUpdateValues({
       channelId,
       serverId,
+      notificationType: "raidEventReminder",
+      raidTime,
+      raidType,
+      raidTitle,
+      createdAt: Date.now(),
+      notifyTime: Number(raidTime) - (minQueueMarkTimeSecsDiff + bufferTimeSecs),
+    });
+
+    const deleteRecordValues = setUpdateValues({
+      channelId,
+      serverId,
+      notificationType: NotificationType.userLeft,
       raidTime,
       raidType,
       raidTitle,
@@ -104,16 +117,21 @@ export const userActionsHandler = async (
       },
     };
 
-    const deleteRecord = {
-      Delete: {
-        TableName: userNotifcations.name.get(),
-        Key: {
-          discordMemberId,
-          raidId,
+    const userLeftRecord = {
+      Update: {
+        Update: {
+          TableName: userNotifcations.name.get(),
+          Key: {
+            discordMemberId,
+            raidId,
+          },
+          UpdateExpression: deleteRecordValues.updateExpression,
+          ExpressionAttributeNames: deleteRecordValues.updateExpressionAttributeNames,
+          ExpressionAttributeValues: deleteRecordValues.updateExpressionAttributeValues,
         },
       },
     };
-    return userJoined ? upsertRecord : deleteRecord;
+    return userJoined ? upsertRecord : userLeftRecord;
   });
   const paramsForTransaction = {
     TransactItems: transactionRecords,

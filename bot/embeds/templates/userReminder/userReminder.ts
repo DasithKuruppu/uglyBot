@@ -1,16 +1,17 @@
-
- export const userReminderEmbed = ({
+export const userReminderEmbed = ({
+  title,
+  description,
+  timestamp = new Date(),
+  image=null,
+  url,
+}) => {
+  return {
+    type: "rich",
     title,
     description,
-    timestamp = new Date(),
+    color: 0xffa200,
+    timestamp,
     url,
-  }) => {
-    return {
-      type: "rich",
-      title,
-      description,
-      color: 0xffa200,
-      timestamp,
-      url,
-    };
+    ...((image as any) && { image }),
   };
+};

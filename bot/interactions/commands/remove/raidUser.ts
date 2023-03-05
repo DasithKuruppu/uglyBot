@@ -249,7 +249,7 @@ const optionalClassesNames = userExists
       }> removed user <@${userId}> from Raid(${raidId}) ${reasonText}
       *Total pending updates: ${
         (pendingUpdatesCount || 0) + 1
-      }*\n > Press \`Join\` on the embeded raid to commit updates`,
+      }*\n > *IMPORTANT* Press \`Join\` on the relavent raid to confirm updates`,
       allowed_mentions: {
         parse: [],
       },

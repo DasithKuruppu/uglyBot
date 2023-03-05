@@ -150,7 +150,11 @@ export const request_role = {
         },
       ],
     },
-
+    {
+      type: 1,
+      name: "server_profile",
+      description: "Request server profile",
+    },
     {
       type: 1,
       name: "raid_summary",

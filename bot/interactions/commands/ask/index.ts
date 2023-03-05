@@ -177,7 +177,7 @@ export const askCommand = async (
     });
     return {
       body: {
-        content: `<@${userId}> asked : ${message} \n>>> I have queued in an update for the date/time ${requestedDateTime} change you requested. You need to press \`confirm\` on the relavent embed for the changes to be reflected !`,
+        content: `<@${userId}> asked : ${message} \n>>> I have queued in an update for the date/time ${requestedDateTime} change you requested. *IMPORTANT* You need to press \`join\` on the relavent raid for the changes to be reflected !`,
         allowed_mentions: {
           parse: [],
         },

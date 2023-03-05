@@ -13,8 +13,7 @@ import {
 import { Logger } from "winston";
 import { startBot } from "../../bot";
 import { getEnvironmentVariables } from "../../bot/configs";
-import { getRaid } from "../../bot/interactions/messageComponents/utils/storeOps/fetchData";
-import { userReminderEmbed } from "../../bot/embeds/templates/userReminder/userReminder";
+import { notificationMapper } from "./types";
 /**
  * A simple function that returns the request.
  *
@@ -41,43 +40,12 @@ export const userNotificationsHandler = async (
     ) as any & {
       discordMemberId: string;
     };
-    const {
-      discordMemberId,
-      raidTime,
-      raidTitle,
-      raidId,
-      raidType,
-      notifyTime,
-      serverId,
-      channelId,
-      createdAt,
-    } = userNotification;
-    const epochTimeNowInSecs = Math.round(Date.now() / 1000);
-    const dmChannelInfo = (await rest.post((Routes as any).userChannels(), {
-      body: { recipient_id: discordMemberId },
-    })) as RESTPostAPICurrentUserCreateDMChannelResult;
-    logger.log("info", "dmChannelInfo", {
-      dmChannelInfo,
-      notifyTime,
-      epochTimeNowInSecs,
-      timeDiff: notifyTime - epochTimeNowInSecs
+    const { notificationType } = userNotification;
+    return await notificationMapper(notificationType, userNotification, {
+      logger,
+      documentClient,
+      rest,
     });
-    const { id } = dmChannelInfo;
-
-    const raidInfo = await getRaid({ raidId }, { documentClient });
-    const raidUrl = `https://discord.com/channels/${serverId}/${channelId}/${raidInfo.messageId}`;
-    const userEmbedMsg = userReminderEmbed({
-      title: `${raidTitle} Starting Soon!`,
-      description: `The raid you signed up to is about to begin <t:${raidTime}:R>.\nYou can click the above link to be taken to the server's channel.`,
-      url: raidUrl,
-    });
-    const sentMessage = await rest.post((Routes as any).channelMessages(id), {
-      body: {
-        content: "",
-        embeds: [userEmbedMsg],
-      },
-    });
-    return sentMessage;
   });
   const result = await Promise.all(dmMessages);
   logger.log("info", "result", { result });

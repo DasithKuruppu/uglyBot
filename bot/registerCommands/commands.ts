@@ -152,6 +152,218 @@ export const request_role = {
     },
     {
       type: 1,
+      name: "update_user_availability",
+      description: "User's availability for raids",
+      options: [
+        {
+          type: 3,
+          name: "day",
+          description: "The day of the week you would be available",
+          required: true,
+          choices: [
+            {
+              name: "Monday",
+              value: "Monday",
+            },
+            {
+              name: "Tuesday",
+              value: "Tuesday",
+            },
+            {
+              name: "Wednesday",
+              value: "Wednesday",
+            },
+            {
+              name: "Thursday",
+              value: "Thursday",
+            },
+            {
+              name: "Friday",
+              value: "Friday",
+            },
+            {
+              name: "Saturday",
+              value: "Saturday",
+            },
+            {
+              name: "Sunday",
+              value: "Sunday",
+            },
+          ],
+        },
+        {
+          type: 3,
+          name: "start_time",
+          description: "Start time of the day you will be available from",
+          required: true,
+          choices: [
+            {
+              name: "00:00",
+              value: "00:00",
+            },
+            {
+              name: "01:00",
+              value: "01:00",
+            },
+            {
+              name: "02:00",
+              value: "02:00",
+            },
+            {
+              name: "03:00",
+              value: "03:00",
+            },
+            {
+              name: "04:00",
+              value: "04:00",
+            },
+            {
+              name: "05:00",
+              value: "05:00",
+            },
+            {
+              name: "06:00",
+              value: "06:00",
+            },
+            {
+              name: "07:00",
+              value: "07:00",
+            },
+            {
+              name: "08:00",
+              value: "08:00",
+            },
+            {
+              name: "09:00",
+              value: "09:00",
+            },
+            {
+              name: "10:00",
+              value: "10:00",
+            },
+            {
+              name: "11:00",
+              value: "11:00",
+            },
+            {
+              name: "12:00",
+              value: "12:00",
+            },
+            {
+              name: "13:00",
+              value: "13:00",
+            },
+            {
+              name: "14:00",
+              value: "14:00",
+            },
+            {
+              name: "15:00",
+              value: "15:00",
+            },
+
+            {
+              name: "16:00",
+              value: "16:00",
+            },
+            {
+              name: "17:00",
+              value: "17:00",
+            },
+            {
+              name: "18:00",
+              value: "18:00",
+            },
+            {
+              name: "19:00",
+              value: "19:00",
+            },
+            {
+              name: "20:00",
+              value: "20:00",
+            },
+            {
+              name: "21:00",
+              value: "21:00",
+            },
+            {
+              name: "22:00",
+              value: "22:00",
+            },
+            {
+              name: "23:00",
+              value: "23:00",
+            },
+          ],
+        },
+        {
+          type: 3,
+          name: "number_of_hours",
+          description: "The number of hours you intend to play from the start time",
+          required: true,
+          choices: [
+            {
+              name: "Not Available",
+              value: "0",
+            },
+            {
+              name: "1 Hour",
+              value: "1",
+            },
+            {
+              name: "2 Hours",
+              value: "2",
+            },
+            {
+              name: "3 Hours",
+              value: "3",
+            },
+            {
+              name: "4 Hours",
+              value: "4",
+            },
+            {
+              name: "5 Hours",
+              value: "5",
+            },
+            {
+              name: "6 Hours",
+              value: "6",
+            },
+            {
+              name: "7 Hours",
+              value: "7",
+            },
+            {
+              name: "8 Hours",
+              value: "8",
+            },
+            {
+              name: "9 Hours",
+              value: "9",
+            },
+            {
+              name: "10 Hours",
+              value: "10",
+            },
+            {
+              name: "11 Hours",
+              value: "11",
+            },
+            {
+              name: "12 Hours",
+              value: "12",
+            },
+            {
+              name: "I have no life",
+              value: "24",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      type: 1,
       name: "server_profile",
       description: "Request server profile",
     },
@@ -365,3 +577,4 @@ export const create_raid = {
     // },
   ],
 };
+

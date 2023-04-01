@@ -6,11 +6,12 @@ import {
 } from "discord.js";
 import { Logger } from "winston";
 import { requestRoleCommand } from "./role";
-import { inviteLinkCommand} from "./inviteLink"
+import { inviteLinkCommand } from "./inviteLink";
 import { buildCommand } from "./builds";
 import { profileCommand } from "./profile";
-import { serverProfileCommand } from "./serverProfile"
-import { raidSummaryCommand } from "./raidSummary"
+import { serverProfileCommand } from "./serverProfile";
+import { raidSummaryCommand } from "./raidSummary";
+import { updateUserAvailabilityCommand } from "./updateUserAvailablity";
 import { unrecognizedCommand } from "..";
 interface factoryInitializations {
   logger: Logger;
@@ -29,8 +30,10 @@ export const availableSubCommands = {
   build: buildCommand,
   profile: profileCommand,
   server_profile: serverProfileCommand,
-  raid_summary: raidSummaryCommand
+  raid_summary: raidSummaryCommand,
+  update_user_availability: updateUserAvailabilityCommand,
 };
+
 export const recognizedSubCommands = Object.keys(availableSubCommands);
 export const requestCommand = async (
   data: APIChatInputApplicationCommandInteractionData & { type: number },

@@ -1,11 +1,16 @@
 import { displayMountsAsEmoji } from "../../../interactions/messageComponents/utils/helper/artifactsRenderer";
+import { createRaidNameChoicesList } from "../../../registerCommands/commands";
 import { MountsList } from "../mountsList";
 
 const userProfile = ({
   userId,
   userName,
   userStatus,
+  timeZone,
   activityList,
+  prefferedRaids,
+  availabilityList,
+  preferredRunTypes,
   mountsList = [],
   rankList,
   classesPlayed,
@@ -37,7 +42,7 @@ const userProfile = ({
         inline: false,
       },
       {
-        name: `Account wide mounts`,
+        name: `Mounts`,
         value: mountsList.length
           ? displayMountsAsEmoji(mountsList).join("|")
           : "-",
@@ -51,6 +56,38 @@ const userProfile = ({
       {
         name: `Recent Raid Activity List`,
         value: hasActivityList ? processedActivityList.join("\n") : "-",
+        inline: false,
+      },
+      {
+        name: `Time Zone`,
+        value: timeZone ? `> ${timeZone?.label}` : "-",
+        inline: false,
+      },
+      {
+        name: "Availablity",
+        value: availabilityList.length ? availabilityList
+          .map(({ startTime, endTime }) => {
+            return `> <t:${startTime}:F> to <t:${endTime}:t>`;
+          })
+          .join("\n") : `> /request update_user_availability command can be used to update your availability here`,
+        inline: false,
+      },
+      {
+        name: "Preferred Raids",
+        value: prefferedRaids.length ? prefferedRaids
+          .map((name) => {
+            return `> ${name}`;
+          })
+          .join("\n"): "-",
+        inline: false,
+      },
+      {
+        name: "Preferred Raid Types",
+        value: preferredRunTypes.length ? preferredRunTypes
+          .map((name) => {
+            return `> ${name}`;
+          })
+          .join("\n"): "-",
         inline: false,
       },
     ],
@@ -115,10 +152,64 @@ export const getProfileStatusesList = () => [
     shortName: UserStatusValues.RANKI,
   },
 ];
+export const getTimeZones = () => [
+  {
+    label: "Central Standard Time (NA) [GMT-6]",
+    value: "GMT-06:00",
+  },
+  {
+    label: "Eastern Standard Time (NA) [GMT-5]",
+    value: "GMT-05:00",
+  },
+  {
+    label: "Pacific Standard Time (NA) [GMT-8]",
+    value: "GMT-08:00",
+  },
+  {
+    label: "Moscow Standard Time (Russia) [GMT+3]",
+    value: "GMT+03:00",
+  },
+  {
+    label: "Greenwich Mean Time (UTC) [GMT+0]",
+    value: "GMT+0:00",
+  },
+  {
+    label: "Eastern European/Central Africa/Isreal Time [GMT+2]",
+    value: "GMT+02:00",
+  },
+  {
+    label: "Central European/British/West Africa Time [GMT+1]",
+    value: "GMT+01:00",
+  },
+  {
+    label: "Australian Central Standard Time [GMT+9:30]",
+    value: "GMT+9:30",
+  },
+  {
+    label: "Brazil Time(Sao Paulo) [GMT-03:00]",
+    value: "GMT-03:00",
+  },
+  {
+    label: "Australian Eastern Standard/Hawaii Time [GMT+10:00]",
+    value: "GMT+10:00",
+  },
+  {
+    label: "Singapore Time [GMT+8:00]",
+    value: "GMT+8:00",
+  },
+  {
+    label: "Indian Standard Time [GMT+5:30]",
+    value: "GMT+5:30",
+  },
+];
 export const profileBuilder = ({
   userId,
   userName,
+  prefferedRaids,
+  preferredRunTypes,
+  timeZone,
   activityList,
+  availabilityList,
   mountsList,
   rankList,
   userStatus,
@@ -127,10 +218,14 @@ export const profileBuilder = ({
 }) => {
   const userProfileEmbed = userProfile({
     userId,
+    timeZone,
     userName,
+    prefferedRaids,
+    preferredRunTypes,
     activityList,
     mountsList,
     userStatus,
+    availabilityList,
     rankList,
     classesPlayed,
     trialsParticipatedOn,
@@ -159,16 +254,63 @@ export const profileBuilder = ({
         type: 1,
         components: [
           {
-            custom_id: `select_profile_mounts`,
-            placeholder: `Select mounts`,
-            options: MountsList.map(({ label, shortName, emoji }) => ({
+            custom_id: `select_profile_timezone`,
+            placeholder: `Select Timezone`,
+            options: getTimeZones().map(({ label, value }) => ({
               label,
-              value: shortName,
-              emoji,
+              value,
               default: false,
             })),
-            min_values: 1,
+            min_values: 0,
+            type: 3,
+          },
+        ],
+      },
+      {
+        type: 1,
+        components: [
+          {
+            custom_id: `select_preferred_raids`,
+            placeholder: `Select Preferred Raids`,
+            options: createRaidNameChoicesList.map(({ name, value }) => ({
+              label: name,
+              value,
+              default: false,
+            })),
+            min_values: 0,
             max_values: 5,
+            type: 3,
+          },
+        ],
+      },
+      {
+        type: 1,
+        components: [
+          {
+            custom_id: `select_preferred_raid_types`,
+            placeholder: `Select Preferred Raid Types`,
+            options: [
+              {
+                label: "Training",
+                value: "Training",
+                default: false,
+                // description: "Set type of raid to a training run",
+              },
+              {
+                label: "Farm",
+                value: "Farm",
+                default: false,
+                // description: "Set type of raid to a farm run",
+              },
+              {
+                label: "Wipe",
+                value: "Wipe",
+                default: false,
+                // description: "Set type of raid to a wipe with a mix of experienced and inexperienced players",
+              },
+            ],
+            min_values: 0,
+            max_values: 3,
             type: 3,
           },
         ],

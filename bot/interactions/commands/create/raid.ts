@@ -65,7 +65,8 @@ export const createRaidCommand = async (
   const nameToCoverUrl = {
     [trialNamesList.TOMM]:
       "https://pwimages-a.akamaihd.net/arc/8d/5d/8d5d88772e1edccad4f98cb882677a5e1564178653.jpg",
-    [trialNamesList.GAZEMNIDS_RELIQUARY_M]: "https://i.ibb.co/qsVXXJJ/img-atd-Npq30-Pp-Rdfo-Vw-MN6yzl-RR.png",
+    [trialNamesList.GAZEMNIDS_RELIQUARY_M]:
+      "https://i.ibb.co/qsVXXJJ/img-atd-Npq30-Pp-Rdfo-Vw-MN6yzl-RR.png",
     [trialNamesList.ZCM]:
       "https://static.wikia.nocookie.net/dungeonsdragons/images/4/43/Zariel.jpg/revision/latest?cb=20200408175529",
     [trialNamesList.COKM]:
@@ -88,7 +89,9 @@ export const createRaidCommand = async (
     { discordServerId: interactionConfig.guild_id },
     { documentClient }
   );
-  const processedTime = normalizeTime(dateTime, { offSet: serverProfile?.timezoneOffset });
+  const processedTime = normalizeTime(dateTime, {
+    offSet: serverProfile?.timezoneOffset,
+  });
   const isFivePerson = isFivePersonDungeon(title);
   const requestedDate = convertToDiscordDate(processedTime);
   const requestedRelativeDate = convertToDiscordDate(processedTime, {
@@ -106,8 +109,8 @@ export const createRaidCommand = async (
     Solo_tank: { DPS: 7, HEALS: 2, TANKS: 1, WAITLIST: 6 },
     Solo_heal: { DPS: 7, HEALS: 1, TANKS: 2, WAITLIST: 6 },
     Solo_tank_heal: { DPS: 8, HEALS: 1, TANKS: 1, WAITLIST: 6 },
-    Three_heal: {DPS: 5, HEALS: 3, TANKS: 2, WAITLIST: 6 },
-    Three_heal_one_tank: {DPS: 6, HEALS: 3, TANKS: 1, WAITLIST: 6 },
+    Three_heal: { DPS: 5, HEALS: 3, TANKS: 2, WAITLIST: 6 },
+    Three_heal_one_tank: { DPS: 6, HEALS: 3, TANKS: 1, WAITLIST: 6 },
   };
   const uniqueRaidId = new ShortUniqueId({ length: 10 })();
   const raidEmbed = raidBuilder({

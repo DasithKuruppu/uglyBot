@@ -9,7 +9,7 @@ import {
   updateuserStatus,
   userStatusCodes,
 } from "../../utils/storeOps/userStatus";
-import { updateMemberDetails } from "../../../../interactions/messageComponents/utils/storeOps/members";
+import { updateMemberDetails } from "../../utils/storeOps/members";
 import {
   createFieldName,
   createFieldValue,
@@ -24,6 +24,7 @@ import {
 } from "../../../../embeds/templates/neverwinter/classesList";
 import { getLastUsersClass } from "../../utils/storeOps/fetchData";
 import {
+  getTimeZones,
   profileBuilder,
   UserStatusValues,
 } from "../../../../embeds/templates/neverwinter/profile";
@@ -33,9 +34,15 @@ import {
 } from "../../utils/storeOps/memberActions";
 import { displayArtifactAsEmoji } from "../../utils/helper/artifactsRenderer";
 import { fieldSorter } from "../../utils/helper/artifactsSorter";
-export const profileMountsSelectId = "select_profile_mounts";
+import {
+  getUserProfile,
+  updateUserProfile,
+} from "../../utils/storeOps/userProfile";
+import { getUserAvailability } from "../../utils/storeOps/userAvailability";
+import { normalizeTime } from "../../utils/date/dateToDiscordTimeStamp";
+export const profilePrefferredRaidsId = "select_preferred_raids";
 
-export const profileMountSelect = async (
+export const profilePrefferredRaidsSelect = async (
   data: APIMessageSelectMenuInteractionData,
   factoryInits: IfactoryInitializations
 ) => {
@@ -60,7 +67,7 @@ export const profileMountSelect = async (
     .trim()
     .split(" ");
   const userId = userDiscordId.substring(2, userDiscordId.length - 1);
-  const selectedMountsValues = data.values;
+  const selectedPreferredRaids = data.values;
   const statusUpvotes = await listUserStatusChanges(userId, {
     documentClient,
   });
@@ -73,12 +80,19 @@ export const profileMountSelect = async (
   );
 
   const isUserAllowed = userId === member.user.id;
-  
-  isUserAllowed && await updateMemberDetails(
-    userId,
-    { mountsList: selectedMountsValues },
-    { documentClient }
-  );
+
+  isUserAllowed &&
+    (await updateUserProfile(
+      {
+        discordMemberId: userId,
+        updates: {
+          userName: member?.user?.username,
+          updatedAt: new Date().toISOString(),
+          prefferedTrials: selectedPreferredRaids || [],
+        },
+      },
+      { documentClient }
+    ));
   const lastUserClassActivity = await getLastUsersClass(
     { user: { id: userId } } as APIInteractionGuildMember,
     {
@@ -170,8 +184,34 @@ export const profileMountSelect = async (
   const artifactsEmoji = displayArtifactAsEmoji(artifactsList).join("|");
   const firstRankStatusCode =
     firstRank?.userStatusCode || userStatusCodes.RANK_I;
+
+  const [userProfile, userAvailability] = await Promise.all([
+    getUserProfile({ discordMemberId: userId }, { documentClient }),
+    getUserAvailability(userId, { documentClient }),
+  ]);
+
+  const processedUserAvailability = userAvailability.map(
+    ({ availableDayUTC, availableStartTimeUTC, availableDuration }) => {
+      const normalizedDate = normalizeTime(
+        `${availableDayUTC} ${availableStartTimeUTC}`,
+        { offSet: "GMT+0:00" }
+      );
+      const epochTime = Math.floor(normalizedDate.getTime() / 1000);
+      return {
+        startTime: epochTime,
+        endTime:  epochTime + (Number(availableDuration) * 60 * 60),
+      };
+    }
+  );
+  const timeZone = getTimeZones().find(({ value }) => {
+    return value === userProfile?.timezoneOffset;
+  });
   const buildData = profileBuilder({
     userId,
+    timeZone,
+    prefferedRaids: userProfile?.prefferedTrials || [],
+    preferredRunTypes: userProfile?.preferredRunTypes || [],
+    availabilityList: processedUserAvailability,
     userName: processedProfileUserName,
     activityList: processedMemberActivity,
     trialsParticipatedOn: [],

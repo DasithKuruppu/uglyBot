@@ -12,8 +12,12 @@ import {
   getNewClassOptionsList,
   getOptionsList,
 } from "../../../embeds/templates/neverwinter/classesList";
-import { profileBuilder, UserStatusValues } from "../../../embeds/templates/neverwinter/profile";
-import { convertToDiscordDate } from "../../messageComponents/utils/date/dateToDiscordTimeStamp";
+import {
+  getTimeZones,
+  profileBuilder,
+  UserStatusValues,
+} from "../../../embeds/templates/neverwinter/profile";
+import { convertToDiscordDate, normalizeTime } from "../../messageComponents/utils/date/dateToDiscordTimeStamp";
 import { displayArtifactAsEmoji } from "../../messageComponents/utils/helper/artifactsRenderer";
 import { fieldSorter } from "../../messageComponents/utils/helper/artifactsSorter";
 import {
@@ -26,8 +30,13 @@ import {
   ACTIVITY_STATUS,
   getMemberActions,
 } from "../../messageComponents/utils/storeOps/memberActions";
-import { listUserStatusChanges, userStatusCodes } from "../../messageComponents/utils/storeOps/userStatus";
+import {
+  listUserStatusChanges,
+  userStatusCodes,
+} from "../../messageComponents/utils/storeOps/userStatus";
 import { IfactoryInitializations } from "../../typeDefinitions/event";
+import { getUserProfile } from "../../messageComponents/utils/storeOps/userProfile";
+import { getUserAvailability } from "../../messageComponents/utils/storeOps/userAvailability";
 
 export const profileCommand = async (
   data: APIChatInputApplicationCommandInteractionData,
@@ -85,7 +94,7 @@ export const profileCommand = async (
       documentClient,
     }
   );
-  if(!lastUserClassActivity){
+  if (!lastUserClassActivity) {
     return {
       body: {
         content: `Requested profile of <@${userId}> \n > No data records was found for this user`,
@@ -105,7 +114,6 @@ export const profileCommand = async (
   const userStatusChanges = await listUserStatusChanges(userId, {
     documentClient,
   });
-
 
   const RankIList = userStatusChanges.filter(
     ({ statusCode }) => statusCode === userStatusCodes.RANK_I
@@ -155,11 +163,40 @@ export const profileCommand = async (
 
   const [firstRank] = rankList;
 
-  const firstRankStatusCode = firstRank?.userStatusCode || userStatusCodes.RANK_I;
+  const firstRankStatusCode =
+    firstRank?.userStatusCode || userStatusCodes.RANK_I;
+
+  const [userProfile, userAvailability] = await Promise.all([
+    getUserProfile({ discordMemberId: userId }, { documentClient }),
+    getUserAvailability(userId, { documentClient }),
+  ]);
+
+  const processedUserAvailability = userAvailability.map(
+    ({ availableDayUTC, availableStartTimeUTC, availableDuration }) => {
+      
+      const normalizedDate = normalizeTime(
+        `${availableDayUTC} ${availableStartTimeUTC}`,
+        { offSet: "GMT+0:00" }
+      );
+      const epochTime = Math.floor(normalizedDate.getTime() / 1000);
+      return {
+        startTime: epochTime,
+        endTime: epochTime + Number(availableDuration) * 60 * 60,
+      }
+    }
+  );
+  const timeZone = getTimeZones().find(({ value }) => {
+    return value === userProfile?.timezoneOffset;
+  });
+
   const buildData = profileBuilder({
     userId,
     userName,
+    availabilityList: processedUserAvailability,
+    prefferedRaids: userProfile?.prefferedTrials || [],
+    preferredRunTypes: userProfile?.preferredRunTypes || [],
     activityList: processedMemberActivity,
+    timeZone,
     rankList: rankList.map(
       ({ userStatusCode, upvotesCount, userStatusText }) => {
         return `> ${statusSymbols[userStatusCode]} - ${upvotesCount} votes`;
@@ -168,7 +205,9 @@ export const profileCommand = async (
     mountsList: lastUserClassActivity.mountsList,
     userStatus: statusSymbols[firstRankStatusCode],
     trialsParticipatedOn: [],
-    classesPlayed: [`Class (Main and Optional): ${defaultClassesSelected} \n\u200b\n Artifacts: ${artifactsEmoji}`],
+    classesPlayed: [
+      `Class (Main and Optional): ${defaultClassesSelected} \n\u200b\n Artifacts: ${artifactsEmoji}`,
+    ],
   });
 
   return {

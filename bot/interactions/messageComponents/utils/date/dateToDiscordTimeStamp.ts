@@ -27,6 +27,16 @@ export const normalizeTime = (inputDate, { offSet = "GMT-05:00" } = {}) => {
   return containsTimeZone ? inputDate : chrono.parseDate(`${inputDate} ${offSet}`);
 };
 
+/**
+* Converts a day number to a string.
+*
+* @param {Number} dayIndex
+* @return {String} Returns day as string
+*/
+export const dayOfWeekAsString = (dayIndex)=> {
+  return ["Sunday", "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][dayIndex] || '';
+}
+
 export const convertToDiscordDate = (
   date: string,
   { long = true, relative = false, offset = 0 } = {}

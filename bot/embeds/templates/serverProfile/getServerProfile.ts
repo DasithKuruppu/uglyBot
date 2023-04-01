@@ -115,7 +115,7 @@ export const serverProfileBuilder = ({
     serverRoles,
     activityList,
   });
-  const filteredRoles = guildRoles.filter(({ name }) => name !== "@everyone");
+  const filteredRoles = guildRoles.filter(({ name }) => name !== "@everyone").slice(0,24);
   const maxRoles = filteredRoles?.length > 10 ? 10 : filteredRoles?.length;
   return {
     components: [

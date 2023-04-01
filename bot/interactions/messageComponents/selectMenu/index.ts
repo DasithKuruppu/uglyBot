@@ -6,7 +6,9 @@ import { raidMountSelectId, raidMounttSelect } from "./raidSelectMenu/mountSelec
 import { profileStatusVoteId, profileStatusVote } from "./profileSelectMenu/statusVoteSelect";
 import { serverProfileTZSelect, timezoneSelect } from "./serverProfileSelectMenu/serverProfileSelectTimezone"
 import { serverProfileRoleSelect, serverProfileRoles} from "./serverProfileSelectMenu/selectUserRoles";
-import { profileMountSelect, profileMountsSelectId } from "./profileSelectMenu/selectMounts";
+import { profileTimeZoneSelect, profileTimezoneSelectId } from "./profileSelectMenu/selectTimeZone";
+import { profilePrefferredRaidsId, profilePrefferredRaidsSelect} from "./profileSelectMenu/selectPreferredRaids";
+import { profilePrefferredRaidTypesId, profilePrefferredRaidTypesSelect } from "./profileSelectMenu/selectPrefferedRaidTypes";
 
 export const selectMenusInteractions = {
     [raidArtifactSelectId]:  raidArtifactSelect,
@@ -14,8 +16,10 @@ export const selectMenusInteractions = {
     [raidMountSelectId]: raidMounttSelect,
     [profileStatusVoteId]: profileStatusVote,
     [serverProfileTZSelect]: timezoneSelect,
-    [profileMountsSelectId]: profileMountSelect,
-    [serverProfileRoles]: serverProfileRoleSelect
+    [profileTimezoneSelectId]: profileTimeZoneSelect,
+    [serverProfileRoles]: serverProfileRoleSelect,
+    [profilePrefferredRaidsId]: profilePrefferredRaidsSelect,
+    [profilePrefferredRaidTypesId]: profilePrefferredRaidTypesSelect
 };
 
 export const recognizedMenuInteractionComponentIds = Object.keys(

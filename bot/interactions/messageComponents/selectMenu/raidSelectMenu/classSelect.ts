@@ -92,7 +92,7 @@ export const raidClassSelect = async (
     (currentClassInfo?.type as Category) || Category.WAITLIST;
   const [
     {
-      userArtifacts = "",
+      userArtifacts = undefined,
       userExists = false,
       userStatus = defaultJoinStatus,
       userRecord = {},
@@ -100,24 +100,15 @@ export const raidClassSelect = async (
       sectionName = defaultSelectedClassType,
     } = {},
   ] = getExistingMemberRecordDetails(seperatedSections, member.user.id);
-  const userArtifactsParse = userExists
-    ? userArtifacts.replace(/[\{\}]+/gi, "").split(/[,|\s]+/)
-    : undefined;
-  const [firstArtifact = "unknown"] = userArtifactsParse || [];
-  const isEmojiText = isEmoji(firstArtifact);
-  const emojiProcessedArtifactlist = isEmojiText
-    ? extractShortArtifactNames(userArtifactsParse)
-    : userArtifactsParse;
 
   logger.log("info", "persisted Item", {
     persistedClassInfo,
     userStatus,
     defaultJoinStatus,
-    userArtifactsParse,
-    emojiProcessedArtifactlist,
+    userArtifacts,
   });
   const artifactsList =
-    persistedClassInfo?.artifactsList || emojiProcessedArtifactlist || [];
+    persistedClassInfo?.artifactsList || userArtifacts || [];
   const primaryClassName = requestedClass;
   const optionalClassesNames = optionalRequestedClasses || [];
   const mountList = persistedClassInfo?.mountsList || [];
@@ -171,6 +162,7 @@ export const raidClassSelect = async (
         currentSection: sectionName,
         requestedSectionName: defaultSelectedClassType,
         artifactsList,
+        mountsList: mountList,
         token,
         primaryClassName,
         optionalClassesNames: optionalClassesNames || [],

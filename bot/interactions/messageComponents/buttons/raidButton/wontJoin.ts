@@ -28,6 +28,7 @@ import {
 } from "../../utils/helper/artifactsRenderer";
 import { EmbedField } from "discord.js";
 
+
 export const wontJoinButtonInteract = async (
   data: APIMessageSelectMenuInteractionData,
   factoryInits: IfactoryInitializations
@@ -63,24 +64,16 @@ export const wontJoinButtonInteract = async (
   logger.log("info", "wont join button", { seperatedSections });
   const [
     {
-      userArtifacts = "",
+      userArtifacts = [],
       userExists = false,
       userStatus = defaultJoinStatus,
       optionalClasses = [],
+      userMounts = [],
       userRecord = {},
       sectionName = Category.WAITLIST,
     } = {},
   ] = getExistingMemberRecordDetails(seperatedSections, member.user.id);
-  const userArtifactsParse = userExists
-    ? userArtifacts.replace(/[\{\}]+/gi, "").split(/[,|\s]+/)
-    : undefined;
-
-  const [firstArtifact = "unknown"] = userArtifactsParse || [];
-  const isEmojiText = isEmoji(firstArtifact);
-  const emojiProcessedArtifactlist = isEmojiText
-    ? extractShortArtifactNames(userArtifactsParse)
-    : userArtifactsParse;
-  const artifactsList = emojiProcessedArtifactlist;
+  const artifactsList = userArtifacts || [];
   const primaryClassName = (userRecord as EmbedField)?.name;
   if (!userExists) {
     return {
@@ -121,6 +114,7 @@ export const wontJoinButtonInteract = async (
         currentSection: sectionName,
         requestedSectionName: sectionName,
         artifactsList,
+        mountsList: userMounts|| [],
         primaryClassName,
         optionalClassesNames: optionalClasses,
         serverId: guild_id,

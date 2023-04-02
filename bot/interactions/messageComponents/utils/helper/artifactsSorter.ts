@@ -1,21 +1,26 @@
-import { dataexchange } from "@pulumi/aws";
 import {
   ArtifactsList,
   ArtifactsNames,
   ArtifactTypes,
   newArtifactsList,
 } from "../../../../embeds/templates/artifactsList";
+import { MountsList } from "../../../../embeds/templates/mountsList";
 import { NeverwinterClassesMap } from "../../../../embeds/templates/neverwinter/classesList";
 import {
   availableSlotValue,
   previousAvailableSlotValue,
 } from "../../../../embeds/templates/neverwinter/raid";
-import { previousTrialNamesList, trialNamesList } from "../../../../registerCommands/commands";
+import {
+  previousTrialNamesList,
+  trialNamesList,
+} from "../../../../registerCommands/commands";
 import { Category } from "../categorizeEmbedFields/categorizeEmbedFields";
+import { companionPowersSort } from "./companionBonusPowerSort";
 import {
   extractFieldName,
   extractFieldValueAttributes,
 } from "./embedFieldAttribute";
+import { mountsSort } from "./mountSorter";
 
 export const fieldSorter = (fields) => (a, b) =>
   fields
@@ -129,14 +134,6 @@ export const getPriorityLevel = (
     return deprioritizeLevel;
   }
   const priorityLevel = artifactDetails?.priority || 0;
-  console.log({
-    userType,
-    priorityLevel,
-    artifactShortName,
-    deprioritizeLevel,
-    deprioritizeMitigationArtifacts,
-    deprioritizeUtilityArtifacts,
-  });
   return Category.DPS === userType
     ? priorityLevel + dpsReducePriorityLevel
     : priorityLevel;
@@ -154,7 +151,6 @@ export const decompressArtifacts = (
     priorityOptions?: IpriorityOptions;
   } = {}
 ) => {
-  console.log({ priorityOptions });
   return availableArtifactsList.reduce(
     (prev: any[], { name, category, artifacts }) => {
       const artifactDecompressData = artifacts.map((artifactShortName) => {
@@ -196,7 +192,6 @@ export const sortArtifactPriority = (
     priority = [
       "artifactsCount",
       "processedPriority",
-
       "usersWithArtifactCount",
     ],
   } = {}
@@ -240,6 +235,7 @@ export const artifactsSort = (
   availableArtifactsList: {
     name: string;
     category: Category;
+    mounts: string[];
     artifacts: string[];
   }[],
   raidName = "default"
@@ -270,7 +266,6 @@ export const artifactsSort = (
   });
   const sortResult = sortArtifactPriority(decompressedArtifacts);
   const groupedArtifacts = groupDecompressedArtifacts(sortResult);
-  console.log({ groupedArtifacts, sortResult, decompressedArtifacts });
   const pickedArtifacts = artifactPicker(groupedArtifacts);
   return pickedArtifacts;
 };
@@ -282,7 +277,6 @@ export const createEmbedArtifactSortContent = (seperatedSections, raidName) => {
     ...seperatedSections[Category.HEALER],
   ];
   const classNamesMap = new Map(NeverwinterClassesMap);
-  // issue here is that the member name needs to be translated as it is an emoji considerd
   const artifactMemberlist = artifactDetails
     .filter(({ name, value }) => {
       return ![availableSlotValue, previousAvailableSlotValue].includes(value);
@@ -291,7 +285,7 @@ export const createEmbedArtifactSortContent = (seperatedSections, raidName) => {
       const { fieldName, optionalClasses } = extractFieldName({
         fieldNameText: name,
       });
-      const { memberId, userStatus, artifactsList } =
+      const { memberId, userStatus, artifactsList, mountsList } =
         extractFieldValueAttributes({ fieldValueText: value });
 
       return {
@@ -299,19 +293,40 @@ export const createEmbedArtifactSortContent = (seperatedSections, raidName) => {
         category:
           (classNamesMap.get(fieldName)?.type as Category) || Category.DPS,
         artifacts: artifactsList,
+        mounts: mountsList,
       };
     });
   const sortedArtifacts = artifactsSort(artifactMemberlist, raidName);
-  console.log({ sortedArtifacts });
+  const sortedMounts = mountsSort(artifactMemberlist, raidName);
+  const companionBonusPowers = companionPowersSort(artifactMemberlist);
+
   const assignedArtifacts = Object.entries(sortedArtifacts)
     .map(([user, artifactName]) => {
       const emojiDetails = newArtifactsList.find(
         ({ shortName }) => artifactName === shortName
       )?.emoji;
+      const mountName = sortedMounts[user];
+      const mountEmojiDetails = MountsList.find(
+        ({ shortName }) => mountName === shortName
+      )?.emoji;
+
+      const companionBonusPower = companionBonusPowers.find(
+        ({ name, shortName, emoji }) => name === user && shortName && emoji
+      );
       const emojiRender = emojiDetails
         ? `<:${emojiDetails?.name}:${emojiDetails?.id}>`
         : "❔";
-      return `<@${user}> => ${emojiRender} ${artifactName}`;
+      const mountEmojiRender = mountEmojiDetails
+        ? `<:${mountEmojiDetails?.name}:${mountEmojiDetails?.id}> ${mountName}`
+        : "❔";
+      const companionBonusPowerRender = companionBonusPower
+        ? `<:${companionBonusPower?.name}:${companionBonusPower?.emoji?.id}> ${companionBonusPower?.shortName}`
+        : "❔";
+      return [
+        `<@${user}> => ${emojiRender} ${artifactName}`,
+        mountEmojiRender,
+        companionBonusPowerRender,
+      ].filter((text)=> text != "❔").join(" |");
     })
     .join("\n");
   return `\nAssigned/Recommended Artifacts List\n${assignedArtifacts}\n`;

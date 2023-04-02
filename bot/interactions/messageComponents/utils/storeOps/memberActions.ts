@@ -8,6 +8,7 @@ export enum ACTIVITY_STATUS {
   JOINED_WAITLIST = "Joined[WaitList]",
   JOINED_CLASS_SELECT = "Joined[ClassSelect]",
   JOINED_ARTIFACT_SELECT = "Joined[ArtifactSelect]",
+  JOINED_MOUNT_SELCT = "Joined[MountSelect]",
   RAGE_QUIT = "Left[RageQuit]",
   REMOVED = "Removed",
 }
@@ -21,6 +22,7 @@ export interface IMemberActionsUpdates {
   raidType: string;
   raidTime: number;
   artifactsList: string[];
+  mountsList: string[];
   primaryClassName: string;
   optionalClassesNames: string[];
   serverId: string;

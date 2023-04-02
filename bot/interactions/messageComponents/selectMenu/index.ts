@@ -2,6 +2,7 @@ import { APIMessageSelectMenuInteractionData } from "discord-api-types/payloads/
 import { IfactoryInitializations } from "../../typeDefinitions/event";
 import { raidArtifactSelectId, raidArtifactSelect } from "./raidSelectMenu/artifactSelect";
 import { raidClassSelectId, raidClassSelect} from "./raidSelectMenu/classSelect";
+import { raidMountSelectId, raidMounttSelect } from "./raidSelectMenu/mountSelect";
 import { profileStatusVoteId, profileStatusVote } from "./profileSelectMenu/statusVoteSelect";
 import { serverProfileTZSelect, timezoneSelect } from "./serverProfileSelectMenu/serverProfileSelectTimezone"
 import { serverProfileRoleSelect, serverProfileRoles} from "./serverProfileSelectMenu/selectUserRoles";
@@ -10,6 +11,7 @@ import { profileMountSelect, profileMountsSelectId } from "./profileSelectMenu/s
 export const selectMenusInteractions = {
     [raidArtifactSelectId]:  raidArtifactSelect,
     [raidClassSelectId]: raidClassSelect,
+    [raidMountSelectId]: raidMounttSelect,
     [profileStatusVoteId]: profileStatusVote,
     [serverProfileTZSelect]: timezoneSelect,
     [profileMountsSelectId]: profileMountSelect,

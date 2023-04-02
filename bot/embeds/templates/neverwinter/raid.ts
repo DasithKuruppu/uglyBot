@@ -1,5 +1,6 @@
 import { Category } from "../../../interactions/messageComponents/utils/categorizeEmbedFields/categorizeEmbedFields";
 import { ArtifactsList, newArtifactsList, ArtifactsNames } from "../artifactsList";
+import { MountsList } from "../mountsList";
 // inside a command, event listener, etc.
 export const defaultRaidButtonInfo = {
   buttons: {
@@ -111,6 +112,24 @@ export const raidBuilder = ({
           })),
           min_values: 1,
           max_values: 10,
+          type: 3,
+        },
+      ],
+    },
+    {
+      type: 1,
+      components: [
+        {
+          custom_id: `select_Mount`,
+          placeholder: `Select Mounts`,
+          options: MountsList.map(({ label, shortName, emoji }) => ({
+            label,
+            value: shortName,
+            emoji,
+            default: false,
+          })),
+          min_values: 1,
+          max_values: 5,
           type: 3,
         },
       ],

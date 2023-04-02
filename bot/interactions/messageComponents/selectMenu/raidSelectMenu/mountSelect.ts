@@ -1,12 +1,9 @@
 import { APIMessageSelectMenuInteractionData } from "discord-api-types/payloads/v10/interactions";
-import { EmbedField } from "discord.js";
-import {
-  getOptionsList,
-  NeverwinterClassesMap,
-  defaultClassName,
-} from "../../../../embeds/templates/neverwinter/classesList";
+import { EmbedField, Routes } from "discord.js";
 import { raidConfigs } from "../../../../embeds/templates/neverwinter/config";
 import { IfactoryInitializations } from "../../../typeDefinitions/event";
+import { membersTable } from "../../../../../pulumi/persistantStore/tables/members";
+import { setUpdateValues } from "../../../../store/utils";
 import {
   Category,
   determineActions,
@@ -14,14 +11,9 @@ import {
   getExistingMemberRecordDetails,
 } from "../../utils/categorizeEmbedFields/categorizeEmbedFields";
 import {
-  extractShortArtifactNames,
-  isEmoji,
-} from "../../utils/helper/artifactsRenderer";
-import { createEmbedArtifactSortContent } from "../../utils/helper/artifactsSorter";
-import {
+  createFieldName,
   createFieldValue,
   defaultJoinStatus,
-  createFieldName,
 } from "../../utils/helper/embedFieldAttribute";
 import {
   createRaidContent,
@@ -29,14 +21,20 @@ import {
   getRaidTime,
   getRaidTitle,
 } from "../../utils/helper/raid";
+import { createEmbedArtifactSortContent } from "../../utils/helper/artifactsSorter";
+import {
+  defaultClassName,
+  getOptionsList,
+  NeverwinterClassesMap,
+} from "../../../../embeds/templates/neverwinter/classesList";
 import { getLastUsersClass } from "../../utils/storeOps/fetchData";
 import {
   ACTIVITY_STATUS,
   updateActions,
 } from "../../utils/storeOps/memberActions";
 import { userStatusCodes } from "../../utils/storeOps/userStatus";
-
-export const waitlistButtonInteract = async (
+export const raidMountSelectId = "select_Mount";
+export const raidMounttSelect = async (
   data: APIMessageSelectMenuInteractionData,
   factoryInits: IfactoryInitializations
 ) => {
@@ -46,21 +44,22 @@ export const waitlistButtonInteract = async (
     documentClient,
     interactionConfig: {
       application_id,
-      guild_id,
-      channel_id,
       token,
+      channel_id,
+      guild_id,
       member,
       message,
     },
   } = factoryInits;
   const currentFields = message.embeds[0].fields || [];
+  const { raidTitle, raidType } = getRaidTitle(message.embeds[0]?.title);
   const messageContent = message?.content;
   const messageEmbed = message.embeds[0];
   const [unprocessedRaidId, unprocessedRaidTime] =
     messageEmbed.description?.split("\n") as string[];
-  const raidTime = getRaidTime(unprocessedRaidTime.replace("⏱️ ", ""));
   const raidId = unprocessedRaidId.replace("🆔 ", "");
-  const { raidTitle, raidType } = getRaidTitle(message.embeds[0]?.title);
+  const raidTime = getRaidTime(unprocessedRaidTime.replace("⏱️ ", ""));
+  const selectedMountsList = data.values;
   const { templateId } = determineRaidTemplateType({
     embedFields: currentFields || [],
   });
@@ -75,22 +74,23 @@ export const waitlistButtonInteract = async (
   const persistedClassInfo = await getLastUsersClass(member, {
     documentClient,
   });
-  const defaultSelectedClassType =
+  const defaultClassType =
     (new Map(NeverwinterClassesMap).get(
       persistedClassInfo?.className || defaultClass?.value
     )?.type as Category) || Category.WAITLIST;
-  logger.log("info", "waitlist button", { seperatedSections });
   const [
     {
-      userArtifacts = undefined,
       userExists = false,
+      userRecord = undefined,
       userStatus = defaultJoinStatus,
+      sectionName = defaultClassType,
+      userArtifacts = persistedClassInfo?.artifactsList,
       optionalClasses = [],
-      userRecord = {},
-      sectionName = defaultSelectedClassType,
+      userIndex = 0,
     } = {},
   ] = getExistingMemberRecordDetails(seperatedSections, member.user.id);
-  const artifactsList = userArtifacts || persistedClassInfo?.artifactsList || [];
+  const existingUserClassType =
+    userRecord?.name || (defaultClass?.value as string);
   const primaryClassName =
     (userRecord as EmbedField)?.name ||
     persistedClassInfo?.className ||
@@ -98,8 +98,8 @@ export const waitlistButtonInteract = async (
   const optionalClassesNames = userExists
     ? optionalClasses
     : persistedClassInfo?.optionalClasses;
+  const mountsList = selectedMountsList || persistedClassInfo?.mountsList || [];
 
-  const mountList = persistedClassInfo?.mountsList || [];
   const creatableField: EmbedField = {
     name: createFieldName(
       {
@@ -107,34 +107,60 @@ export const waitlistButtonInteract = async (
           (userRecord as EmbedField)?.name ||
           persistedClassInfo?.className ||
           (defaultClass?.value as string),
-        optionalClasses: userExists
-          ? optionalClasses
-          : persistedClassInfo?.optionalClasses,
+        optionalClasses,
       },
       { classNamesList: getOptionsList() }
     ),
     value: createFieldValue({
       memberId: member.user.id,
       userStatus: persistedClassInfo?.userStatus || userStatusCodes.RANK_I,
-      artifactsList,
-      mountList
+      artifactsList: userArtifacts,
+      mountList: mountsList
     }),
     inline: true,
   };
-
   const { updatedFieldsList, updatedSections } = determineActions(
     seperatedSections,
     {
       memberId: member.user.id,
-      requestedUserSection: Category.WAITLIST,
+      requestedUserSection: sectionName as Category,
       userField: creatableField,
       factoryInits,
       defaultSeperation: sectionSeperation,
     }
   );
-  const status = ACTIVITY_STATUS.JOINED_WAITLIST;
+  const updateValues = setUpdateValues({
+    artifactsList: userArtifacts || [],
+    mountsList,
+    serverId: guild_id,
+    updatedAt: Date.now(),
+    optionalClasses,
+  });
+  try {
+    await documentClient
+      .update({
+        TableName: membersTable.name.get(),
+        Key: {
+          discordMemberId: member.user.id,
+          className: existingUserClassType,
+        },
+        ReturnValues: "UPDATED_NEW",
+        UpdateExpression: updateValues.updateExpression,
+        ExpressionAttributeNames: updateValues.updateExpressionAttributeNames,
+        ExpressionAttributeValues: updateValues.updateExpressionAttributeValues,
+      })
+      .promise();
+  } catch (error) {
+    logger.log(
+      "error",
+      (error as any).message || "error occured updating record",
+      error
+    );
+  }
+
+  const status = ACTIVITY_STATUS.JOINED_MOUNT_SELCT;
   const createdAt = new Date().getTime();
-  const updatedActions = await updateActions(
+  const updatedActionsRecord = await updateActions(
     {
       discordMemberId: member?.user?.id,
       compositeRaidStatusDate: `${createdAt}#${raidId}#${status}`,
@@ -145,15 +171,15 @@ export const waitlistButtonInteract = async (
         raidType,
         raidTime,
         currentSection: sectionName,
-        requestedSectionName: Category.WAITLIST,
-        artifactsList: artifactsList || [],
-        mountsList: mountList,
+        requestedSectionName: sectionName,
+        artifactsList: userArtifacts || [],
+        mountsList,
         token,
         primaryClassName,
         optionalClassesNames: optionalClassesNames || [],
         serverId: guild_id,
         channelId: channel_id,
-        createdAt: new Date().getTime(),
+        createdAt,
         embed: JSON.stringify([
           {
             ...message.embeds[0],
@@ -167,17 +193,22 @@ export const waitlistButtonInteract = async (
     },
     { documentClient }
   );
-  logger.log("info", "updated fields list", {
-    updatedFieldsList,
-    creatableField,
-    updatedActions,
+  logger.log("info", "values to update", {
+    userExists,
+    userStatus,
+    defaultJoinStatus,
     userRecord,
+    guild_id,
+    userArtifacts,
+    creatableField,
+    updateValues,
+    updatedFieldsList,
   });
   return {
     body: {
       embeds: [{ ...message.embeds[0], fields: updatedFieldsList }],
       content: createRaidContent(message.content, {
-        userActionText: `<@${member.user.id}> joined wait list!`,
+        userActionText: `<@${member.user.id}> updated ${mountsList.length} mounts`,
         userArtifacts: createEmbedArtifactSortContent(
           updatedSections,
           raidTitle

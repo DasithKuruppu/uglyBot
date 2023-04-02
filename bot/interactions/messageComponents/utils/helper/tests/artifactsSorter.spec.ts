@@ -19,18 +19,21 @@ import {
   groupDecompressedArtifacts,
   artifactPicker,
 } from "../artifactsSorter";
+import { MountNames } from "../../../../../embeds/templates/mountsList";
+import { decompressMounts } from "../mountSorter";
 
-describe.only("artifactsSorter - decompressArtifacts", () => {
+describe("artifactsSorter - decompressArtifacts", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.restoreAllMocks();
     vi.resetModules();
   });
   test("Should return a expanded denormalized list of artifacts", () => {
+    const category = "DPS" as Category;
     const artifactsList = [
       {
         name: "Jim",
-        category: Category.DPS,
+        category,
         artifacts: [
           ArtifactsNames.BLACK_DRAGON,
           ArtifactsNames.BLADES,
@@ -39,7 +42,7 @@ describe.only("artifactsSorter - decompressArtifacts", () => {
       },
       {
         name: "Karen",
-        category: Category.DPS,
+        category,
         artifacts: [
           ArtifactsNames.BLACK_DRAGON,
           ArtifactsNames.BLADES,
@@ -48,7 +51,7 @@ describe.only("artifactsSorter - decompressArtifacts", () => {
       },
       {
         name: "Noob",
-        category: Category.DPS,
+        category,
         artifacts: [
           ArtifactsNames.BLACK_DRAGON,
           ArtifactsNames.BLADES,
@@ -56,39 +59,48 @@ describe.only("artifactsSorter - decompressArtifacts", () => {
         ],
       },
     ];
-    const result = decompressArtifacts(artifactsList);
+    console.log({ category });
+    const result = decompressArtifacts(artifactsList as any);
     expect(result.length).toBe(9);
   });
 });
 
-describe.only("artifactsSorter - sortArtifactPriority", () => {
+describe("artifactsSorter - sortArtifactPriority", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.restoreAllMocks();
     vi.resetModules();
   });
   test("Should return a expanded denormalized list of artifacts", () => {
+    const category = "DPS" as Category;
     const artifactsList = [
       {
         name: "Jim",
-        category: Category.DPS,
+        category: category,
         artifacts: [
           ArtifactsNames.WYVERN,
           ArtifactsNames.BLADES,
           ArtifactsNames.LANTERN,
         ],
+        mounts: [],
       },
       {
         name: "Karen",
-        category: Category.DPS,
+        category: category,
         artifacts: [
-          ArtifactsNames. WYVERN,
+          ArtifactsNames.WYVERN,
           ArtifactsNames.BLADES,
           ArtifactsNames.ERRATIC_DRIFT_GLOBE,
         ],
+        mounts: [],
       },
     ];
-    const result = artifactsSort(artifactsList, trialNamesList.COKM)
-    expect(result).toBe([]);
+    const result = artifactsSort(artifactsList, trialNamesList.COKM);
+    expect(result).toStrictEqual({
+      Jim: ArtifactsNames.LANTERN,
+      Karen: ArtifactsNames.WYVERN,
+    });
   });
+
+  
 });

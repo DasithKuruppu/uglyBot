@@ -41,7 +41,8 @@ interface IExistingMemberRecordDetails {
   optionalClasses?: string[];
   sectionCapacity: number;
   userStatus?: string;
-  userArtifacts?: string;
+  userMounts?: string[],
+  userArtifacts?: string[];
 }
 
 export interface ISectionInfo {
@@ -92,14 +93,15 @@ export const getExistingMemberRecordDetails = (
           return currentMemberId === `<@${memberId}>`;
         });
         const userExists: boolean = foundUserIndex >= 0 ? true : false;
-        const parsedUserStatus = userExists
+        const {
+          userStatus = defaultJoinStatus,
+          artifactsList = undefined,
+          mountsList = undefined,
+        } = userExists
           ? extractFieldValueAttributes({
               fieldValueText: sectionRecords[foundUserIndex].value,
-            })?.userStatus
-          : defaultJoinStatus;
-        const [userId, userStatus, userArtifacts] = userExists
-          ? sectionRecords[foundUserIndex].value.split(seperator)
-          : [];
+            })
+          : {};
         const { fieldName = "unknown", optionalClasses = [] } = userExists
           ? extractFieldName({
               fieldNameText: sectionRecords[foundUserIndex].name,
@@ -116,8 +118,9 @@ export const getExistingMemberRecordDetails = (
                   name: fieldName,
                 },
                 optionalClasses,
-                userStatus: parsedUserStatus,
-                userArtifacts,
+                userStatus: userStatus,
+                userArtifacts: artifactsList,
+                userMounts: mountsList,
                 sectionName: currentSectionName,
                 sectionUserOccupyCount:
                   currentUserSecInfo.sectionUserOccupyCount,

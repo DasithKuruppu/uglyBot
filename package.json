@@ -87,9 +87,9 @@
   },
   "devDependencies": {
     "@parcel/transformer-typescript-types": "^2.7.0",
-    "@vitest/coverage-c8": "^0.22.1",
+    "@vitest/coverage-c8": "^0.29.8",
     "parcel": "^2.7.0",
-    "vitest": "^0.22.1"
+    "vitest": "^0.29.8"
   },
   "overrides": {
     "@parcel/transformer-typescript-types": {

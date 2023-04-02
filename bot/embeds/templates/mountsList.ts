@@ -22,7 +22,7 @@ export const MountsList = [
   {
     label: "Tunnel Vision",
     shortName: MountNames.TV,
-    priority: 3,
+    priority: 2,
     type: [MountTypes.DAMAGE],
     emoji: {
       id: `1071637887197642783`,
@@ -33,7 +33,7 @@ export const MountsList = [
   {
     label: "Toad",
     shortName: MountNames.TOAD,
-    priority: 1,
+    priority: 2,
     type: [MountTypes.DAMAGE],
     emoji: {
       id: `1071637944730918923`,
@@ -44,7 +44,7 @@ export const MountsList = [
   {
     label: "Bat Swarm",
     shortName: MountNames.SWARM,
-    priority: 3,
+    priority: 4,
     type: [MountTypes.DEBUFF, MountTypes.BUFF, MountTypes.MITIGATION],
     emoji: {
       id: `1071637942474379275`,
@@ -55,7 +55,7 @@ export const MountsList = [
   {
     label: "Eclipse",
     shortName: MountNames.ECLIPSE,
-    priority: 3,
+    priority: 4,
     type: [MountTypes.DEBUFF, MountTypes.MITIGATION],
     emoji: {
       id: `1071637938942783518`,
@@ -66,7 +66,7 @@ export const MountsList = [
   {
     label: "Rex",
     shortName: MountNames.REX,
-    priority: 3,
+    priority: 5,
     type: [MountTypes.DEBUFF, MountTypes.BUFF],
     emoji: {
       id: `1071637891429711923`,
@@ -77,7 +77,7 @@ export const MountsList = [
   {
     label: "Pegasus",
     shortName: MountNames.PEGASUS,
-    priority: 3,
+    priority: 5,
     type: [MountTypes.DEBUFF, MountTypes.BUFF],
     emoji: {
       id: `1071712128647561236`,
@@ -88,7 +88,7 @@ export const MountsList = [
   {
     label: "Salamander",
     shortName: MountNames.RIMFIRE,
-    priority: 3,
+    priority: 5,
     type: [MountTypes.DEBUFF, MountTypes.BUFF],
     emoji: {
       id: `1076831970627162132`,
@@ -99,8 +99,8 @@ export const MountsList = [
   {
     label: "Griffon",
     shortName: MountNames.Griffon,
-    priority: 3,
-    type: [MountTypes.DEBUFF],
+    priority: 6,
+    type: [MountTypes.MITIGATION],
     emoji: {
       id: `1076831968420970576`,
       name: `Griffon`,

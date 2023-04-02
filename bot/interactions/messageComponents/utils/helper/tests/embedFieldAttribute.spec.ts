@@ -9,9 +9,10 @@ import {
   test,
   vi,
 } from "vitest";
+import { ClassNames } from "../../../../../embeds/templates/neverwinter/classesList";
 import { extractFieldName } from "../embedFieldAttribute";
 
-describe.only("embedFieldAttribute - extractFieldName", () => {
+describe("embedFieldAttribute - extractFieldName", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.restoreAllMocks();
@@ -19,8 +20,7 @@ describe.only("embedFieldAttribute - extractFieldName", () => {
   });
   test("Should extract a fieldName from a given attribute", () => {
     const extractedData = extractFieldName({fieldNameText:`<:Ranger:911695916505890837>|<:Paladin_Tank:911695915637686382>|<:Paladin_Heal:911695916510097458> Ranger(DPS)`});
-   console.log({extractedData});
-    expect(extractedData).toBe({})
+    expect(extractedData).toStrictEqual({fieldName: ClassNames.RANGER_DPS, optionalClasses: [ClassNames.PALADIN_TANK, ClassNames.PALADIN_HEAL]})
     
   });
 });

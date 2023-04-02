@@ -20,7 +20,7 @@ describe("User Actions - executeEmbedFieldActions", () => {
   });
 
   test.only("Should provide a proper discord long timestamp", () => {
-    const dateResult = convertToDiscordDate('WTF');
-    expect(dateResult).toBe(`<t:1664085660:F>`);
+    const dateResult = convertToDiscordDate('2020-04-02T08:02:17-05:00');
+    expect(dateResult).toBe(`<t:1585832537:F>`);
   });
 });

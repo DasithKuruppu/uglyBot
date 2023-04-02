@@ -118,7 +118,7 @@ export const confirmButtonInteract = async (
   });
   const [
     {
-      userArtifacts = "",
+      userArtifacts = undefined,
       userExists = false,
       userStatus = defaultJoinStatus,
       userRecord = {},
@@ -126,18 +126,7 @@ export const confirmButtonInteract = async (
       sectionName = defaultSelectedClassType,
     } = {},
   ] = getExistingMemberRecordDetails(seperatedSections, member.user.id);
-  const userArtifactsParse = userExists
-    ? userArtifacts.replace(/[\{\}]+/gi, "").split(/[,|\s]+/)
-    : undefined;
-  const [firstArtifact = "unknown"] = userArtifactsParse || [];
-  const isEmojiText = isEmoji(firstArtifact);
-  const emojiProcessedArtifactlist = isEmojiText
-    ? extractShortArtifactNames(userArtifactsParse)
-    : userArtifactsParse;
-
-  const artifactsList = userArtifactsParse
-    ? emojiProcessedArtifactlist
-    : persistedClassInfo?.artifactsList;
+  const artifactsList = userArtifacts || persistedClassInfo?.artifactsList || [];
   const mountList = persistedClassInfo?.mountsList || [];
   const primaryClassName =
     (userRecord as EmbedField)?.name ||
@@ -190,6 +179,7 @@ export const confirmButtonInteract = async (
           currentSection: sectionName,
           requestedSectionName: sectionName,
           artifactsList: artifactsList || [],
+          mountsList: mountList,
           token,
           primaryClassName,
           optionalClassesNames: optionalClassesNames || [],

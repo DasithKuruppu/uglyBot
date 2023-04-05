@@ -106,7 +106,8 @@ export const removeRaidUserCommand = async (
   logger.log("info", "remove raid user", { findRaidMessage, raidRecord });
   const [
     {
-      userArtifacts = "",
+      userArtifacts = [],
+      userMounts = [],
       userExists = false,
       userStatus = defaultJoinStatus,
       optionalClasses = [],
@@ -124,9 +125,7 @@ export const removeRaidUserCommand = async (
       },
     };
   }
-  const userArtifactsParse = userExists
-    ? userArtifacts.replace(/[\{\}]+/gi, "").split(/[,|\s]+/)
-    : undefined;
+  const userArtifactsParse = userArtifacts;
   const [firstArtifact = "unknown"] = userArtifactsParse || [];
   const isEmojiText = isEmoji(firstArtifact);
   const emojiProcessedArtifactlist = isEmojiText
@@ -223,6 +222,7 @@ const optionalClassesNames = userExists
             currentSection: sectionName,
             requestedSectionName: sectionName,
             artifactsList,
+            mountsList: userMounts,
             token: factoryInits?.interactionConfig?.token,
             primaryClassName,
             optionalClassesNames: optionalClassesNames || [],

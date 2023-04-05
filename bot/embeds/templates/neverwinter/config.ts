@@ -47,6 +47,28 @@ export const tenPersonSoloHealTankSeperation: ISectionSeperation = {
   [Category.WAITLIST]: { start: 14, end: 20 },
 };
 
+export const tenPersonThreeHealTwoTankSeperation: ISectionSeperation = {
+  [Category.DPS_TITLE]: { start: 0, end: 1 },
+  [Category.DPS]: { start: 1, end: 6 },
+  [Category.TANK_TITLE]: { start: 6, end: 7 },
+  [Category.TANK]: { start: 7, end: 9 },
+  [Category.HEALER_TITLE]: { start: 9, end: 10 },
+  [Category.HEALER]: { start: 10, end: 13 },
+  [Category.WAITLIST_TITLE]: { start: 13, end: 14 },
+  [Category.WAITLIST]: { start: 14, end: 20 },
+};
+
+export const tenPersonThreeHealOneTankSeperation: ISectionSeperation = {
+  [Category.DPS_TITLE]: { start: 0, end: 1 },
+  [Category.DPS]: { start: 1, end: 7 },
+  [Category.TANK_TITLE]: { start: 7, end: 8 },
+  [Category.TANK]: { start: 8, end: 9 },
+  [Category.HEALER_TITLE]: { start: 9, end: 10 },
+  [Category.HEALER]: { start: 10, end: 13 },
+  [Category.WAITLIST_TITLE]: { start: 13, end: 14 },
+  [Category.WAITLIST]: { start: 14, end: 20 },
+};
+
 export const fivePersonSeperation: ISectionSeperation = {
   [Category.DPS_TITLE]: { start: 0, end: 1 },
   [Category.DPS]: { start: 1, end: 4 },
@@ -69,4 +91,6 @@ export const raidConfigs = {
   "1U7U1U1U1U2U1U6": tenPersonSoloTankSeperation,
   "1U7U1U2U1U1U1U6": tenPersonSoloHealSeperation,
   "1U8U1U1U1U1U1U6": tenPersonSoloHealTankSeperation,
+  "1U5U1U2U1U3U1U6": tenPersonThreeHealTwoTankSeperation,
+  "1U6U1U1U1U3U1U6": tenPersonThreeHealOneTankSeperation,
 };

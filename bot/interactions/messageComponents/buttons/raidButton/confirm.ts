@@ -101,6 +101,8 @@ export const confirmButtonInteract = async (
     currentFields,
     sectionSeperation
   );
+
+  logger.log("info", "SeperationInfo", { sectionSeperation, seperatedSections});
   const defaultClass = getOptionsList().find(
     ({ value }) => value === defaultClassName
   );

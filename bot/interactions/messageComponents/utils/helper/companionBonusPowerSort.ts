@@ -64,9 +64,10 @@ export const companionPowersSort = (
   ];
 
   const assingedSupports = Supports.map(({ name }, index) => {
-    const { label, shortName, emoji } = availableCompanionTankPowers[index];
+    const { label, shortName, emoji } =
+      availableCompanionTankPowers[index] || {};
     return { name, shortName, emoji, label };
-  });
+  }).filter(({ label }) => label);
   const assignedDPS = DPS.map(({ name }) => {
     return { name, shortName: undefined, emoji: undefined, label: undefined };
   });

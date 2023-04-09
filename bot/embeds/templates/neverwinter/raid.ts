@@ -141,7 +141,7 @@ export const raidBuilder = ({
           style: 3,
           label: `Join`,
           emoji: {
-            id: `751348432093970443`,
+            id: `801170802992349204`,
             name: `yes`,
             animated: true,
           },
@@ -155,7 +155,7 @@ export const raidBuilder = ({
           custom_id: buttons.joinWaitlistButton.id,
           disabled: false,
           emoji: {
-            id: `751351078477627402`,
+            id: `493353112057151499`,
             name: `pepeT`,
             animated: false,
           },
@@ -167,7 +167,7 @@ export const raidBuilder = ({
           custom_id: buttons.wontJoinButton.id,
           disabled: false,
           emoji: {
-            id: `513349083415576611`,
+            id: `857236832553926676`,
             name: `aPES_Leave`,
             animated: true,
           },

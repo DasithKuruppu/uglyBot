@@ -9,6 +9,7 @@ export enum userStatusCodes {
   RANK_III = "003",
   RANK_IV = "004",
   RANK_V = "005",
+  CENSORED = "006",
 }
 
 interface IUserStatusUpdates {

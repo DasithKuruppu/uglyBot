@@ -115,7 +115,8 @@ export const raidMounttSelect = async (
       memberId: member.user.id,
       userStatus: persistedClassInfo?.userStatus || userStatusCodes.RANK_I,
       artifactsList: userArtifacts,
-      mountList: mountsList
+      mountList: mountsList,
+      guildId: guild_id,
     }),
     inline: true,
   };

@@ -24,6 +24,7 @@ export const statusSymbols = {
   [userStatusCodes.RANK_IV]:
     "Slap Monke <a:MonkeySpecialSlap:1066225238754459659>",
   [userStatusCodes.RANK_V]: "Monke King <:MonkeyKing:1066215123762565151>",
+  [userStatusCodes.CENSORED]: " ",
 };
 
 export const defaultJoinStatus = userStatusCodes.RANK_I;
@@ -101,15 +102,18 @@ export const createFieldValue = ({
   userStatus = defaultJoinStatus,
   artifactsList = ["Artifacts N/A"],
   mountList = ["Mounts N/A"],
-  classEmoji = "",
-  userStatusCode = defaultJoinStatus,
+  guildId = "",
 }) => {
   if (!memberId) {
     return memmberNotExist;
   }
   const emojiList = displayArtifactAsEmoji(artifactsList);
   const mountEmojiList = displayMountsAsEmoji(mountList);
-  return `<@${memberId}>\n${statusSymbols[userStatus]}\n${emojiList.join(
+  const isCensored = ['773998479197732904','368899579548008450'].includes(guildId);
+  const processedUserStatus = isCensored ? userStatusCodes.CENSORED : userStatus;
+  const userStatusText = statusSymbols[processedUserStatus];
+  
+  return `<@${memberId}>\n${userStatusText}\n${emojiList.join(
     "|"
   )}\n${mountEmojiList.join("|")}`;
 };

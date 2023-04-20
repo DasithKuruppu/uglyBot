@@ -149,7 +149,8 @@ export const confirmButtonInteract = async (
       memberId: member.user.id,
       userStatus: persistedClassInfo?.userStatus || userStatusCodes.RANK_I,
       artifactsList,
-      mountList
+      mountList,
+      guildId: guild_id,
     }),
     inline: true,
   };

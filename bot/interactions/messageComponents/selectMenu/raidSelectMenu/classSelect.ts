@@ -106,6 +106,7 @@ export const raidClassSelect = async (
     userStatus,
     defaultJoinStatus,
     userArtifacts,
+    guild_id: guild_id
   });
   const artifactsList =
     persistedClassInfo?.artifactsList || userArtifacts || [];
@@ -124,7 +125,8 @@ export const raidClassSelect = async (
       memberId: member.user.id,
       userStatus: persistedClassInfo?.userStatus || userStatusCodes.RANK_I,
       artifactsList,
-      mountList
+      mountList,
+      guildId: guild_id,
     }),
     inline: true,
   };

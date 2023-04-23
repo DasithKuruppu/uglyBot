@@ -64,7 +64,7 @@ export const companionPowersSort = (
   ];
 
   const assingedSupports = Supports.map(({ name }, index) => {
-    const { label, shortName, emoji } = availableCompanionTankPowers[index];
+    const { label, shortName, emoji } = availableCompanionTankPowers[index] || {};
     return { name, shortName, emoji, label };
   });
   const assignedDPS = DPS.map(({ name }) => {

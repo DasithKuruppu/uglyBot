@@ -56,11 +56,11 @@ export const previousSectionTitleNames = {
 };
 
 export const requirementsEmoji = {
-  None: "<:peepocross:939211954361356298>",
-  Masterworks: "<:shadypepo:1027984747080720425>",
-  "Power Raptors": "<:pepeOK:739862110414045246>",
-  Wizards: "<:PES_BuffClown:645569565824122880>",
-  "UHDPS 4K": "<:4k:1027984774452748289>",
+  None: "<:PepeHoly:934763376100384808>",
+  Masterworks: "<:PepeShady:1098796907008118799>",
+  "Power Raptors": "<:OK:1098445349275836550>",
+  Wizards: "<:BuffClown:1098797922059026492>",
+  "UHDPS 4K": "<:4k:1098797540402536498>",
 };
 
 export const raidBuilder = ({

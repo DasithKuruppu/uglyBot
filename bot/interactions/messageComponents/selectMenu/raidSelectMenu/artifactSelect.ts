@@ -73,6 +73,7 @@ export const raidArtifactSelect = async (
   );
   const persistedClassInfo = await getLastUsersClass(member, {
     documentClient,
+    considerDefault: true,
   });
   const defaultClassType =
     (new Map(NeverwinterClassesMap).get(

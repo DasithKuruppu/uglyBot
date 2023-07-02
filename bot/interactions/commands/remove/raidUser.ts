@@ -56,6 +56,7 @@ export const removeRaidUserCommand = async (
   const [persistedClassInfo, raidRecord] = await Promise.all([
     getLastUsersClass(member, {
       documentClient,
+      considerDefault: true,
     }),
     getRaid({ raidId }, { documentClient }),
   ]);

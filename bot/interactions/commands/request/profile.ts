@@ -92,6 +92,7 @@ export const profileCommand = async (
     member as APIInteractionGuildMember,
     {
       documentClient,
+      considerDefault: true
     }
   );
   if (!lastUserClassActivity) {

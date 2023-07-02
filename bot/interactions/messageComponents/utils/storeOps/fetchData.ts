@@ -21,7 +21,7 @@ export const getUserByClass = async (
 };
 export const getLastUsersClass = async (
   member: APIInteractionGuildMember,
-  { documentClient }
+  { documentClient, considerDefault = false }
 ) => {
   const dbResult = await documentClient
     .query({
@@ -38,7 +38,14 @@ export const getLastUsersClass = async (
     .promise();
   const { Items = [] } = dbResult;
   const [Item] = Items.sort(fieldSorter(["-updatedAt", "-createdAt"]));
-  return Item;
+  const ItemDefaultClass = Items.find((item) => item.default);
+  if(considerDefault){
+    return ItemDefaultClass || Item;
+  }
+  else {
+    return Item;
+  }
+
 };
 
 export const getRaid = async (

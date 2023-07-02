@@ -71,6 +71,7 @@ export const confirmButtonInteract = async (
   const [persistedClassInfo, persistedRaidInfo] = await Promise.all([
     getLastUsersClass(member, {
       documentClient,
+      considerDefault: true,
     }),
     getRaid({ raidId }, { documentClient }),
   ]);

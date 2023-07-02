@@ -74,6 +74,7 @@ export const waitlistButtonInteract = async (
   );
   const persistedClassInfo = await getLastUsersClass(member, {
     documentClient,
+    considerDefault: true,
   });
   const defaultSelectedClassType =
     (new Map(NeverwinterClassesMap).get(

@@ -151,7 +151,7 @@ export const raidBuilder = ({
         },
         {
           style: 1,
-          label: `Join Waitlist`,
+          label: `Wait`,
           custom_id: buttons.joinWaitlistButton.id,
           disabled: false,
           emoji: {
@@ -163,7 +163,7 @@ export const raidBuilder = ({
         },
         {
           style: 4,
-          label: `Rage quit`,
+          label: `Quit`,
           custom_id: buttons.wontJoinButton.id,
           disabled: false,
           emoji: {
@@ -172,6 +172,18 @@ export const raidBuilder = ({
             animated: true,
           },
           type: 2,
+        },
+        {
+          style: 5,
+          label: `Class Setup`,
+          url: `https://uglybot.click/dashboard/classes/`,
+          disabled: false,
+          type: 2,
+          emoji: {
+            id: `934762913166663710`,
+            name: `classSetup`,
+            animated: false,
+          },
         },
       ],
     },

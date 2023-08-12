@@ -12,6 +12,7 @@ export enum previousTrialNamesList {
 }
 export enum trialNamesList {
   GAZEMNIDS_RELIQUARY_M = "Gzemnid's Reliquary (Master)",
+  DWP = "Deamonweb Pits(Master)",
   TOMM = "Tower Of The Mad Mage",
   ZCM = "Zariel's Challenge (Master)",
   COKM = "Crown Of Keldegonn (Master)",
@@ -25,6 +26,10 @@ export enum trialNamesList {
 }
 
 export const createRaidNameChoicesList = [
+  {
+    name: trialNamesList.DWP,
+    value: trialNamesList.DWP,
+  },
   {
     name: trialNamesList.GAZEMNIDS_RELIQUARY_M,
     value: trialNamesList.GAZEMNIDS_RELIQUARY_M,

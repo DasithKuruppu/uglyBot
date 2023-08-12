@@ -40,6 +40,7 @@ import {
   getUserByClass,
 } from "../../utils/storeOps/fetchData";
 import { userStatusCodes } from "../../utils/storeOps/userStatus";
+import { getCompanionsOfMembers } from "../../utils/helper/getCompanions";
 
 export const raidClassSelectId = "select_Class";
 export const defaultArtifactState = ``;
@@ -113,6 +114,7 @@ export const raidClassSelect = async (
   const primaryClassName = requestedClass;
   const optionalClassesNames = optionalRequestedClasses || [];
   const mountList = persistedClassInfo?.mountsList || [];
+  const companionsList = persistedClassInfo?.companions || [];
   const creatableField: EmbedField = {
     name: createFieldName(
       {
@@ -151,39 +153,44 @@ export const raidClassSelect = async (
   );
   const status = ACTIVITY_STATUS.JOINED_CLASS_SELECT;
   const createdAt = new Date().getTime();
-  const updatedActionsRecord = await updateActions(
-    {
-      discordMemberId: member?.user?.id,
-      compositeRaidStatusDate: `${createdAt}#${raidId}#${status}`,
-      updates: {
-        raidId,
-        status,
-        raidTitle,
-        raidType,
-        raidTime,
-        currentSection: sectionName,
-        requestedSectionName: defaultSelectedClassType,
-        artifactsList,
-        mountsList: mountList,
-        token,
-        primaryClassName,
-        optionalClassesNames: optionalClassesNames || [],
-        serverId: guild_id,
-        channelId: channel_id,
-        createdAt,
-        embed: JSON.stringify([
-          {
-            ...message.embeds[0],
-            description: messageEmbed.description,
-            fields: updatedFieldsList,
-          },
-        ]),
-        hasPendingUpdates: false,
-        pendingUpdate: [],
+  const [memberCompanions, updatedActionsRecord] = await Promise.all([
+    getCompanionsOfMembers(updatedSections, {
+      documentClient,
+    }),
+    updateActions(
+      {
+        discordMemberId: member?.user?.id,
+        compositeRaidStatusDate: `${createdAt}#${raidId}#${status}`,
+        updates: {
+          raidId,
+          status,
+          raidTitle,
+          raidType,
+          raidTime,
+          currentSection: sectionName,
+          requestedSectionName: defaultSelectedClassType,
+          artifactsList,
+          mountsList: mountList || [],
+          companionsList: companionsList || [],
+          token,
+          primaryClassName,
+          optionalClassesNames: optionalClassesNames || [],
+          serverId: guild_id,
+          channelId: channel_id,
+          createdAt,
+          embed: JSON.stringify([
+            {
+              ...message.embeds[0],
+              description: messageEmbed.description,
+              fields: updatedFieldsList,
+            },
+          ]),
+          hasPendingUpdates: false,
+          pendingUpdate: [],
+        },
       },
-    },
-    { documentClient }
-  );
+      { documentClient }
+    )])
   logger.log("info", "updated fields list", {
     updatedFieldsList,
   });
@@ -194,7 +201,8 @@ export const raidClassSelect = async (
         userActionText: `<@${member.user.id}> joined raid as ${requestedClass}.`,
         userArtifacts: createEmbedArtifactSortContent(
           updatedSections,
-          raidTitle
+          raidTitle,
+          { memberCompanions }
         ),
       }),
     },

@@ -35,6 +35,7 @@ import {
   updateActions,
 } from "../../utils/storeOps/memberActions";
 import { userStatusCodes } from "../../utils/storeOps/userStatus";
+import { getCompanionsOfMembers } from "../../utils/helper/getCompanions";
 
 export const waitlistButtonInteract = async (
   data: APIMessageSelectMenuInteractionData,
@@ -91,7 +92,10 @@ export const waitlistButtonInteract = async (
       sectionName = defaultSelectedClassType,
     } = {},
   ] = getExistingMemberRecordDetails(seperatedSections, member.user.id);
-  const artifactsList = userArtifacts || persistedClassInfo?.artifactsList || [];
+  const artifactsList =
+    userArtifacts || persistedClassInfo?.artifactsList || [];
+  const mountList = persistedClassInfo?.mountsList || [];
+  const companionsList = persistedClassInfo?.companions || [];
   const primaryClassName =
     (userRecord as EmbedField)?.name ||
     persistedClassInfo?.className ||
@@ -100,7 +104,6 @@ export const waitlistButtonInteract = async (
     ? optionalClasses
     : persistedClassInfo?.optionalClasses;
 
-  const mountList = persistedClassInfo?.mountsList || [];
   const creatableField: EmbedField = {
     name: createFieldName(
       {
@@ -136,6 +139,9 @@ export const waitlistButtonInteract = async (
   );
   const status = ACTIVITY_STATUS.JOINED_WAITLIST;
   const createdAt = new Date().getTime();
+  const memberCompanions = await getCompanionsOfMembers(updatedSections, {
+    documentClient,
+  });
   const updatedActions = await updateActions(
     {
       discordMemberId: member?.user?.id,
@@ -149,7 +155,8 @@ export const waitlistButtonInteract = async (
         currentSection: sectionName,
         requestedSectionName: Category.WAITLIST,
         artifactsList: artifactsList || [],
-        mountsList: mountList,
+        companionsList: companionsList || [],
+        mountsList: mountList || [],
         token,
         primaryClassName,
         optionalClassesNames: optionalClassesNames || [],
@@ -182,7 +189,8 @@ export const waitlistButtonInteract = async (
         userActionText: `<@${member.user.id}> joined wait list!`,
         userArtifacts: createEmbedArtifactSortContent(
           updatedSections,
-          raidTitle
+          raidTitle,
+          { memberCompanions }
         ),
       }),
     },

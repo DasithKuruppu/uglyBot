@@ -44,6 +44,7 @@ import {
   updateActions,
 } from "../../utils/storeOps/memberActions";
 import { userStatusCodes } from "../../utils/storeOps/userStatus";
+import { getCompanionsOfMembers } from "../../utils/helper/getCompanions";
 export const confirmButtonInteract = async (
   data: APIMessageSelectMenuInteractionData,
   factoryInits: IfactoryInitializations
@@ -103,16 +104,18 @@ export const confirmButtonInteract = async (
     sectionSeperation
   );
 
-  logger.log("info", "SeperationInfo", { sectionSeperation, seperatedSections});
+  logger.log("info", "SeperationInfo", {
+    sectionSeperation,
+    seperatedSections,
+  });
   const defaultClass = getOptionsList().find(
     ({ value }) => value === defaultClassName
   );
   const classMap = new Map(NeverwinterClassesMap);
 
   const defaultSelectedClassType =
-    (classMap.get(
-      persistedClassInfo?.className || defaultClass?.value
-    )?.type as Category) || Category.WAITLIST;
+    (classMap.get(persistedClassInfo?.className || defaultClass?.value)
+      ?.type as Category) || Category.WAITLIST;
   logger.log("info", "confirm button", {
     seperatedSections,
     defaultClass,
@@ -129,8 +132,10 @@ export const confirmButtonInteract = async (
       sectionName = defaultSelectedClassType,
     } = {},
   ] = getExistingMemberRecordDetails(seperatedSections, member.user.id);
-  const artifactsList = userArtifacts || persistedClassInfo?.artifactsList || [];
+  const artifactsList =
+    userArtifacts || persistedClassInfo?.artifactsList || [];
   const mountList = persistedClassInfo?.mountsList || [];
+  const companionsList = persistedClassInfo?.companions || [];
   const primaryClassName =
     (userRecord as EmbedField)?.name ||
     persistedClassInfo?.className ||
@@ -170,6 +175,9 @@ export const confirmButtonInteract = async (
   const status = ACTIVITY_STATUS.JOINED;
   const createdAt = new Date().getTime();
   const actionsList = [
+    getCompanionsOfMembers(updatedSections, {
+      documentClient,
+    }),
     updateActions(
       {
         discordMemberId: member?.user?.id,
@@ -183,7 +191,8 @@ export const confirmButtonInteract = async (
           currentSection: sectionName,
           requestedSectionName: sectionName,
           artifactsList: artifactsList || [],
-          mountsList: mountList,
+          mountsList: mountList || [],
+          companionsList: companionsList || [],
           token,
           primaryClassName,
           optionalClassesNames: optionalClassesNames || [],
@@ -222,11 +231,14 @@ export const confirmButtonInteract = async (
       : []),
   ];
 
-  const [updatedActions, updatedRaid] = await Promise.all(actionsList);
+  const [memberCompanions, updatedActions, updatedRaid] = await Promise.all(
+    actionsList
+  );
   logger.log("info", "updated fields list", {
     updatedFieldsList,
     creatableField,
     updatedRaid,
+    memberCompanions,
   });
   return {
     body: {
@@ -241,7 +253,8 @@ export const confirmButtonInteract = async (
         userActionText: `<@${member.user.id}> joined the raid!`,
         userArtifacts: createEmbedArtifactSortContent(
           updatedSections,
-          raidTitle
+          raidTitle,
+          { memberCompanions }
         ),
       }),
     },

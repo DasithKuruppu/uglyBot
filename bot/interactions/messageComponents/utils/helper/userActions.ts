@@ -58,7 +58,8 @@ export const isFivePersonDungeon = (title = "") => {
     trialNamesList.TOSM as string,
     trialNamesList.STANDARD_DUNGEON,
     trialNamesList.VOS,
-    trialNamesList.REAPERS_CHALLENGE
+    trialNamesList.REAPERS_CHALLENGE,
+    trialNamesList.DWP,
   ].includes(name);
 };
 

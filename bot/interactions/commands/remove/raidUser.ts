@@ -14,7 +14,10 @@ import {
 } from "discord.js";
 import { Logger } from "winston";
 import { raidsTable } from "../../../../pulumi/persistantStore/tables/raids";
-import { defaultClassName, getOptionsList } from "../../../embeds/templates/neverwinter/classesList";
+import {
+  defaultClassName,
+  getOptionsList,
+} from "../../../embeds/templates/neverwinter/classesList";
 import { raidConfigs } from "../../../embeds/templates/neverwinter/config";
 import { availableSlotValue } from "../../../embeds/templates/neverwinter/raid";
 import { setUpdateValues } from "../../../store/utils";
@@ -24,15 +27,24 @@ import {
   getEmbedFieldsSeperatedSections,
   getExistingMemberRecordDetails,
 } from "../../messageComponents/utils/categorizeEmbedFields/categorizeEmbedFields";
-import { extractShortArtifactNames, isEmoji } from "../../messageComponents/utils/helper/artifactsRenderer";
+import {
+  extractShortArtifactNames,
+  isEmoji,
+} from "../../messageComponents/utils/helper/artifactsRenderer";
 import { defaultJoinStatus } from "../../messageComponents/utils/helper/embedFieldAttribute";
 import {
   createRaidContent,
   determineRaidTemplateType,
   getRaidTime,
 } from "../../messageComponents/utils/helper/raid";
-import { getLastUsersClass, getRaid } from "../../messageComponents/utils/storeOps/fetchData";
-import { ACTIVITY_STATUS, updateActions } from "../../messageComponents/utils/storeOps/memberActions";
+import {
+  getLastUsersClass,
+  getRaid,
+} from "../../messageComponents/utils/storeOps/fetchData";
+import {
+  ACTIVITY_STATUS,
+  updateActions,
+} from "../../messageComponents/utils/storeOps/memberActions";
 import { IfactoryInitializations } from "../../typeDefinitions/event";
 
 export const removeRaidUserCommand = async (
@@ -90,7 +102,9 @@ export const removeRaidUserCommand = async (
     };
   }
   const { content, embeds, components } = findRaidMessage;
-  const pendingUpdateData = raidRecord.hasPendingUpdates ? JSON.parse(raidRecord?.pendingUpdates || "[]") : [];
+  const pendingUpdateData = raidRecord.hasPendingUpdates
+    ? JSON.parse(raidRecord?.pendingUpdates || "[]")
+    : [];
   const [previousPendingUpdate] = pendingUpdateData.slice(-1);
   const [currentEmbed] = raidRecord?.hasPendingUpdates
     ? previousPendingUpdate?.embeds
@@ -133,15 +147,16 @@ export const removeRaidUserCommand = async (
     ? extractShortArtifactNames(userArtifactsParse)
     : userArtifactsParse;
   const artifactsList = userArtifactsParse
-  ? emojiProcessedArtifactlist
-  : persistedClassInfo?.artifactsList;
-const primaryClassName =
-  (userRecord as EmbedField)?.name ||
-  persistedClassInfo?.className ||
-  (defaultClass?.value as string);
-const optionalClassesNames = userExists
-  ? optionalClasses
-  : persistedClassInfo?.optionalClasses;
+    ? emojiProcessedArtifactlist
+    : persistedClassInfo?.artifactsList;
+  const companionsList = persistedClassInfo.companions || [];
+  const primaryClassName =
+    (userRecord as EmbedField)?.name ||
+    persistedClassInfo?.className ||
+    (defaultClass?.value as string);
+  const optionalClassesNames = userExists
+    ? optionalClasses
+    : persistedClassInfo?.optionalClasses;
   const { updatedFieldsList, updatedSections } = determineActions(
     seperatedSections,
     {
@@ -162,15 +177,12 @@ const optionalClassesNames = userExists
     components,
   };
 
-  const pendingUpdate= [
-    ...pendingUpdateData,
-    messageEmbedData,
-  ];
+  const pendingUpdate = [...pendingUpdateData, messageEmbedData];
   const updateValues = setUpdateValues({
     raidEmbed: JSON.stringify(messageEmbedData),
     updatedAt: Date.now(),
     hasPendingUpdates: true,
-    pendingUpdates: JSON.stringify(pendingUpdate)
+    pendingUpdates: JSON.stringify(pendingUpdate),
   });
 
   const updatedRaid = await documentClient
@@ -211,38 +223,38 @@ const optionalClassesNames = userExists
   const status = ACTIVITY_STATUS.REMOVED;
   const createdAt = new Date().getTime();
   await updateActions(
-        {
-          discordMemberId: userId as string,
-          compositeRaidStatusDate: `${createdAt}#${raidId}#${status}`,
-          updates: {
-            raidId,
-            status,
-            raidTitle: raidRecord?.title,
-            raidType:raidRecord?.type,
-            raidTime: getRaidTime(raidRecord?.eventDiscordDateTime),
-            currentSection: sectionName,
-            requestedSectionName: sectionName,
-            artifactsList,
-            mountsList: userMounts,
-            token: factoryInits?.interactionConfig?.token,
-            primaryClassName,
-            optionalClassesNames: optionalClassesNames || [],
-            serverId: guild_id,
-            channelId: channel_id,
-            createdAt,
-            metaData: {
-              removedReason: reasonText,
-              removedBy: interactionConfig.member?.user?.id,
-            },
-            embed: JSON.stringify(messageEmbedData.embeds[0]),
-            hasPendingUpdates: true,
-            pendingUpdate: JSON.stringify(pendingUpdate),
-          },
+    {
+      discordMemberId: userId as string,
+      compositeRaidStatusDate: `${createdAt}#${raidId}#${status}`,
+      updates: {
+        raidId,
+        status,
+        raidTitle: raidRecord?.title,
+        raidType: raidRecord?.type,
+        raidTime: getRaidTime(raidRecord?.eventDiscordDateTime),
+        currentSection: sectionName,
+        requestedSectionName: sectionName,
+        artifactsList: artifactsList || [],
+        companionsList: companionsList || [],
+        mountsList: userMounts || [],
+        token: factoryInits?.interactionConfig?.token,
+        primaryClassName,
+        optionalClassesNames: optionalClassesNames || [],
+        serverId: guild_id,
+        channelId: channel_id,
+        createdAt,
+        metaData: {
+          removedReason: reasonText,
+          removedBy: interactionConfig.member?.user?.id,
         },
-        { documentClient }
+        embed: JSON.stringify(messageEmbedData.embeds[0]),
+        hasPendingUpdates: true,
+        pendingUpdate: JSON.stringify(pendingUpdate),
+      },
+    },
+    { documentClient }
   );
-    
-  
+
   return {
     body: {
       content: `<@${

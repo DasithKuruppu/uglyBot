@@ -6,9 +6,7 @@ import {
   getEmbedFieldsSeperatedSections,
   getExistingMemberRecordDetails,
 } from "../../utils/categorizeEmbedFields/categorizeEmbedFields";
-import {
-  defaultJoinStatus,
-} from "../../utils/helper/embedFieldAttribute";
+import { defaultJoinStatus } from "../../utils/helper/embedFieldAttribute";
 import {
   createRaidContent,
   determineRaidTemplateType,
@@ -27,7 +25,7 @@ import {
   isEmoji,
 } from "../../utils/helper/artifactsRenderer";
 import { EmbedField } from "discord.js";
-
+import { getCompanionsOfMembers } from "../../utils/helper/getCompanions";
 
 export const wontJoinButtonInteract = async (
   data: APIMessageSelectMenuInteractionData,
@@ -48,7 +46,8 @@ export const wontJoinButtonInteract = async (
   } = factoryInits;
   const currentFields = message.embeds[0].fields || [];
   const messageEmbed = message.embeds[0];
-  const [unprocessedRaidId, unprocessedRaidTime] = messageEmbed.description?.split("\n") as string[];
+  const [unprocessedRaidId, unprocessedRaidTime] =
+    messageEmbed.description?.split("\n") as string[];
   const raidId = unprocessedRaidId.replace("🆔 ", "");
   const raidTime = getRaidTime(unprocessedRaidTime.replace("⏱️ ", ""));
   const { raidTitle, raidType } = getRaidTitle(message.embeds[0]?.title);
@@ -101,6 +100,9 @@ export const wontJoinButtonInteract = async (
   );
   const status = ACTIVITY_STATUS.RAGE_QUIT;
   const createdAt = new Date().getTime();
+  const memberCompanions = await getCompanionsOfMembers(updatedSections, {
+    documentClient,
+  });
   const updatedActions = await updateActions(
     {
       discordMemberId: member?.user?.id,
@@ -114,7 +116,8 @@ export const wontJoinButtonInteract = async (
         currentSection: sectionName,
         requestedSectionName: sectionName,
         artifactsList,
-        mountsList: userMounts|| [],
+        companionsList: [],
+        mountsList: userMounts || [],
         primaryClassName,
         optionalClassesNames: optionalClasses,
         serverId: guild_id,
@@ -140,7 +143,8 @@ export const wontJoinButtonInteract = async (
         userActionText: `<@${member.user.id}> rage quit the raid!`,
         userArtifacts: createEmbedArtifactSortContent(
           updatedSections,
-          raidTitle
+          raidTitle,
+          { memberCompanions }
         ),
       }),
       embeds: [

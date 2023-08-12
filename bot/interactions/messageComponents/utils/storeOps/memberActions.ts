@@ -23,6 +23,7 @@ export interface IMemberActionsUpdates {
   raidTime: number;
   artifactsList: string[];
   mountsList: string[];
+  companionsList: string[];
   primaryClassName: string;
   optionalClassesNames: string[];
   serverId: string;

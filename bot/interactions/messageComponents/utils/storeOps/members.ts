@@ -19,13 +19,17 @@ export const getAllUsersClass = async (userId, { documentClient }) => {
   return Items;
 };
 
-export const batchGetUsersList = async(
+export const batchGetUsersList = async (
   userList: { discordMemberId: string; className: string }[],
   { documentClient }
 ) => {
-  var params = {
+  const tableName = membersTable.name.get();
+  if (!userList || !userList.length) {
+    return [];
+  }
+  const params = {
     RequestItems: {
-      [membersTable.name.get()]: {
+      [tableName]: {
         Keys: userList.map(({ discordMemberId, className }) => {
           return {
             discordMemberId,
@@ -36,8 +40,7 @@ export const batchGetUsersList = async(
     },
   };
   const result = await documentClient.batchGet(params).promise();
-  return result[membersTable.name.get()];
-
+  return result?.Responses?.[tableName];
 };
 
 export const updateMemberDetails = async (

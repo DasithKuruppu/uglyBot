@@ -33,6 +33,7 @@ import {
   updateActions,
 } from "../../utils/storeOps/memberActions";
 import { userStatusCodes } from "../../utils/storeOps/userStatus";
+import { getCompanionsOfMembers } from "../../utils/helper/getCompanions";
 export const raidArtifactSelectId = "select_Artifact";
 export const raidArtifactSelect = async (
   data: APIMessageSelectMenuInteractionData,
@@ -100,6 +101,7 @@ export const raidArtifactSelect = async (
     ? optionalClasses
     : persistedClassInfo?.optionalClasses;
   const mountList = persistedClassInfo?.mountsList || [];
+  const companionsList = persistedClassInfo?.companions || [];
   const creatableField: EmbedField = {
     name: createFieldName(
       {
@@ -160,39 +162,45 @@ export const raidArtifactSelect = async (
 
   const status = ACTIVITY_STATUS.JOINED_ARTIFACT_SELECT;
   const createdAt = new Date().getTime();
-  const updatedActionsRecord = await updateActions(
-    {
-      discordMemberId: member?.user?.id,
-      compositeRaidStatusDate: `${createdAt}#${raidId}#${status}`,
-      updates: {
-        raidId,
-        status,
-        raidTitle,
-        raidType,
-        raidTime,
-        currentSection: sectionName,
-        requestedSectionName: sectionName,
-        artifactsList: selectedArtifactsList,
-        mountsList: mountList,
-        token,
-        primaryClassName,
-        optionalClassesNames: optionalClassesNames || [],
-        serverId: guild_id,
-        channelId: channel_id,
-        createdAt,
-        embed: JSON.stringify([
-          {
-            ...message.embeds[0],
-            description: messageEmbed.description,
-            fields: updatedFieldsList,
-          },
-        ]),
-        hasPendingUpdates: false,
-        pendingUpdate: [],
+  const [memberCompanions, updatedActions] = await Promise.all([
+    getCompanionsOfMembers(updatedSections, {
+      documentClient,
+    }),
+    updateActions(
+      {
+        discordMemberId: member?.user?.id,
+        compositeRaidStatusDate: `${createdAt}#${raidId}#${status}`,
+        updates: {
+          raidId,
+          status,
+          raidTitle,
+          raidType,
+          raidTime,
+          currentSection: sectionName,
+          requestedSectionName: sectionName,
+          artifactsList: selectedArtifactsList,
+          mountsList: mountList || [],
+          companionsList: companionsList || [],
+          token,
+          primaryClassName,
+          optionalClassesNames: optionalClassesNames || [],
+          serverId: guild_id,
+          channelId: channel_id,
+          createdAt,
+          embed: JSON.stringify([
+            {
+              ...message.embeds[0],
+              description: messageEmbed.description,
+              fields: updatedFieldsList,
+            },
+          ]),
+          hasPendingUpdates: false,
+          pendingUpdate: [],
+        },
       },
-    },
-    { documentClient }
-  );
+      { documentClient }
+    ),
+  ]);
   logger.log("info", "values to update", {
     userExists,
     userStatus,
@@ -211,7 +219,8 @@ export const raidArtifactSelect = async (
         userActionText: `<@${member.user.id}> updated ${selectedArtifactsList.length} artifacts`,
         userArtifacts: createEmbedArtifactSortContent(
           updatedSections,
-          raidTitle
+          raidTitle,
+          { memberCompanions }
         ),
       }),
     },

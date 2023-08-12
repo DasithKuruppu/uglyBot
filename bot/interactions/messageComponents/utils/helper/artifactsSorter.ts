@@ -5,6 +5,7 @@ import {
   newArtifactsList,
 } from "../../../../embeds/templates/artifactsList";
 import { MountsList } from "../../../../embeds/templates/mountsList";
+import { CompanionList } from "../../../../embeds/templates/companionsList";
 import { NeverwinterClassesMap } from "../../../../embeds/templates/neverwinter/classesList";
 import {
   availableSlotValue,
@@ -21,6 +22,7 @@ import {
   extractFieldValueAttributes,
 } from "./embedFieldAttribute";
 import { mountsSort } from "./mountSorter";
+import { companionsSort } from "./sortCompanions";
 
 export const fieldSorter = (fields) => (a, b) =>
   fields
@@ -68,7 +70,7 @@ export const getPriorityLevel = (
     deprioritizeMitigationArtifacts = true,
     deprioritizeUtilityArtifacts = true,
     depriorotizeStackingArtifacts = true,
-    deprioritizeLevel = 20,
+    deprioritizeLevel = 25,
     availableArtifacts = [],
   }: IpriorityOptions = {}
 ) => {
@@ -270,7 +272,11 @@ export const artifactsSort = (
   return pickedArtifacts;
 };
 
-export const createEmbedArtifactSortContent = (seperatedSections, raidName) => {
+export const createEmbedArtifactSortContent = (
+  seperatedSections,
+  raidName,
+  { memberCompanions = [] } = {}
+) => {
   const artifactDetails = [
     ...seperatedSections[Category.DPS],
     ...seperatedSections[Category.TANK],
@@ -287,17 +293,28 @@ export const createEmbedArtifactSortContent = (seperatedSections, raidName) => {
       });
       const { memberId, userStatus, artifactsList, mountsList } =
         extractFieldValueAttributes({ fieldValueText: value });
-
+      const restructredMemeberCompanions = memberCompanions.map(
+        ({ discordMemberId, companions }) => {
+          const companionsList = companions || [];
+          return [discordMemberId, companionsList];
+        }
+      );
+      const [member, memberCompanionsList] = (restructredMemeberCompanions as any[]).find(
+        ([memberDiscordId]) => memberDiscordId === memberId
+      ) || [memberId, []];
+      console.log({ memberCompanionsList });
       return {
         name: memberId,
         category:
           (classNamesMap.get(fieldName)?.type as Category) || Category.DPS,
         artifacts: artifactsList,
         mounts: mountsList,
+        companions: memberCompanionsList || [],
       };
     });
   const sortedArtifacts = artifactsSort(artifactMemberlist, raidName);
   const sortedMounts = mountsSort(artifactMemberlist, raidName);
+  const sortedCompanions = companionsSort(artifactMemberlist, raidName);
   const companionBonusPowers = companionPowersSort(artifactMemberlist);
 
   const assignedArtifacts = Object.entries(sortedArtifacts)
@@ -310,6 +327,11 @@ export const createEmbedArtifactSortContent = (seperatedSections, raidName) => {
         ({ shortName }) => mountName === shortName
       )?.emoji;
 
+      const companionName = sortedCompanions[user];
+      const companionEmojiDetails = CompanionList.find(
+        ({ shortName }) => companionName === shortName
+      )?.emoji;
+
       const companionBonusPower = companionBonusPowers.find(
         ({ name, shortName, emoji }) => name === user && shortName && emoji
       );
@@ -319,15 +341,22 @@ export const createEmbedArtifactSortContent = (seperatedSections, raidName) => {
       const mountEmojiRender = mountEmojiDetails
         ? `<:${mountEmojiDetails?.name}:${mountEmojiDetails?.id}> ${mountName}`
         : "❔";
+
+      const companionEmojiRender = companionEmojiDetails
+        ? `<:${companionEmojiDetails?.name}:${companionEmojiDetails?.id}> ${companionName}`
+        : "❔";
       const companionBonusPowerRender = companionBonusPower
         ? `<:${companionBonusPower?.name}:${companionBonusPower?.emoji?.id}> ${companionBonusPower?.shortName}`
         : "❔";
       return [
         `<@${user}> => ${emojiRender} ${artifactName}`,
         mountEmojiRender,
+        companionEmojiRender,
         companionBonusPowerRender,
-      ].filter((text)=> text != "❔").join(" |");
+      ]
+        .filter((text) => text != "❔")
+        .join(" |");
     })
     .join("\n");
-  return `\nAssigned/Recommended Artifacts List\n${assignedArtifacts}\n`;
+  return `\nRecommended Artifacts/Mounts & companions\n ${assignedArtifacts}\n`;
 };

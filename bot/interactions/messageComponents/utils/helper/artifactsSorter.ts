@@ -131,7 +131,7 @@ export const getPriorityLevel = (
     !isBuffDebuff &&
     isUtility &&
     deprioritizeUtilityArtifacts &&
-    (userType === Category.DPS || userType === Category.HEALER)
+    (userType === Category.DPS || userType === Category.HEALER || userType === Category.TANK)
   ) {
     return deprioritizeLevel;
   }

@@ -19,6 +19,7 @@ import {
 import { raidsTable } from "../../../../pulumi/persistantStore/tables/raids";
 import {
   createRaidNameChoicesList,
+  previousTrialNamesList,
   trialNamesList,
 } from "../../../registerCommands/commands";
 import { isFivePersonDungeon } from "../../messageComponents/utils/helper/userActions";
@@ -64,6 +65,9 @@ export const createRaidCommand = async (
   )?.value;
   const nameToCoverUrl = {
     [trialNamesList.DWP]: "https://cdn.discordapp.com/attachments/1109471948645355551/1124953782036480080/Deamonwebpits.png",
+    [previousTrialNamesList.DWP]: "https://cdn.discordapp.com/attachments/1109471948645355551/1124953782036480080/Deamonwebpits.png",
+    [trialNamesList.DWP_Advanced]: "https://cdn.discordapp.com/attachments/1109471948645355551/1124953782036480080/Deamonwebpits.png",
+    [trialNamesList.Dragon_hunts]: 'https://cdn.discordapp.com/attachments/1109471948645355551/1139797154395857016/img-EBHqbvnop8Ez0USCmOEEOPQ9.png',
     [trialNamesList.TOMM]:
       "https://pwimages-a.akamaihd.net/arc/8d/5d/8d5d88772e1edccad4f98cb882677a5e1564178653.jpg",
     [trialNamesList.GAZEMNIDS_RELIQUARY_M]:

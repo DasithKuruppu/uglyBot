@@ -8,11 +8,13 @@ export enum previousTrialNamesList {
   TOSM = "Temple of Spider(Master)",
   VOS = "Vault of Stars",
   DEMO = "Demorgorgon (Master)",
+  DWP = "Deamonweb Pits(Master)",
   GAZEMNIDS_RELIQUARY_M = "Gazemnid's Reliquary (Master)",
 }
 export enum trialNamesList {
   GAZEMNIDS_RELIQUARY_M = "Gzemnid's Reliquary (Master)",
-  DWP = "Deamonweb Pits(Master)",
+  DWP = "Demonweb Pits(Master)",
+  DWP_Advanced = "Demonweb Pits(Advanced)",
   TOMM = "Tower Of The Mad Mage",
   ZCM = "Zariel's Challenge (Master)",
   COKM = "Crown Of Keldegonn (Master)",
@@ -23,12 +25,17 @@ export enum trialNamesList {
   REAPERS_CHALLENGE = "Reapers Challenge",
   STANDARD_DUNGEON = "Standard Dungeon",
   STANDARD_TRIAL = "Standard Trial",
+  Dragon_hunts = "Dragon Hunts",
 }
 
 export const createRaidNameChoicesList = [
   {
     name: trialNamesList.DWP,
     value: trialNamesList.DWP,
+  },
+  {
+    name: trialNamesList.DWP_Advanced,
+    value: trialNamesList.DWP_Advanced,
   },
   {
     name: trialNamesList.GAZEMNIDS_RELIQUARY_M,
@@ -69,6 +76,10 @@ export const createRaidNameChoicesList = [
   {
     name: trialNamesList.REAPERS_CHALLENGE,
     value: trialNamesList.REAPERS_CHALLENGE,
+  },
+  {
+    name: trialNamesList.Dragon_hunts,
+    value: trialNamesList.Dragon_hunts,
   },
   {
     name: trialNamesList.STANDARD_DUNGEON,
@@ -304,7 +315,8 @@ export const request_role = {
         {
           type: 3,
           name: "number_of_hours",
-          description: "The number of hours you intend to play from the start time",
+          description:
+            "The number of hours you intend to play from the start time",
           required: true,
           choices: [
             {
@@ -516,12 +528,12 @@ export const create_raid = {
               value: "Solo_tank_heal",
             },
             {
-              name:"3 Heals and 2 Tanks",
-              value:"Three_heal"
+              name: "3 Heals and 2 Tanks",
+              value: "Three_heal",
             },
             {
-              name:"3 Heals and 1 Tank",
-              value:"Three_heal_one_tank"
+              name: "3 Heals and 1 Tank",
+              value: "Three_heal_one_tank",
             },
           ],
         },
@@ -582,4 +594,3 @@ export const create_raid = {
     // },
   ],
 };
-

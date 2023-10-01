@@ -1,4 +1,6 @@
 export const enum ArtifactsNames {
+  Marilith_Mask = "Marilith_Mask",
+  Cystal_Of_Souls_Flight = "Cystal_Of_Souls_Flight",
   DEMO = "Demo",
   MYTHALLAR = "Mythallar",
   HALASTERS = "Halasters",
@@ -38,6 +40,28 @@ export const newArtifactsList = [
     emoji: {
       id: `1060809813581377636`,
       name: `Demo`,
+      animated: false,
+    },
+  },
+  {
+    label: "Crystal of Soul's Flight",
+    shortName: ArtifactsNames.Cystal_Of_Souls_Flight,
+    priority: 3,
+    type: [ArtifactTypes.DEBUFF],
+    emoji: {
+      id: `1153417943309369354`,
+      name: `Crystal`,
+      animated: false,
+    },
+  },
+  {
+    label: "Marilith Mask",
+    shortName: ArtifactsNames.Marilith_Mask,
+    priority: 3,
+    type: [ArtifactTypes.DEBUFF],
+    emoji: {
+      id: `1139792115644235777`,
+      name: `Maritith`,
       animated: false,
     },
   },
@@ -221,7 +245,7 @@ export const newArtifactsList = [
   {
     label: "Dragonbone Blades",
     shortName: ArtifactsNames.BLADES,
-    priority: 3,
+    priority: 2,
     type: [ArtifactTypes.DEBUFF, ArtifactTypes.MITIGATION],
     nonStackingArtifact: [ArtifactsNames.WYVERN],
     emoji: {
@@ -233,7 +257,7 @@ export const newArtifactsList = [
   {
     label: "Black Dragon's Mark",
     shortName: ArtifactsNames.MARK,
-    priority: 4,
+    priority: 3,
     type: [ArtifactTypes.DEBUFF],
     emoji: {
       id: `1068867255795982336`,
@@ -284,6 +308,28 @@ export const ArtifactsList = [
     emoji: {
       id: `999523830630461541`,
       name: `Demo`,
+      animated: false,
+    },
+  },
+  {
+    label: "Crystal of Soul's Flight",
+    shortName: ArtifactsNames.Cystal_Of_Souls_Flight,
+    priority: 3,
+    type: [ArtifactTypes.DEBUFF],
+    emoji: {
+      id: `1153417943309369354`,
+      name: `Crystal`,
+      animated: false,
+    },
+  },
+  {
+    label: "Marilith Mask",
+    shortName: ArtifactsNames.Marilith_Mask,
+    priority: 3,
+    type: [ArtifactTypes.DEBUFF],
+    emoji: {
+      id: `1139792115644235777`,
+      name: `Maritith`,
       animated: false,
     },
   },
@@ -467,7 +513,7 @@ export const ArtifactsList = [
   {
     label: "Dragonbone Blades",
     shortName: ArtifactsNames.BLADES,
-    priority: 3,
+    priority: 2,
     type: [ArtifactTypes.DEBUFF, ArtifactTypes.MITIGATION],
     nonStackingArtifact: [ArtifactsNames.WYVERN],
     emoji: {
@@ -479,7 +525,7 @@ export const ArtifactsList = [
   {
     label: "Black Dragon's Mark",
     shortName: ArtifactsNames.MARK,
-    priority: 4,
+    priority: 3,
     type: [ArtifactTypes.DEBUFF],
     emoji: {
       id: `999936699423526972`,

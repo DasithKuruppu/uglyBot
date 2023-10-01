@@ -1,6 +1,6 @@
 import { APIEmbedField } from "discord-api-types/payloads/v10/channel";
 import { availableSlotValue } from "../../../../embeds/templates/neverwinter/raid";
-import { trialNamesList } from "../../../../registerCommands/commands";
+import { previousTrialNamesList, trialNamesList } from "../../../../registerCommands/commands";
 import {
   Category,
   getSectionInfo,
@@ -60,6 +60,9 @@ export const isFivePersonDungeon = (title = "") => {
     trialNamesList.VOS,
     trialNamesList.REAPERS_CHALLENGE,
     trialNamesList.DWP,
+    previousTrialNamesList.DWP,
+    trialNamesList.Dragon_hunts,
+    trialNamesList.DWP_Advanced
   ].includes(name);
 };
 

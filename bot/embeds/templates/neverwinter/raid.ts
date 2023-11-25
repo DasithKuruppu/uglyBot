@@ -42,9 +42,9 @@ export const generateAvailableFields = ({
 });
 
 export const sectionTitleNames = {
-  [Category.DPS_TITLE]: `───────── <:dps:911695908482207774> DPS <:dps:911695908482207774> ─────────`,
-  [Category.TANK_TITLE]: `──────── <:tank:911695908134060112> TANKS <:tank:911695908134060112> ────────`,
-  [Category.HEALER_TITLE]: `──────── <:healer:911695908117315654> HEALS <:healer:911695908117315654> ────────`,
+  [Category.DPS_TITLE]: `───────── <:dps:1170248887018213479> DPS <:dps:1170248887018213479> ─────────`,
+  [Category.TANK_TITLE]: `──────── <:tank:1170248681635721246> TANKS <:tank:1170248681635721246> ────────`,
+  [Category.HEALER_TITLE]: `──────── <:healer:1170248679563743323> HEALS <:healer:1170248679563743323> ────────`,
   [Category.WAITLIST_TITLE]: `────── ⌛ WAITING LIST ⌛ ──────`,
 };
 

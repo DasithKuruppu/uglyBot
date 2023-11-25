@@ -10,8 +10,10 @@ export enum previousTrialNamesList {
   DEMO = "Demorgorgon (Master)",
   DWP = "Deamonweb Pits(Master)",
   GAZEMNIDS_RELIQUARY_M = "Gazemnid's Reliquary (Master)",
+  Battle_of_the_Moon_Dancer_M = "Battle of the Moon Dancer(Master)",
 }
 export enum trialNamesList {
+  Battle_of_the_Moon_Dancer_M = "Battle of the Moon Dancer(Master)",
   GAZEMNIDS_RELIQUARY_M = "Gzemnid's Reliquary (Master)",
   DWP = "Demonweb Pits(Master)",
   DWP_Advanced = "Demonweb Pits(Advanced)",
@@ -29,6 +31,10 @@ export enum trialNamesList {
 }
 
 export const createRaidNameChoicesList = [
+  {
+    name: trialNamesList.Battle_of_the_Moon_Dancer_M,
+    value: trialNamesList.Battle_of_the_Moon_Dancer_M,
+  },
   {
     name: trialNamesList.DWP,
     value: trialNamesList.DWP,

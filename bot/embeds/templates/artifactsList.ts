@@ -49,7 +49,7 @@ export const newArtifactsList = [
     priority: 3,
     type: [ArtifactTypes.DEBUFF],
     emoji: {
-      id: `1153417943309369354`,
+      id: `1157924620679254046`,
       name: `Crystal`,
       animated: false,
     },

@@ -1,3 +1,4 @@
+import { trialNamesList } from "../../../../registerCommands/commands";
 import { Category } from "../categorizeEmbedFields/categorizeEmbedFields";
 
 export const companionPowersSort = (
@@ -15,19 +16,17 @@ export const companionPowersSort = (
   const Healers = availableUsers.filter(({ category }) =>
     [Category.HEALER].includes(category)
   );
-  const Supports = [...Tanks, ...Healers];
   const DPS = availableUsers.filter(({ category }) =>
     [Category.DPS].includes(category)
   );
-
-  const availableCompanionTankPowers = [
+  const availableCompanionHealPowers = [
     {
-      label: "Armour Break",
-      shortName: "Armour_Break",
+      label: "Slowed Reactions",
+      shortName: "Slowed_Reactions",
       priority: 1,
       emoji: {
-        id: `1091902795529072750`,
-        name: `ArmourBreak`,
+        id: `1091902793377394789`,
+        name: `SlowedReactions`,
         animated: false,
       },
     },
@@ -42,6 +41,54 @@ export const companionPowersSort = (
       },
     },
     {
+      label: "Personal",
+      shortName: "Personal",
+      priority: 1,
+      emoji: {
+        id: `1162793563076182086`,
+        name: `Personal`,
+        animated: false,
+      },
+    },
+  ];
+
+  const availableCompanionTankPowers = [
+    {
+      label: "Weapon Break",
+      shortName: "Weapon_Break",
+      priority: 1,
+      emoji: {
+        id: `1162737401702125698`,
+        name: `WeaponBreak`,
+        animated: false,
+      },
+    },
+    {
+      label: "Weapon Break",
+      shortName: "Weapon_Break",
+      priority: 1,
+      emoji: {
+        id: `1162737401702125698`,
+        name: `WeaponBreak`,
+        animated: false,
+      },
+    },
+  ];
+
+  // create a seperate list for dps without weapon break and slowed reactions
+  // if raid is GAZEMNIDS_RELIQUARY_M or TM
+  const availableCompanionDpsPowerList = [
+    {
+      label: "Armour Break",
+      shortName: "Armour_Break",
+      priority: 1,
+      emoji: {
+        id: `1091902795529072750`,
+        name: `ArmourBreak`,
+        animated: false,
+      },
+    },
+    {
       label: "Dulled Senses",
       shortName: "Dulled_Senses",
       priority: 1,
@@ -52,24 +99,110 @@ export const companionPowersSort = (
       },
     },
     {
-      label: "Slowed Reactions",
-      shortName: "Slowed_Reactions",
+      label: "Vulnerability",
+      shortName: "Vulnerability",
       priority: 1,
       emoji: {
-        id: `1091902793377394789`,
-        name: `SlowedReactions`,
+        id: `1091902790000988170`,
+        name: `Vulnerability`,
+        animated: false,
+      },
+    },
+    {
+      label: "Armour Break",
+      shortName: "Armour_Break",
+      priority: 1,
+      emoji: {
+        id: `1091902795529072750`,
+        name: `ArmourBreak`,
+        animated: false,
+      },
+    },
+    {
+      label: "Dulled Senses",
+      shortName: "Dulled_Senses",
+      priority: 1,
+      emoji: {
+        id: `1091902798792245370`,
+        name: `DulledSenses`,
+        animated: false,
+      },
+    },
+    {
+      label: "Personal",
+      shortName: "Personal",
+      priority: 1,
+      emoji: {
+        id: `1162793563076182086`,
+        name: `Personal`,
+        animated: false,
+      },
+    },
+    {
+      label: "Personal",
+      shortName: "Personal",
+      priority: 1,
+      emoji: {
+        id: `1162793563076182086`,
+        name: `Personal`,
+        animated: false,
+      },
+    },
+    {
+      label: "Personal",
+      shortName: "Personal",
+      priority: 1,
+      emoji: {
+        id: `1162793563076182086`,
+        name: `Personal`,
+        animated: false,
+      },
+    },
+    {
+      label: "Personal",
+      shortName: "Personal",
+      priority: 1,
+      emoji: {
+        id: `1162793563076182086`,
+        name: `Personal`,
+        animated: false,
+      },
+    },
+    {
+      label: "Personal",
+      shortName: "Personal",
+      priority: 1,
+      emoji: {
+        id: `1162793563076182086`,
+        name: `Personal`,
         animated: false,
       },
     },
   ];
 
-  const assingedSupports = Supports.map(({ name }, index) => {
-    const { label, shortName, emoji } = availableCompanionTankPowers[index] || {};
+  // if (
+  //   [trialNamesList.GAZEMNIDS_RELIQUARY_M, trialNamesList.TM].includes(
+  //     raidName as trialNamesList
+  //   )
+  // ) {
+  // }
+
+  const assingedTanks = Tanks.map(({ name }, index) => {
+    const { label, shortName, emoji } =
+      availableCompanionTankPowers[index] || {};
     return { name, shortName, emoji, label };
   });
-  const assignedDPS = DPS.map(({ name }) => {
-    return { name, shortName: undefined, emoji: undefined, label: undefined };
+  const assignedHealers = Healers.map(({ name }, index) => {
+    const { label, shortName, emoji } =
+      availableCompanionHealPowers[index] || {};
+    return { name, shortName, emoji, label };
   });
 
-  return [...assingedSupports, ...assignedDPS];
+  const assignedDPS = DPS.map(({ name }, index) => {
+    const { label, shortName, emoji } =
+      availableCompanionDpsPowerList[index] || {};
+    return { name, shortName, emoji, label };
+  });
+
+  return [...assingedTanks, ...assignedHealers, ...assignedDPS];
 };

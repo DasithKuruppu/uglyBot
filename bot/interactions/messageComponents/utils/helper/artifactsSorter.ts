@@ -243,6 +243,7 @@ export const artifactsSort = (
   raidName = "default"
 ) => {
   const requiresMitigation = {
+    [trialNamesList.Battle_of_the_Moon_Dancer_M]: true,
     [trialNamesList.COKM]: false,
     [trialNamesList.TM]: false,
     [trialNamesList.TOMM]: true,

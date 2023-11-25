@@ -64,6 +64,7 @@ export const createRaidCommand = async (
     ({ name }) => name === "voice"
   )?.value;
   const nameToCoverUrl = {
+    [trialNamesList.Battle_of_the_Moon_Dancer_M]: "https://cdn.discordapp.com/attachments/1109471948645355551/1165189390541267004/img-bHaY5o4EGHZ2RTjchbwubo0q.png",
     [trialNamesList.DWP]: "https://cdn.discordapp.com/attachments/1109471948645355551/1124953782036480080/Deamonwebpits.png",
     [previousTrialNamesList.DWP]: "https://cdn.discordapp.com/attachments/1109471948645355551/1124953782036480080/Deamonwebpits.png",
     [trialNamesList.DWP_Advanced]: "https://cdn.discordapp.com/attachments/1109471948645355551/1124953782036480080/Deamonwebpits.png",
@@ -75,7 +76,7 @@ export const createRaidCommand = async (
     [trialNamesList.ZCM]:
       "https://static.wikia.nocookie.net/dungeonsdragons/images/4/43/Zariel.jpg/revision/latest?cb=20200408175529",
     [trialNamesList.COKM]:
-      "https://cdn.player.one/sites/player.one/files/styles/full_large/public/2022/01/12/neverwinter-update.jpg",
+      "https://cdn.discordapp.com/attachments/1109471948645355551/1162820681512255538/img-k2MxbbU3vQfOslKohhOTwfWs.png",
     [trialNamesList.TM]:
       "https://db4sgowjqfwig.cloudfront.net/campaigns/68638/assets/330407/Tiamat_Mobile.jpg?1400812964",
     [trialNamesList.VOS]:

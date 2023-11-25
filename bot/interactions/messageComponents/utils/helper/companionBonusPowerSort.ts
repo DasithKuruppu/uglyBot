@@ -73,6 +73,16 @@ export const companionPowersSort = (
         animated: false,
       },
     },
+    {
+      label: "Weapon Break",
+      shortName: "Weapon_Break",
+      priority: 1,
+      emoji: {
+        id: `1162737401702125698`,
+        name: `WeaponBreak`,
+        animated: false,
+      },
+    },
   ];
 
   // create a seperate list for dps without weapon break and slowed reactions

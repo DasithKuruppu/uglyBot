@@ -18,11 +18,12 @@ export const enum ArtifactsNames {
   HORN = "Horn",
   MARK = "Mark",
   PALADIN_SIGIL = "Sigil",
-  TIAMAT= "Tiamat",
+  TIAMAT = "Tiamat",
   ERRATIC_DRIFT_GLOBE = "Globe",
   TYMORAS_LUCKY_COIN = "Tymora_Coin",
   ASSASSINS_DICE = "Dice",
-  TENTACLE_ROD = "Tentacle_Rod"
+  TENTACLE_ROD = "Tentacle_Rod",
+  DETECTOR = "Detector",
 }
 
 export const enum ArtifactTypes {
@@ -40,6 +41,17 @@ export const newArtifactsList = [
     emoji: {
       id: `1060809813581377636`,
       name: `Demo`,
+      animated: false,
+    },
+  },
+  {
+    label: "Detector",
+    shortName: ArtifactsNames.DETECTOR,
+    priority: 2,
+    type: [ArtifactTypes.DEBUFF],
+    emoji: {
+      id: `1177983007676715058`,
+      name: `Detector`,
       animated: false,
     },
   },
@@ -106,6 +118,18 @@ export const newArtifactsList = [
     emoji: {
       id: `1068867884673159279`,
       name: `Halasters`,
+      animated: false,
+    },
+  },
+  {
+    label: "Dragonbone Blades",
+    shortName: ArtifactsNames.BLADES,
+    priority: 2,
+    type: [ArtifactTypes.DEBUFF, ArtifactTypes.MITIGATION],
+    nonStackingArtifact: [ArtifactsNames.WYVERN],
+    emoji: {
+      id: `1068867293381136515`,
+      name: `Blades`,
       animated: false,
     },
   },
@@ -224,7 +248,7 @@ export const newArtifactsList = [
     label: "Tymora's Lucky Coin",
     shortName: ArtifactsNames.TYMORAS_LUCKY_COIN,
     priority: 5,
-    type: [ArtifactTypes.MITIGATION,ArtifactTypes.DEBUFF],
+    type: [ArtifactTypes.MITIGATION, ArtifactTypes.DEBUFF],
     emoji: {
       id: `1038015923715584060`,
       name: `Tymora_Coin`,
@@ -239,18 +263,6 @@ export const newArtifactsList = [
     emoji: {
       id: `1038015915268263976`,
       name: `Globe`,
-      animated: false,
-    },
-  },
-  {
-    label: "Dragonbone Blades",
-    shortName: ArtifactsNames.BLADES,
-    priority: 2,
-    type: [ArtifactTypes.DEBUFF, ArtifactTypes.MITIGATION],
-    nonStackingArtifact: [ArtifactsNames.WYVERN],
-    emoji: {
-      id: `1068867293381136515`,
-      name: `Blades`,
       animated: false,
     },
   },
@@ -297,7 +309,7 @@ export const newArtifactsList = [
       name: `Tiamat`,
       animated: false,
     },
-  }
+  },
 ];
 export const ArtifactsList = [
   {
@@ -308,6 +320,17 @@ export const ArtifactsList = [
     emoji: {
       id: `999523830630461541`,
       name: `Demo`,
+      animated: false,
+    },
+  },
+  {
+    label: "Detector",
+    shortName: ArtifactsNames.DETECTOR,
+    priority: 2,
+    type: [ArtifactTypes.DEBUFF],
+    emoji: {
+      id: `1177983007676715058`,
+      name: `Detector`,
       animated: false,
     },
   },
@@ -492,7 +515,7 @@ export const ArtifactsList = [
     label: "Tymora's Lucky Coin",
     shortName: ArtifactsNames.TYMORAS_LUCKY_COIN,
     priority: 5,
-    type: [ArtifactTypes.MITIGATION,ArtifactTypes.DEBUFF],
+    type: [ArtifactTypes.MITIGATION, ArtifactTypes.DEBUFF],
     emoji: {
       id: `1038015923715584060`,
       name: `Tymora_Coin`,

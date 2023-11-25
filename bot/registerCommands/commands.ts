@@ -538,6 +538,10 @@ export const create_raid = {
               value: "Three_heal",
             },
             {
+              name: "3 Tanks and 2 Heal",
+              value: "Three_tank",
+            },
+            {
               name: "3 Heals and 1 Tank",
               value: "Three_heal_one_tank",
             },

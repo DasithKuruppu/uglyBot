@@ -117,6 +117,7 @@ export const createRaidCommand = async (
     Solo_tank_heal: { DPS: 8, HEALS: 1, TANKS: 1, WAITLIST: 6 },
     Three_heal: { DPS: 5, HEALS: 3, TANKS: 2, WAITLIST: 6 },
     Three_heal_one_tank: { DPS: 6, HEALS: 3, TANKS: 1, WAITLIST: 6 },
+    Three_tank: { DPS: 5, HEALS: 2, TANKS: 3, WAITLIST: 6 },
   };
   const uniqueRaidId = new ShortUniqueId({ length: 10 })();
   const raidEmbed = raidBuilder({

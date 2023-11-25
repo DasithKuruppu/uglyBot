@@ -127,7 +127,7 @@ export const getProfileStatusesList = () => [
   {
     label: UserStatusValues.RANKIII,
     emoji: {
-      id: `806304972178063370`,
+      id: `1066219581640810627`,
       name: `BoostedMonkey`,
       animated: true,
     },
@@ -136,7 +136,7 @@ export const getProfileStatusesList = () => [
   {
     label: UserStatusValues.RANKII,
     emoji: {
-      id: `881685228207374416`,
+      id: `1177837007662231603`,
       name: `awkward_monkey_look`,
       animated: true,
     },

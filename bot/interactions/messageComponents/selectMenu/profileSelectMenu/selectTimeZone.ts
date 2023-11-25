@@ -77,7 +77,7 @@ export const profileTimeZoneSelect = async (
   );
 
   const isUserAllowed = userId === member.user.id;
-
+  console.log({isUserAllowed});
   isUserAllowed &&
     (await updateUserProfile(
       {
@@ -96,6 +96,7 @@ export const profileTimeZoneSelect = async (
       documentClient,
     }
   );
+  console.log({lastUserClassActivity});
   const classOptionsList = getOptionsList();
   const processedMemberActivity = memberActivity.map(
     ({
@@ -204,6 +205,7 @@ export const profileTimeZoneSelect = async (
     const timeZone = getTimeZones().find(({value})=>{
       return value === userProfile?.timezoneOffset;
     });
+    console.log({timeZone});
   const buildData = profileBuilder({
     userId,
     timeZone,

@@ -19,8 +19,8 @@ export const statusSymbols = {
   [userStatusCodes.RANK_I]:
     "Monke Press W <a:MonkeyPressW:1066222667180539975>",
   [userStatusCodes.RANK_II]:
-    "Awkward Monke <a:awkward_monkey_look:881685228207374416>",
-  [userStatusCodes.RANK_III]: "Boosted Monke <a:bigmonke:806304972178063370>",
+    "Awkward Monke <a:AwkwardMonke:1177837007662231603>",
+  [userStatusCodes.RANK_III]: "Boosted Monke <a:BigMonke:1066219581640810627>",
   [userStatusCodes.RANK_IV]:
     "Slap Monke <a:MonkeySpecialSlap:1066225238754459659>",
   [userStatusCodes.RANK_V]: "Monke King <:MonkeyKing:1066215123762565151>",

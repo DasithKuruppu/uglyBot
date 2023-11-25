@@ -7,9 +7,7 @@ import {
   NeverwinterClassesMap,
 } from "../../../../embeds/templates/neverwinter/classesList";
 import {
-  fivePersonSeperation,
   raidConfigs,
-  tenPersonSeperation,
 } from "../../../../embeds/templates/neverwinter/config";
 import { IfactoryInitializations } from "../../../typeDefinitions/event";
 import {

@@ -25,7 +25,7 @@
         "fast-redact": "^3.1.2",
         "keyword-extractor": "^0.0.23",
         "lambda-warmer": "^1.2.2",
-        "openai": "^3.1.0",
+        "openai": "^4.24.1",
         "replace-in-file": "^6.3.5",
         "run-func": "^3.0.0",
         "short-unique-id": "^4.4.4",

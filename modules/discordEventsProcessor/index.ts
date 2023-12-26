@@ -1,6 +1,6 @@
 import { startBot } from "../../bot/";
 import { REST } from "@discordjs/rest";
-import { Configuration, OpenAIApi } from "openai";
+import OpenAi from "openai";
 import { InteractionType } from "discord.js";
 import { APIInteraction } from "discord-api-types/v10";
 import { getEnvironmentVariables } from "../../bot/configs";
@@ -25,10 +25,7 @@ export const discordEventsInteractionFactoryHandler = () => {
   const { discordBotToken, openAPIKey } = getEnvironmentVariables();
   const rest = new REST({ version: "10" }).setToken(discordBotToken);
 
-  const configuration = new Configuration({
-    apiKey: openAPIKey,
-  });
-  const openAi = new OpenAIApi(configuration);
+  const openAi = new OpenAi({apiKey: openAPIKey});
   return async (event) => {
     logger.log("info", "discord event recieved", event);
     const isWarmerEvent = await warmer(event);

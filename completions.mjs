@@ -1,8 +1,5 @@
 import OpenAI from "openai";
 
-const openai = new OpenAI({
-  apiKey: `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`, // This is the default and can be omitted
-});
 
 (async function () {
   const command = `Convert this text to a programmatic command:\n

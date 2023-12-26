@@ -29,9 +29,10 @@ export const createRaidContent = (
   const processedUserArtifacts = userArtifacts
     ? userArtifacts
     : artifactsTextList.join("\n");
-  return `${processedEventDate}\nLast activity(${convertToDiscordDate("now", {
+  // limit the following to 2000 characters
+  return `Last activity(${convertToDiscordDate("now", {
     relative: true,
-  })}) :\n${userActionText}\n${processedUserArtifacts}`;
+  })}) :\n${userActionText}\n${processedUserArtifacts}`.substring(0, 2000);
 };
 
 export interface IDetermineRaidTemplateType {

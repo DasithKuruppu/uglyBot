@@ -64,11 +64,16 @@ export const createRaidCommand = async (
     ({ name }) => name === "voice"
   )?.value;
   const nameToCoverUrl = {
-    [trialNamesList.Battle_of_the_Moon_Dancer_M]: "https://cdn.discordapp.com/attachments/1109471948645355551/1165189390541267004/img-bHaY5o4EGHZ2RTjchbwubo0q.png",
-    [trialNamesList.DWP]: "https://cdn.discordapp.com/attachments/1109471948645355551/1124953782036480080/Deamonwebpits.png",
-    [previousTrialNamesList.DWP]: "https://cdn.discordapp.com/attachments/1109471948645355551/1124953782036480080/Deamonwebpits.png",
-    [trialNamesList.DWP_Advanced]: "https://cdn.discordapp.com/attachments/1109471948645355551/1124953782036480080/Deamonwebpits.png",
-    [trialNamesList.Dragon_hunts]: 'https://cdn.discordapp.com/attachments/1109471948645355551/1139797154395857016/img-EBHqbvnop8Ez0USCmOEEOPQ9.png',
+    [trialNamesList.Battle_of_the_Moon_Dancer_M]:
+      "https://cdn.discordapp.com/attachments/1109471948645355551/1165189390541267004/img-bHaY5o4EGHZ2RTjchbwubo0q.png",
+    [trialNamesList.DWP]:
+      "https://cdn.discordapp.com/attachments/1109471948645355551/1124953782036480080/Deamonwebpits.png",
+    [previousTrialNamesList.DWP]:
+      "https://cdn.discordapp.com/attachments/1109471948645355551/1124953782036480080/Deamonwebpits.png",
+    [trialNamesList.DWP_Advanced]:
+      "https://cdn.discordapp.com/attachments/1109471948645355551/1124953782036480080/Deamonwebpits.png",
+    [trialNamesList.Dragon_hunts]:
+      "https://cdn.discordapp.com/attachments/1109471948645355551/1139797154395857016/img-EBHqbvnop8Ez0USCmOEEOPQ9.png",
     [trialNamesList.TOMM]:
       "https://pwimages-a.akamaihd.net/arc/8d/5d/8d5d88772e1edccad4f98cb882677a5e1564178653.jpg",
     [trialNamesList.GAZEMNIDS_RELIQUARY_M]:
@@ -120,9 +125,11 @@ export const createRaidCommand = async (
     Three_tank: { DPS: 5, HEALS: 2, TANKS: 3, WAITLIST: 6 },
   };
   const uniqueRaidId = new ShortUniqueId({ length: 10 })();
+  const maxDescription =
+    description?.length > 50 ? `${description.slice(0, 50)}...` : description;
   const raidEmbed = raidBuilder({
     title,
-    description,
+    description: maxDescription,
     requirements,
     commencedVoiceChatChannel: processedCommenceChannel,
     raidId: uniqueRaidId,
@@ -159,6 +166,7 @@ export const createRaidCommand = async (
       },
     }
   )) as RESTPostAPIChannelMessageResult;
+
   const updateValues = setUpdateValues({
     title,
     creatorId: interactionConfig.member?.user?.id,
@@ -167,7 +175,7 @@ export const createRaidCommand = async (
       interactionConfig.member?.user?.username,
     eventDiscordDateTime: requestedDate,
     isFivePerson,
-    description,
+    description: description || "",
     template: JSON.stringify(partyOptionsToMap[partyComposition] || {}),
     coverImageUrl: nameToCoverUrl[title] || defaultCoverImage,
     type,

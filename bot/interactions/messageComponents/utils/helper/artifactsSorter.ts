@@ -340,7 +340,7 @@ export const createEmbedArtifactSortContent = (
         ? `<:${emojiDetails?.name}:${emojiDetails?.id}>`
         : "❔";
       const mountEmojiRender = mountEmojiDetails
-        ? `<:${mountEmojiDetails?.name}:${mountEmojiDetails?.id}> ${mountName}`
+        ? `<:${mountEmojiDetails?.name}:${mountEmojiDetails?.id}>`
         : "❔";
 
       const companionEmojiRender = companionEmojiDetails

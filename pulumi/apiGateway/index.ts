@@ -5,7 +5,7 @@ import { httpEventsProcessor } from "../lambdas/httpEventsProcessor";
  */
 
 // Create an API endpoint.
-export const apiEndpoint = new awsx.apigateway.API("uglyBot", {
+export const apiEndpoint = new awsx.classic.apigateway.API("uglyBot", {
   routes: [
     {
       path: "/discordEvents",

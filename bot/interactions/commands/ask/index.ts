@@ -355,7 +355,7 @@ export const askCommand = async (
     console.log(err);
     return {
       body: {
-        content: `<@${userId}> asked : ${message} \n>>> Something went wrong ${err?.error?.message}`,
+        content: `<@${userId}> asked : ${message} \n>>> Something went wrong ${(err as any)?.error?.message}`,
       },
     };
   }

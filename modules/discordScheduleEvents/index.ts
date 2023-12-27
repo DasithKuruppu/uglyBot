@@ -4,7 +4,7 @@ import { InteractionType } from "discord.js";
 import { APIInteraction } from "discord-api-types/v10";
 import { getEnvironmentVariables } from "../../bot/configs";
 import { createEvent } from "./create";
-import warmer from "lambda-warmer";
+// import warmer from "lambda-warmer";
 import { SQSRecordAttributes } from "aws-lambda";
 export const discordScheduleInteractionEventHandler = {
   [InteractionType.ApplicationCommand]: createEvent,
@@ -13,7 +13,7 @@ export const supportedInteractionTypes = Object.keys(
   discordScheduleInteractionEventHandler
 );
 export const discordScheduleEventsProcessingFunction = async (
-  event: AWSLambda.SQSEvent,
+  event: any,
   { logger, rest }
 ) => {
   const { Records = [] } = event;
@@ -69,11 +69,11 @@ export const discordScheduleEventsInteractionFactoryHandler = () => {
   const rest = new REST({ version: "10" }).setToken(discordBotToken);
   return async (event) => {
     logger.log("info", "discord schedule event recieved", event);
-    const isWarmerEvent = await warmer(event);
-    logger.log("info", "is lambda warmer invocation", { isWarmerEvent });
-    if (isWarmerEvent) {
-      return "warmed";
-    }
+    // //const isWarmerEvent = await warmer(event);
+    // logger.log("info", "is lambda warmer invocation", { isWarmerEvent });
+    // if (isWarmerEvent) {
+    //   return "warmed";
+    // }
     return discordScheduleEventsProcessingFunction(event, { logger, rest });
   };
 };

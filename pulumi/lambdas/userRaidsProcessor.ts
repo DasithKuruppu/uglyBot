@@ -1,13 +1,13 @@
-import * as aws from "@pulumi/aws";
+import { lambda } from "@pulumi/aws";
 import * as pulumi from "@pulumi/pulumi";
 import { getEnvironmentFromStack } from '../utils/stackEnvMap';
 import { raidsFactoryHandler } from "../../modules/raidsProcessor";
 const stack = pulumi.getStack();
-export const userRaidsProcessor = new aws.lambda.CallbackFunction(
+export const userRaidsProcessor = new lambda.CallbackFunction(
   `${stack}_userRaidsProcessor`,
   {
     callbackFactory: raidsFactoryHandler,
-    runtime: aws.lambda.Runtime.NodeJS16dX,
+    runtime: lambda.Runtime.NodeJS16dX,
     timeout: 30,
     environment: {
       variables: {

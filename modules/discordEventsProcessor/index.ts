@@ -6,7 +6,7 @@ import { APIInteraction } from "discord-api-types/v10";
 import { getEnvironmentVariables } from "../../bot/configs";
 import { applicationCommands } from "./applicationCommand";
 import { messageComponent } from "./messageComponent";
-import warmer from "lambda-warmer";
+// import warmer from "lambda-warmer";
 import { modal } from "./modal";
 export const discordInteractionEventHandler = {
   [InteractionType.ApplicationCommand]: applicationCommands,
@@ -28,11 +28,11 @@ export const discordEventsInteractionFactoryHandler = () => {
   const openAi = new OpenAi({apiKey: openAPIKey});
   return async (event) => {
     logger.log("info", "discord event recieved", event);
-    const isWarmerEvent = await warmer(event);
-    logger.log("info", "is lambda warmer invocation", { isWarmerEvent });
-    if (isWarmerEvent) {
-      return "warmed";
-    }
+    // const isWarmerEvent = await warmer(event);
+    // logger.log("info", "is lambda warmer invocation", { isWarmerEvent });
+    // if (isWarmerEvent) {
+    //   return "warmed";
+    // }
     return discordEventsProcessingFunction(event, {
       logger,
       rest,
@@ -43,7 +43,7 @@ export const discordEventsInteractionFactoryHandler = () => {
 };
 
 export const discordEventsProcessingFunction = async (
-  event: AWSLambda.SQSEvent,
+  event: any,
   { logger, rest, documentClient, openAi }
 ) => {
   const { Records = [] } = event;

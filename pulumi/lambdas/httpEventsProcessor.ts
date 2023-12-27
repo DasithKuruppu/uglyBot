@@ -1,11 +1,11 @@
-import * as aws from "@pulumi/aws";
+import { lambda } from "@pulumi/aws";
 import * as pulumi from "@pulumi/pulumi";
 import { httpEventsFactoryHandler } from "../../modules/httpEventsProcessor";
 import { discordEventsQueue } from "../sqs/discordEvents";
 import { discordScheduleEventsQueue } from "../sqs/discordScheduleEvent";
 import { getEnvironmentFromStack } from "../utils/stackEnvMap";
 const stack = pulumi.getStack();
-export const httpEventsProcessor = new aws.lambda.CallbackFunction(
+export const httpEventsProcessor = new lambda.CallbackFunction(
   `${stack}_httpEventsProcess`,
   {
     callbackFactory: () =>
@@ -16,7 +16,7 @@ export const httpEventsProcessor = new aws.lambda.CallbackFunction(
     // callback: uglyBot.main,
     // Only let this Lambda run for 10 secs before forcefully terminating it.
     timeout: 10,
-    runtime: aws.lambda.Runtime.NodeJS16dX,
+    runtime: lambda.Runtime.NodeJS16dX,
     environment: {
       variables: {
         environment: getEnvironmentFromStack(stack),
@@ -30,13 +30,13 @@ export const httpEventsProcessor = new aws.lambda.CallbackFunction(
   }
 );
 
-const lambdaWarmRuleHTTP = new aws.cloudwatch.EventRule(
-  `${stack}_warmUpLambdaRuleHTTP`,
-  {
-    scheduleExpression: "rate(5 minutes)",
-    isEnabled: true,
-  }
-);
+// const lambdaWarmRuleHTTP = new aws.cloudwatch.EventRule(
+//   `${stack}_warmUpLambdaRuleHTTP`,
+//   {
+//     scheduleExpression: "rate(5 minutes)",
+//     isEnabled: true,
+//   }
+// );
 
 // export const concurencyConfigFixed = new aws.lambda.ProvisionedConcurrencyConfig(`${stack}-http-events-fixed-concurrency`, {
 //   functionName: httpEventsProcessor.name,
@@ -44,26 +44,26 @@ const lambdaWarmRuleHTTP = new aws.cloudwatch.EventRule(
 //   provisionedConcurrentExecutions: 2,
 // });
 
-export const eventBridgePermission = new aws.lambda.Permission(
-  `${stack}_eventBridgeLambdaInvoke`,
-  {
-    action: "lambda:InvokeFunction",
-    function: httpEventsProcessor,
-    principal: "events.amazonaws.com", //aws.iam.Principals.EventsPrincipal.toString(),
-    sourceArn: lambdaWarmRuleHTTP.arn,
-  }
-);
+// export const eventBridgePermission = new aws.lambda.Permission(
+//   `${stack}_eventBridgeLambdaInvoke`,
+//   {
+//     action: "lambda:InvokeFunction",
+//     function: httpEventsProcessor,
+//     principal: "events.amazonaws.com", //aws.iam.Principals.EventsPrincipal.toString(),
+//     sourceArn: lambdaWarmRuleHTTP.arn,
+//   }
+// );
 
 
 
-export const warmHTTPEventsSchedule = new aws.cloudwatch.EventTarget(
-  `${stack}_warmHTTPEventsProcessor`,
-  {
-    arn: httpEventsProcessor.arn,
-    rule: lambdaWarmRuleHTTP.name,
-    input: JSON.stringify({
-      warmer: true,
-      concurrency: 1,
-    }),
-  }
-);
+// export const warmHTTPEventsSchedule = new aws.cloudwatch.EventTarget(
+//   `${stack}_warmHTTPEventsProcessor`,
+//   {
+//     arn: httpEventsProcessor.arn,
+//     rule: lambdaWarmRuleHTTP.name,
+//     input: JSON.stringify({
+//       warmer: true,
+//       concurrency: 1,
+//     }),
+//   }
+// );

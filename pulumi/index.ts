@@ -9,6 +9,7 @@ import { userStatusTable } from "./persistantStore/tables/userStatus";
 import { userNotifcations } from "./persistantStore/tables/userNotifications";
 import { userProfileTable } from "./persistantStore/tables/userProfile";
 import { userAvailabilityTable } from "./persistantStore/tables/userAvailability";
+import { botConvosTable } from "./persistantStore/tables/botConvos";
 export default {
   apiGatewayEndpointUrl: apiEndpoint.url,
   cloudwatchSchedule: {
@@ -26,5 +27,6 @@ export default {
     userNotifications: userNotifcations.name,
     userAvailabilityTable: userAvailabilityTable.name,
     userProfileTable: userProfileTable.name,
+    botConvosTable: botConvosTable.name,
   },
 };

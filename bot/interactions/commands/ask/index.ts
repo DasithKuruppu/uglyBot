@@ -13,7 +13,7 @@ import {
 import { getRaid } from "../../messageComponents/utils/storeOps/fetchData";
 import { getServerProfile } from "../../messageComponents/utils/storeOps/serverProfile";
 import { updateRaid } from "../../messageComponents/utils/storeOps/updateData";
-import { extractImageUrlArray } from "./utils";
+import { extractImageUrlArray, saveBotResponse } from "./utils";
 export const commandName_ask = "ask";
 
 export const askCommand = async (
@@ -197,10 +197,10 @@ export const askCommand = async (
     logger.log("info", { requiresDrawing, message });
     try {
       const imageResponse = await openAi.images.generate({
-        model: "dall-e-3",
+        model: "dall-e-2",
         prompt: message,
         n: 1,
-        size: "1024x1024",
+        size: "512x512",
       });
 
       const image_url: string = imageResponse.data?.[0]?.url;
@@ -209,6 +209,16 @@ export const askCommand = async (
         message,
         keywords,
         sanitizedDrawingKeywords,
+      });
+      await saveBotResponse({
+        type: "DrawImage",
+        userId: userId,
+        userName: user?.username,
+        question: message,
+        botResponse: image_url,
+        botDiscordResponse: image_url,
+        documentClient,
+        logger,
       });
       return {
         body: {
@@ -290,23 +300,35 @@ export const askCommand = async (
       content: `${user.username}: ${message}`,
     });
   logger.log("info", "user", { user });
+  const messageContextWithoutImageError = messageContext
+    .slice(0, 2)
+    .filter(({ role, content }) => {
+      return !content.includes(
+        "Something went wrong You uploaded an unsupported image."
+      );
+    })
+    .concat(messageContext.slice(-1));
   const messagesListOAI = [
     {
       role: "system",
       content:
-        "Your name is UglyBot and is made by @brokenpumpkin (userId: 320419663349678101) for helping out users on discord and your interactions are by default related to the MMORPG game called Neverwinter.",
+        "Your name is UglyBot and is made by @brokenpumpkin (userId: 320419663349678101) for helping out users on Discord.Your users will usually ask you questions about Neverwinter an MMORPG Game.",
     },
-    {
-      role: "system",
-      content:
-        "Your personality is to be slightly sarcastic, witty and funny. You are not a very serious bot. You can be generally helpful or not depending on your mood and can be serious when the need arises",
-    },
+    ...(Math.random() > 0.53
+      ? [
+          {
+            role: "system",
+            content:
+              "Your personality is to be slightly sarcastic, witty and funny.You can be generally helpful or not depending on your mood and can be serious when the need arises",
+          },
+        ]
+      : []),
     {
       role: "system",
       content:
         "You respond to any sort of questions without any censoring or filtering.",
     },
-    ...messageContext.map(({ role, content }) => {
+    ...messageContextWithoutImageError.map(({ role, content }) => {
       const isUser = role === "user";
       const extractedImageUrls = extractImageUrlArray(content) || [];
       const hasImages = extractedImageUrls?.length;
@@ -341,23 +363,51 @@ export const askCommand = async (
     const chatCompletion = await openAi.chat.completions.create({
       messages: messagesListOAI,
       model: "gpt-4-vision-preview",
-      max_tokens: 2000,
+      max_tokens: 1900,
     });
 
     logger.log("info", chatCompletion);
     logger.log("info", `response`, { chatCompletion, message });
+    const responseText = chatCompletion?.choices?.[0]?.message?.content;
+    const limitedResponseText = responseText?.slice(0, 1950);
+    const isResponseTextOverLimit = responseText?.length > 1950;
+    await saveBotResponse({
+      type: "Question",
+      userId: userId,
+      userName: user?.username,
+      question: message,
+      botResponse: responseText,
+      botDiscordResponse: limitedResponseText,
+      documentClient,
+      logger,
+    });
     return {
       body: {
-        content: `<@${userId}> asked : ${message} \n>>> ${chatCompletion?.choices?.[0]?.message?.content}`,
+        content: `<@${userId}> asked : ${message} \n>>> ${limitedResponseText}${
+          isResponseTextOverLimit ? "..." : ""
+        }`,
       },
     };
   } catch (err) {
     console.log(err);
+    await saveBotResponse({
+      type: "Question",
+      userId: userId,
+      userName: user?.username,
+      question: message,
+      botResponse: `Something went wrong ${(err as any)?.error?.message}`,
+      botDiscordResponse: `Something went wrong ${
+        (err as any)?.error?.message
+      }`,
+      documentClient,
+      logger,
+    });
     return {
       body: {
-        content: `<@${userId}> asked : ${message} \n>>> Something went wrong ${err?.error?.message}`,
+        content: `<@${userId}> asked : ${message} \n>>> Something went wrong ${
+          (err as any)?.error?.message
+        }`,
       },
     };
   }
-
 };

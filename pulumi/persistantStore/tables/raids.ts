@@ -65,6 +65,7 @@ export const raidsTable = new aws.dynamodb.Table(`${stack}_raids`, {
     Environment: `${getEnvironmentFromStack(stack)}`,
     Name: `${stack}_raid`,
   },
+  tableClass: "STANDARD",
   streamViewType: "NEW_AND_OLD_IMAGES",
   streamEnabled: true,
 });

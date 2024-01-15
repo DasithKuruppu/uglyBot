@@ -22,6 +22,7 @@ export const userNotifcations = new aws.dynamodb.Table(
     rangeKey: "raidId",
     streamEnabled: true,
     streamViewType: "NEW_AND_OLD_IMAGES",
+    tableClass: "STANDARD",
     ttl: {
       attributeName: "notifyTime",
       enabled: true,

@@ -15,6 +15,7 @@ export const botMessagesTable = new aws.dynamodb.Table(`${stack}_botMessages`, {
     },
   ],
   billingMode: "PAY_PER_REQUEST",
+  tableClass: "STANDARD",
   hashKey: "discordMemberId",
   rangeKey: "userName",
   tags: {

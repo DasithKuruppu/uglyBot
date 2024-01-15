@@ -4,8 +4,8 @@ import { getEnvironmentFromStack } from "../../utils/stackEnvMap";
 import { userActionsProcessor } from "../../lambdas/userActionsProcessor";
 const stack = pulumi.getStack();
 
-export const memberActionsTable = new aws.dynamodb.Table(
-  `${stack}_memberActions`,
+export const botConvosTable = new aws.dynamodb.Table(
+  `${stack}_botConvos`,
   {
     attributes: [
       {
@@ -13,25 +13,20 @@ export const memberActionsTable = new aws.dynamodb.Table(
         type: "S",
       },
       {
-        name: "compositeRaidStatusDate",
+        name: "compositeTypeStamp",
         type: "S",
       },
     ],
     billingMode: "PAY_PER_REQUEST",
     tableClass: "STANDARD",
     hashKey: "discordMemberId",
-    rangeKey: "compositeRaidStatusDate",
+    rangeKey: "compositeTypeStamp",
     streamViewType: "NEW_AND_OLD_IMAGES",
-    streamEnabled: true,
+    streamEnabled: false,
     tags: {
       Environment: `${getEnvironmentFromStack(stack)}`,
-      Name: `${stack}_memberActions`,
+      Name: `${stack}_botconvos`,
     },
   }
 );
 
-memberActionsTable.onEvent("userActionsTrigger", userActionsProcessor, {
-  startingPosition: "TRIM_HORIZON",
-  batchSize: 5,
-  maximumRetryAttempts: 2,
-});

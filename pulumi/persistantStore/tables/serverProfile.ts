@@ -15,6 +15,7 @@ export const serverProfileTable = new aws.dynamodb.Table(`${stack}_serverProfile
     },
   ],
   billingMode: "PAY_PER_REQUEST",
+  tableClass: "STANDARD",
   hashKey: "discordServerId",
   rangeKey: "ownerId",
   tags: {

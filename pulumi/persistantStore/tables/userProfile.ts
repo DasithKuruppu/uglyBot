@@ -16,6 +16,7 @@ export const userProfileTable = new aws.dynamodb.Table(`${stack}_userProfile`, {
   ],
   billingMode: "PAY_PER_REQUEST",
   hashKey: "discordMemberId",
+  tableClass: "STANDARD",
   rangeKey: "userName",
   tags: {
     Environment: `${getEnvironmentFromStack(stack)}`,

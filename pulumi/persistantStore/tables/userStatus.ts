@@ -16,6 +16,7 @@ export const userStatusTable = new aws.dynamodb.Table(`${stack}_userStatus`, {
   ],
   billingMode: "PAY_PER_REQUEST",
   hashKey: "discordMemberId",
+  tableClass: "STANDARD",
   rangeKey: "userStatusInteraction",
   tags: {
     Environment: `${getEnvironmentFromStack(stack)}`,

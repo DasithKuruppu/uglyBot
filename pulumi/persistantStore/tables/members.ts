@@ -49,6 +49,7 @@ export const membersTable = new aws.dynamodb.Table(`${stack}_members`, {
     },
   ],
   hashKey: "discordMemberId",
+  tableClass: "STANDARD",
   rangeKey: "className",
   tags: {
     Environment: `${getEnvironmentFromStack(stack)}`,

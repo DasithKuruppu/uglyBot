@@ -17,6 +17,7 @@ export const userAvailabilityTable = new aws.dynamodb.Table(
       },
     ],
     billingMode: "PAY_PER_REQUEST",
+    tableClass: "STANDARD",
     hashKey: "discordMemberId",
     rangeKey: "availabilitySpecified",
     tags: {
